@@ -11,3 +11,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = app.firestore();  // Firestore database reference
+
+export { db };  // Export Firestore reference for use in App.js
