@@ -8,10 +8,10 @@ import {
   Space,
   Select,
   Radio,
+  message,
 } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../firebase/firebase";
+import { addMember } from "../../members/firebaseMemberFunctions";
 
 type FieldType = {
   name?: string;
@@ -54,8 +54,9 @@ export const AddMember = () => {
     if (values.name) {
       values.name = capitalizeName(values.name);
     }
-    await addDoc(collection(db, "members"), values);
+    await addMember(values);
     setIsModalOpen(false);
+    message.success("Member added successfully!");
     setConfirmLoading(false);
     form.resetFields();
   };
@@ -68,7 +69,7 @@ export const AddMember = () => {
       <Modal
         title="Add Member"
         open={isModalOpen}
-        onCancel={handleCancel}
+        onCancel={confirmLoading ? undefined : handleCancel}
         footer={null}
       >
         <Form form={form} name="basic" onFinish={onFinish} autoComplete="off">
@@ -146,7 +147,11 @@ export const AddMember = () => {
 
           <Form.Item {...tailLayout}>
             <Space>
-              <Button htmlType="button" onClick={handleCancel}>
+              <Button
+                htmlType="button"
+                onClick={handleCancel}
+                disabled={confirmLoading}
+              >
                 Cancel
               </Button>
               <Button type="primary" htmlType="submit" loading={confirmLoading}>
