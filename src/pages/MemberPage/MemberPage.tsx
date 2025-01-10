@@ -1,14 +1,14 @@
-import {Typography } from 'antd';
-import { AddMember } from './AddMember';
+import { Typography } from "antd";
+import { AddMember } from "./AddMember";
 
 const { Title } = Typography;
 
 export const MemberPage = () => {
-    return (
-        <>
-            <Title>Member Management</Title>
-            <AddMember/>
-            <Title>Members</Title>
-        </>
-    );
+  return (
+    <>
+      <Title>Member Management</Title>
+      <AddMember />
+      <Title>Members</Title>
+    </>
+  );
 };
