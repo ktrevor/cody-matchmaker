@@ -31,7 +31,6 @@ const columns = [
     title: "Tree",
     dataIndex: "tree",
     key: "tree",
-    render: (text: string) => (text ? text : "None"),
   },
   {
     title: "Leaves",

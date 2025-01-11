@@ -15,13 +15,12 @@ import { addMember } from "../../members/firebaseMemberFunctions";
 import { Member } from "../../members/Member";
 
 type FieldType = {
-  name?: string;
-  grade?: string;
-  gender?: string;
-  joined?: string;
-  forest?: string;
-  tree?: string;
-  leaves?: string;
+  name: string;
+  grade: string;
+  gender: string;
+  joined: string;
+  forest: string;
+  tree: string;
 };
 
 const capitalizeName = (name: string) => {
@@ -58,16 +57,7 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
   const onFinish: FormProps<FieldType>["onFinish"] = async (newMember) => {
     if (confirmLoading) return;
     setConfirmLoading(true);
-    if (newMember.name) {
-      newMember.name = capitalizeName(newMember.name);
-    }
-    if (!newMember.tree) {
-      newMember.tree = "None";
-    }
-
-    if (!newMember.leaves) {
-      newMember.leaves = "None";
-    }
+    newMember.name = capitalizeName(newMember.name);
     await addMember(newMember);
     setIsModalOpen(false);
     message.success("Member added successfully!");
@@ -88,7 +78,13 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
         footer={null}
         closable={!confirmLoading}
       >
-        <Form form={form} name="basic" onFinish={onFinish} autoComplete="off">
+        <Form
+          form={form}
+          name="basic"
+          onFinish={onFinish}
+          disabled={confirmLoading}
+          autoComplete="off"
+        >
           <Form.Item<FieldType>
             label="Name"
             name="name"
@@ -161,7 +157,11 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
             </Select>
           </Form.Item>
 
-          <Form.Item<FieldType> label="Tree" name="tree">
+          <Form.Item<FieldType>
+            label="Tree"
+            name="tree"
+            rules={[{ required: true, message: "Tree is required." }]}
+          >
             <Select
               showSearch
               filterOption={(input, option) =>
@@ -169,33 +169,20 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
                   .toLowerCase()
                   .includes(input.toLowerCase())
               }
-              options={members.map((member) => ({
-                value: member.id,
-                label: member.name,
-              }))}
-              virtual
-            />
-          </Form.Item>
-
-          <Form.Item<FieldType> label="Leaves" name="leaves">
-            <Select
-              mode="multiple"
-              allowClear
-              options={members.map((member) => ({
-                value: member.id,
-                label: member.name,
-              }))}
+              options={[
+                { value: "None", label: "None" },
+                ...members.map((member) => ({
+                  value: member.id,
+                  label: member.name,
+                })),
+              ]}
               virtual
             />
           </Form.Item>
 
           <Form.Item {...tailLayout}>
             <Space>
-              <Button
-                htmlType="button"
-                onClick={handleCancel}
-                disabled={confirmLoading}
-              >
+              <Button htmlType="button" onClick={handleCancel}>
                 Cancel
               </Button>
               <Button type="primary" htmlType="submit" loading={confirmLoading}>
