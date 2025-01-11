@@ -1,7 +1,9 @@
 import {
   addDoc,
+  arrayRemove,
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -10,10 +12,17 @@ import {
 import { db } from "../firebase/firebase";
 import { Member } from "./Member";
 
-export const updateLeaves = async (treeId: string, leafId: string) => {
+const addLeavesToTree = async (treeId: string, leafId: string) => {
   const treeRef = doc(db, "members", treeId);
   await updateDoc(treeRef, {
     leaves: arrayUnion(leafId),
+  });
+};
+
+const deleteLeavesFromTree = async (treeId: string, leafId: string) => {
+  const treeRef = doc(db, "members", treeId);
+  await updateDoc(treeRef, {
+    leaves: arrayRemove(leafId),
   });
 };
 
@@ -23,8 +32,16 @@ export const addMember = async (memberData: any) => {
   const newMemberId = docRef.id;
 
   if (tree) {
-    await updateLeaves(tree, newMemberId);
+    await addLeavesToTree(tree, newMemberId);
   }
+};
+
+export const deleteMember = async (member: Member) => {
+  const memberRef = doc(db, "members", member.id);
+  if (member.tree) {
+    await deleteLeavesFromTree(member.tree.id, member.id);
+  }
+  await deleteDoc(memberRef);
 };
 
 export const getMembers = async (): Promise<Member[]> => {

@@ -67,7 +67,7 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
     };
     await addMember(memberData);
     setIsModalOpen(false);
-    message.success("Member added successfully!");
+    message.success(`Member ${memberData.name} added successfully!`);
     setConfirmLoading(false);
     form.resetFields();
     updateMembers();
