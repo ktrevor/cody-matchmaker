@@ -27,6 +27,18 @@ const columns = [
     dataIndex: "forest",
     key: "forest",
   },
+  {
+    title: "Tree",
+    dataIndex: "tree",
+    key: "tree",
+    render: (text: string) => (text ? text : "None"),
+  },
+  {
+    title: "Leaves",
+    dataIndex: "leaves",
+    key: "leaves",
+    render: (text: string) => (text ? text : "None"),
+  },
 ];
 
 interface MemberTableProps {

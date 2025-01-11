@@ -55,13 +55,20 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
     form.resetFields();
   };
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+  const onFinish: FormProps<FieldType>["onFinish"] = async (newMember) => {
     if (confirmLoading) return;
     setConfirmLoading(true);
-    if (values.name) {
-      values.name = capitalizeName(values.name);
+    if (newMember.name) {
+      newMember.name = capitalizeName(newMember.name);
     }
-    await addMember(values);
+    if (!newMember.tree) {
+      newMember.tree = "None";
+    }
+
+    if (!newMember.leaves) {
+      newMember.leaves = "None";
+    }
+    await addMember(newMember);
     setIsModalOpen(false);
     message.success("Member added successfully!");
     setConfirmLoading(false);
@@ -79,6 +86,7 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
         open={isModalOpen}
         onCancel={confirmLoading ? undefined : handleCancel}
         footer={null}
+        closable={!confirmLoading}
       >
         <Form form={form} name="basic" onFinish={onFinish} autoComplete="off">
           <Form.Item<FieldType>
