@@ -31,14 +31,10 @@ const columns = [
   },
 ];
 
-export const MemberTable = () => {
-  const [members, setMembers] = useState<Member[]>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getMembers();
-      setMembers(data);
-    };
-    fetchData();
-  }, []);
+interface MemberTableProps {
+  members: Member[];
+}
+
+export const MemberTable = ({ members }: MemberTableProps) => {
   return <Table dataSource={members} columns={columns} />;
 };
