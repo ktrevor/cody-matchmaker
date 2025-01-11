@@ -31,7 +31,7 @@ const columns = [
     title: "Tree",
     dataIndex: "tree",
     key: "tree",
-    render: (text: any, record: Member) => {
+    render: (_text: any, record: Member) => {
       return record.tree ? record.tree.name : "None";
     },
   },
@@ -39,7 +39,7 @@ const columns = [
     title: "Leaves",
     dataIndex: "leaves",
     key: "leaves",
-    render: (text: any, record: Member) => {
+    render: (_text: any, record: Member) => {
       return record.leaves && record.leaves.length > 0
         ? record.leaves.map((leaf) => leaf.name).join(", ")
         : "None";
