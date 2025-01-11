@@ -34,7 +34,11 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-export const AddMember = () => {
+interface AddMemberProps {
+  updateMembers: () => void;
+}
+
+export const AddMember = ({ updateMembers }: AddMemberProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -59,6 +63,7 @@ export const AddMember = () => {
     message.success("Member added successfully!");
     setConfirmLoading(false);
     form.resetFields();
+    updateMembers();
   };
 
   return (
