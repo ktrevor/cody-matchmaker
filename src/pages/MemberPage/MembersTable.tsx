@@ -1,6 +1,4 @@
 import { Table } from "antd";
-import { useEffect, useState } from "react";
-import { getMembers } from "../../members/firebaseMemberFunctions";
 import { Member } from "../../members/Member";
 
 const columns = [

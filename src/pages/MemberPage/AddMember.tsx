@@ -12,6 +12,7 @@ import {
 } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
 import { addMember } from "../../members/firebaseMemberFunctions";
+import { Member } from "../../members/Member";
 
 type FieldType = {
   name?: string;
@@ -36,9 +37,10 @@ const tailLayout = {
 
 interface AddMemberProps {
   updateMembers: () => void;
+  members: Member[];
 }
 
-export const AddMember = ({ updateMembers }: AddMemberProps) => {
+export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -54,6 +56,7 @@ export const AddMember = ({ updateMembers }: AddMemberProps) => {
   };
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    if (confirmLoading) return;
     setConfirmLoading(true);
     if (values.name) {
       values.name = capitalizeName(values.name);
@@ -148,6 +151,34 @@ export const AddMember = ({ updateMembers }: AddMemberProps) => {
               </Select.Option>
               <Select.Option value="Onlyfamilia">Onlyfamilia</Select.Option>
             </Select>
+          </Form.Item>
+
+          <Form.Item<FieldType> label="Tree" name="tree">
+            <Select
+              showSearch
+              filterOption={(input, option) =>
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+              options={members.map((member) => ({
+                value: member.id,
+                label: member.name,
+              }))}
+              virtual
+            />
+          </Form.Item>
+
+          <Form.Item<FieldType> label="Leaves" name="leaves">
+            <Select
+              mode="multiple"
+              allowClear
+              options={members.map((member) => ({
+                value: member.id,
+                label: member.name,
+              }))}
+              virtual
+            />
           </Form.Item>
 
           <Form.Item {...tailLayout}>
