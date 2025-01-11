@@ -28,7 +28,7 @@ export const MemberPage = () => {
       <Title>Member Management</Title>
       <AddMember updateMembers={updateMembers} members={members} />
       <Title>Members</Title>
-      <MemberTable members={members} />
+      <MemberTable updateMembers={updateMembers} members={members} />
     </>
   );
 };
