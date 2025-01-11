@@ -36,7 +36,6 @@ const columns = [
     title: "Leaves",
     dataIndex: "leaves",
     key: "leaves",
-    render: (text: string) => (text ? text : "None"),
   },
 ];
 

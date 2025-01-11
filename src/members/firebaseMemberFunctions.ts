@@ -1,9 +1,32 @@
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Member } from "./Member";
 
 export const addMember = async (memberData: any) => {
-  await addDoc(collection(db, "members"), memberData);
+  const docRef = await addDoc(collection(db, "members"), memberData);
+  const { tree } = memberData;
+  const newMemberId = docRef.id;
+
+  if (tree !== "None") {
+    await updateLeaves(tree, newMemberId);
+  }
+};
+
+export const updateLeaves = async (treeId: string, leafId: string) => {
+  if (!treeId) {
+    return;
+  }
+  const bigRef = doc(db, "members", treeId);
+  await updateDoc(bigRef, {
+    leaves: arrayUnion(leafId),
+  });
 };
 
 export const getMembers = async (): Promise<Member[]> => {

@@ -58,7 +58,11 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
     if (confirmLoading) return;
     setConfirmLoading(true);
     newMember.name = capitalizeName(newMember.name);
-    await addMember(newMember);
+    const memberData = {
+      ...newMember,
+      leaves: [],
+    };
+    await addMember(memberData);
     setIsModalOpen(false);
     message.success("Member added successfully!");
     setConfirmLoading(false);
