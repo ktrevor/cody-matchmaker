@@ -20,7 +20,7 @@ type FieldType = {
   gender: string;
   joined: string;
   forest: string;
-  tree: string;
+  tree: string | null;
 };
 
 const capitalizeName = (name: string) => {
@@ -58,6 +58,9 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
     if (confirmLoading) return;
     setConfirmLoading(true);
     newMember.name = capitalizeName(newMember.name);
+    if (newMember.tree === "None") {
+      newMember.tree = null;
+    }
     const memberData = {
       ...newMember,
       leaves: [],

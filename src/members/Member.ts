@@ -12,6 +12,6 @@ export interface Member {
     | "Magic Tree House"
     | "Howl's Moving Forest"
     | "Onlyfamilia";
-  tree?: string;
-  leaves?: string[];
+  tree?: Member;
+  leaves?: Member[];
 }
