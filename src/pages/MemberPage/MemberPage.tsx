@@ -22,7 +22,7 @@ export const MemberPage = () => {
     const data = await getMembers();
     setMembers(data);
   };
-
+  console.log(members);
   return (
     <>
       <Title>Member Management</Title>

@@ -1,6 +1,10 @@
 import { message, Modal, Space, Table } from "antd";
 import { Member } from "../../members/Member";
-import { deleteMember } from "../../members/firebaseMemberFunctions";
+import {
+  deleteMember,
+  getMemberById,
+} from "../../members/firebaseMemberFunctions";
+import { EditMember } from "./EditMember";
 
 interface MemberTableProps {
   members: Member[];
@@ -14,7 +18,7 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
       onOk: async () => {
         await deleteMember(member);
         updateMembers();
-        message.success(`Member ${member.name} deleted successfully!`);
+        message.success(`Member deleted successfully!`);
       },
       okText: "Delete",
       okButtonProps: { danger: true },
@@ -53,17 +57,7 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
       dataIndex: "tree",
       key: "tree",
       render: (_: any, record: Member) => {
-        return record.tree ? record.tree.name : "None";
-      },
-    },
-    {
-      title: "Leaves",
-      dataIndex: "leaves",
-      key: "leaves",
-      render: (_: any, record: Member) => {
-        return record.leaves && record.leaves.length > 0
-          ? record.leaves.map((leaf) => leaf.name).join(", ")
-          : "None";
+        return record.treeId ? record.treeId : "None";
       },
     },
     {
@@ -71,12 +65,21 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
       key: "action",
       render: (_: any, record: Member) => (
         <Space size="middle">
-          <a>Edit</a>
+          <EditMember
+            member={record}
+            members={members}
+            updateMembers={updateMembers}
+          />
           <a onClick={() => confirmDelete(record)}>Delete</a>
         </Space>
       ),
     },
   ];
 
-  return <Table dataSource={members} columns={columns} />;
+  return (
+    <Table
+      dataSource={members.map((member) => ({ ...member, key: member.id }))}
+      columns={columns}
+    />
+  );
 };
