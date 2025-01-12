@@ -1,4 +1,4 @@
-import { Button, message, Modal, Space, Table } from "antd";
+import { message, Modal, Space, Table } from "antd";
 import { Member } from "../../members/Member";
 import { deleteMember } from "../../members/firebaseMemberFunctions";
 
@@ -72,9 +72,7 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
       render: (_: any, record: Member) => (
         <Space size="middle">
           <a>Edit</a>
-          <Button danger onClick={() => confirmDelete(record)}>
-            Delete
-          </Button>
+          <a onClick={() => confirmDelete(record)}>Delete</a>
         </Space>
       ),
     },

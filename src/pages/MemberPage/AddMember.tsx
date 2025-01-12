@@ -76,7 +76,7 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
   return (
     <>
       <Button type="primary" onClick={showModal} icon={<UserAddOutlined />}>
-        Add Member
+        Add member
       </Button>
       <Modal
         title="Add Member"
