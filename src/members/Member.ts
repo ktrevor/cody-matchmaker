@@ -12,5 +12,5 @@ export interface Member {
     | "Magic Tree House"
     | "Howl's Moving Forest"
     | "Onlyfamilia";
-  treeId?: string;
+  treeId: string | null;
 }

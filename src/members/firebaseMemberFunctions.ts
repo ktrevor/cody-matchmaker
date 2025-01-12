@@ -19,7 +19,6 @@ export const editMember = async (
   oldData: Member,
   newData: MemberFormFields
 ) => {
-  console.log(oldData, newData);
   const memberRef = doc(db, "members", oldData.id);
 
   const updatedFields: Partial<MemberFormFields> = {};
@@ -29,7 +28,7 @@ export const editMember = async (
   if (oldData.gender !== newData.gender) updatedFields.gender = newData.gender;
   if (oldData.joined !== newData.joined) updatedFields.joined = newData.joined;
   if (oldData.forest !== newData.forest) updatedFields.forest = newData.forest;
-  if (oldData?.treeId !== newData.treeId) {
+  if (oldData.treeId !== newData.treeId) {
     updatedFields.treeId = newData.treeId;
   }
 
@@ -49,16 +48,16 @@ export const getMembers = async (): Promise<Member[]> => {
 
   const members: Member[] = await Promise.all(
     querySnapshot.docs.map(async (doc) => {
-      const data = doc.data();
+      const memberData = doc.data();
 
       return {
         id: doc.id,
-        name: data.name,
-        joined: data.joined,
-        gender: data.gender,
-        grade: data.grade,
-        forest: data.forest,
-        treeId: data.treeId,
+        name: memberData.name,
+        joined: memberData.joined,
+        gender: memberData.gender,
+        grade: memberData.grade,
+        forest: memberData.forest,
+        treeId: memberData.treeId,
       } as Member;
     })
   );
