@@ -5,13 +5,13 @@ import { MemberForm, MemberFormFields } from "./MemberForm";
 import { editMember } from "../../members/firebaseMemberFunctions";
 
 interface EditMemberProps {
-  member: Member;
+  memberToEdit: Member;
   members: Member[];
   updateMembers: () => void;
 }
 
 export const EditMember = ({
-  member,
+  memberToEdit,
   members,
   updateMembers,
 }: EditMemberProps) => {
@@ -31,15 +31,15 @@ export const EditMember = ({
 
   const onFinish: FormProps<MemberFormFields>["onFinish"] = async (newData) => {
     setConfirmLoading(true);
-    await editMember(member, newData);
+    await editMember(memberToEdit, newData);
     setIsModalOpen(false);
     setConfirmLoading(false);
     updateMembers();
-    message.success(`Member edited successfully!`);
+    message.success(`Member ${newData.name} updated successfully!`);
     editForm.resetFields();
   };
 
-  const getDefaultValues = (member: Member): Partial<MemberFormFields> => {
+  const getDefaultValues = (member: Member): MemberFormFields => {
     const { id, treeId, ...rest } = member;
     return {
       ...rest,
@@ -59,12 +59,12 @@ export const EditMember = ({
       >
         <MemberForm
           form={editForm}
-          members={members}
+          members={members.filter((member) => member.id !== memberToEdit.id)}
           onFinish={onFinish}
           onCancel={handleCancel}
           loading={confirmLoading}
           okText="Save"
-          defaultValues={getDefaultValues(member)}
+          defaultValues={getDefaultValues(memberToEdit)}
         />
       </Modal>
     </>

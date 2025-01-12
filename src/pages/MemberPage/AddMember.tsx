@@ -33,7 +33,7 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
     setIsModalOpen(false);
     setConfirmLoading(false);
     updateMembers();
-    message.success(`Member added successfully!`);
+    message.success(`Member ${newMember.name} added successfully!`);
     addForm.resetFields();
   };
 

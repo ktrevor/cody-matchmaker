@@ -37,7 +37,7 @@ interface MemberFormProps {
   onFinish: (values: MemberFormFields) => void;
   onCancel: () => void;
   loading: boolean;
-  defaultValues?: Partial<MemberFormFields>;
+  defaultValues?: MemberFormFields;
   okText?: string;
 }
 
