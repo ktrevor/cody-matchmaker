@@ -2,10 +2,16 @@ import { message, Modal, Space, Table } from "antd";
 import { Member } from "../../members/Member";
 import { deleteMember } from "../../members/firebaseMemberFunctions";
 
+//contract that tells you what things must be apart of the MemberTable object
+//need a list called members, and a function that updates the members
 interface MemberTableProps {
   members: Member[];
   updateMembers: () => void;
 }
+
+//deconstructing: taking the props members, updateMembers out of the interface MemberTableProps to use in the componenet
+//types of props are set in interface MemberTableProps
+//taking in members/updateMembers as parameters, but the : MemberTableProps locks in the types
 
 export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
   const confirmDelete = (member: Member) => {
