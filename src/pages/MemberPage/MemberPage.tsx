@@ -26,7 +26,6 @@ export const MemberPage = () => {
     const data = await getMembers();
     setMembers(data);
   };
-
   //props: things you pass in to object
   //callback: hey we have a change of state to this member page, but idk when to change this really... lol
   //i only know when I'm in the member table component

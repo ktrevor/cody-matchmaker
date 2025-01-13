@@ -1,6 +1,11 @@
-import { message, Modal, Space, Table } from "antd";
+import { useState, useEffect } from "react";
+import { Table, Space, Modal, message } from "antd";
 import { Member } from "../../members/Member";
-import { deleteMember } from "../../members/firebaseMemberFunctions";
+import {
+  deleteMember,
+  getMemberById,
+} from "../../members/firebaseMemberFunctions";
+import { EditMember } from "./EditMember";
 
 //contract that tells you what things must be apart of the MemberTable object
 //need a list called members, and a function that updates the members
@@ -14,6 +19,40 @@ interface MemberTableProps {
 //taking in members/updateMembers as parameters, but the : MemberTableProps locks in the types
 
 export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
+  const [treeNames, setTreeNames] = useState<{ [key: string]: string }>({});
+
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+  });
+
+  const updatePageMembers = () => {
+    // Get the members on the current page
+    const startIndex = (pagination.current - 1) * pagination.pageSize;
+    const endIndex = pagination.current * pagination.pageSize;
+    const currentPageMembers = members.slice(startIndex, endIndex);
+
+    // Fetch tree names for the members with trees being displayed on the current page
+    currentPageMembers.forEach((member) => {
+      if (member.treeId && !treeNames[member.treeId]) {
+        getMemberById(member.treeId).then((treeMember) => {
+          setTreeNames((prev) => ({
+            ...prev,
+            [String(member.treeId)]: treeMember.name,
+          }));
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    updatePageMembers();
+  }, []);
+
+  useEffect(() => {
+    updatePageMembers();
+  }, [members, pagination]);
+
   const confirmDelete = (member: Member) => {
     Modal.confirm({
       title: `Delete member ${member.name}?`,
@@ -59,17 +98,7 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
       dataIndex: "tree",
       key: "tree",
       render: (_: any, record: Member) => {
-        return record.tree ? record.tree.name : "None";
-      },
-    },
-    {
-      title: "Leaves",
-      dataIndex: "leaves",
-      key: "leaves",
-      render: (_: any, record: Member) => {
-        return record.leaves && record.leaves.length > 0
-          ? record.leaves.map((leaf) => leaf.name).join(", ")
-          : "None";
+        return record.treeId ? treeNames[record.treeId] : "None";
       },
     },
     {
@@ -77,12 +106,27 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
       key: "action",
       render: (_: any, record: Member) => (
         <Space size="middle">
-          <a>Edit</a>
+          <EditMember
+            memberToEdit={record}
+            members={members}
+            updateMembers={updateMembers}
+          />
           <a onClick={() => confirmDelete(record)}>Delete</a>
         </Space>
       ),
     },
   ];
 
-  return <Table dataSource={members} columns={columns} />;
+  const handleTableChange = (pagination: any) => {
+    setPagination(pagination);
+  };
+
+  return (
+    <Table
+      dataSource={members.map((member) => ({ ...member, key: member.id }))}
+      columns={columns}
+      pagination={pagination}
+      onChange={handleTableChange}
+    />
+  );
 };
