@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserOutlined } from "@ant-design/icons";
+import { TeamOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 const pages: MenuItem[] = [
+  {
+    label: "Groups",
+    key: "/groups",
+    icon: <TeamOutlined />,
+  },
   {
     label: "Members",
     key: "/members",
