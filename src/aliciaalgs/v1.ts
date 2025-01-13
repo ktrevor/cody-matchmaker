@@ -23,7 +23,7 @@ import { Member } from "../members/Member";
 // Assuming past_groupings is saved and loaded from some source like a JSON file or DB.
 const past_groupings: Set<string> = new Set([
     'Miller Liu,John Glen Siy', 'Aditi Mundra,Sahir Tandon', 'Navi Emiliano,Henrique Ribeiro Rodrigues',
-    'Ria Jain,Victoria Nguyen', 'Aarushi Shah,Anna Chung', 'Sarah Kiefer,Stephane Finot',
+    'Ria Jain,Victoria Nguyen', 'Aarushi Shah,Anna Chung', 'Alicia Gullon,Stephane Finot', 'Kate Trevor,Stephane Finot',
     // Add the rest of the pairs here as strings in the format 'User1,User2'
 ]);
 
