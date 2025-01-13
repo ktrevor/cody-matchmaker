@@ -8,8 +8,8 @@ type MenuItem = Required<MenuProps>["items"][number];
 
 const pages: MenuItem[] = [
   {
-    label: "Groups",
-    key: "/groups",
+    label: "Donuts",
+    key: "/donuts",
     icon: <TeamOutlined />,
   },
   {
