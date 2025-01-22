@@ -7,18 +7,15 @@ interface DonutsCardGridProps {
 }
 
 export const DonutsCardGrid = ({ donuts }: DonutsCardGridProps) => {
-  const row_padding = 16;
-  const col_padding = 8;
   return (
     <Row
-      gutter={row_padding}
+      gutter={16}
       style={{
         backgroundColor: "#f0f2f5",
-        padding: `${row_padding}px ${col_padding}px`,
       }}
     >
       {donuts.map((donut) => (
-        <Col span={col_padding} key={donut.id}>
+        <Col span={8} key={donut.id}>
           <DonutCard donut={donut} />
         </Col>
       ))}
