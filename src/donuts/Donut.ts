@@ -1,6 +1,6 @@
 export interface Donut {
   id: string;
   name: string;
-  date: Date;
+  date: string;
   groupIds: string[];
 }
