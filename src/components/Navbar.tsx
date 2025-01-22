@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { CoffeeOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 
@@ -10,7 +10,7 @@ const pages: MenuItem[] = [
   {
     label: "Donuts",
     key: "/donuts",
-    icon: <TeamOutlined />,
+    icon: <CoffeeOutlined />,
   },
   {
     label: "Members",
@@ -20,8 +20,13 @@ const pages: MenuItem[] = [
 ];
 
 export const Navbar = () => {
-  const [current, setCurrent] = useState("/members");
+  const location = useLocation();
   const navigate = useNavigate();
+  const [current, setCurrent] = useState(location.pathname);
+
+  useEffect(() => {
+    setCurrent(location.pathname);
+  }, [location]);
 
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
