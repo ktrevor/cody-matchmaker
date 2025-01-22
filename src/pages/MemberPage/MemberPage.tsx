@@ -22,6 +22,7 @@ export const MemberPage = () => {
     const data = await getMembers();
     setMembers(data);
   };
+  
   return (
     <>
       <Title>Member Management</Title>

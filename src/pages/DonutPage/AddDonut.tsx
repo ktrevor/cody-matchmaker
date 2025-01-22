@@ -4,7 +4,11 @@ import { PlusOutlined } from "@ant-design/icons";
 import { DonutForm, DonutFormFields } from "./DonutForm";
 import { addDonut } from "../../donuts/firebaseDonutFunctions";
 
-export const AddDonut = () => {
+interface AddDonutProps {
+  updateDonuts: () => void;
+}
+
+export const AddDonut = ({ updateDonuts }: AddDonutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -24,6 +28,7 @@ export const AddDonut = () => {
     await addDonut(newDonut);
     setIsModalOpen(false);
     setConfirmLoading(false);
+    updateDonuts();
     message.success(`Donut ${newDonut.name} added successfully!`);
     createForm.resetFields();
   };

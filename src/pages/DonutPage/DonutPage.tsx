@@ -18,10 +18,15 @@ export const DonutPage = () => {
     fetchDonuts();
   }, []);
 
+  const updateDonuts = async () => {
+    const data = await getDonuts();
+    setDonuts(data);
+  };
+
   return (
     <>
       <Title>Donuts</Title>
-      <AddDonut />
+      <AddDonut updateDonuts={updateDonuts} />
       <DonutsCardGrid donuts={donuts} />
     </>
   );
