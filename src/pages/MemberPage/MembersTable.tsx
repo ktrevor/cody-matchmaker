@@ -17,7 +17,7 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
 
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 10,
+    pageSize: 5,
   });
 
   const updatePageMembers = () => {
