@@ -94,7 +94,6 @@ export const MemberForm = ({
             <Select.Option value="Sophmore">Sophmore</Select.Option>
             <Select.Option value="Junior">Junior</Select.Option>
             <Select.Option value="Senior">Senior</Select.Option>
-            <Select.Option value="Super Senior">Super Senior</Select.Option>
           </Select>
         </Form.Item>
 
