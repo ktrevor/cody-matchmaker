@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 // Load environment variables from .env file
 dotenv.config();
 
-// Read the token from the environment variables or replace with your token
+// Read the token from the environment variables or replace with your token FOUND IN MESSENGER
 const token =
   process.env.SLACK_TOKEN ||
   "insert-secret-here";
