@@ -42,6 +42,8 @@ export const deleteMember = async (member: Member) => {
   await deleteDoc(memberRef);
 };
 
+
+//returns list of all current members in db
 export const getMembers = async (): Promise<Member[]> => {
   const membersCollection = collection(db, "members");
   const querySnapshot = await getDocs(membersCollection);
@@ -62,6 +64,7 @@ export const getMembers = async (): Promise<Member[]> => {
     })
   );
 
+  //list of member objects
   return members;
 };
 
