@@ -1,13 +1,12 @@
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs, Timestamp } from "firebase/firestore";
 import { DonutFormFields } from "../pages/DonutPage/DonutForm";
 import { db } from "../firebase/firebase";
 import { Donut } from "./Donut";
 
 export const addDonut = async (donut: DonutFormFields) => {
-  console.log("Date type:", typeof donut.date, "Value:", donut.date);
   const newDonut = {
     ...donut,
-    date: donut.date.format("YYYY-MM-DD"),
+    date: Timestamp.fromDate(donut.date.toDate()),
     groupIds: [],
   };
   await addDoc(collection(db, "donuts"), newDonut);
@@ -21,10 +20,15 @@ export const getDonuts = async (): Promise<Donut[]> => {
     querySnapshot.docs.map(async (doc) => {
       const donutData = doc.data();
 
+      const date =
+        donutData.date instanceof Timestamp
+          ? donutData.date.toDate()
+          : new Date();
+
       return {
         id: doc.id,
         name: donutData.name,
-        date: donutData.date,
+        date: date,
         groupIds: donutData.groupIds,
       } as Donut;
     })

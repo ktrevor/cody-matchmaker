@@ -91,7 +91,7 @@ export const MemberForm = ({
         >
           <Select>
             <Select.Option value="Freshman">Freshman</Select.Option>
-            <Select.Option value="Sophmore">Sophmore</Select.Option>
+            <Select.Option value="Sophomore">Sophomore</Select.Option>
             <Select.Option value="Junior">Junior</Select.Option>
             <Select.Option value="Senior">Senior</Select.Option>
           </Select>
