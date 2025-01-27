@@ -25,7 +25,7 @@ export const DonutCard = ({ donut, updateDonuts }: DonutCardProps) => {
               </div>
               {formatDate(donut.date)}
             </div>
-            <div className={styles.edit}>
+            <div className={styles.edit} onClick={(e) => e.stopPropagation()}>
               <EditDonut donut={donut} updateDonuts={updateDonuts} />
             </div>
           </>
