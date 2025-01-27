@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   Timestamp,
@@ -34,6 +35,11 @@ export const editDonut = async (oldData: Donut, newData: DonutFormFields) => {
     };
     await updateDoc(donutRef, updateDonut);
   }
+};
+
+export const deleteDonut = async (donut: Donut) => {
+  const donutRef = doc(db, "donuts", donut.id);
+  await deleteDoc(donutRef);
 };
 
 export const getDonuts = async (): Promise<Donut[]> => {

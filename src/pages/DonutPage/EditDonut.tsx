@@ -6,7 +6,7 @@ import {
   EllipsisOutlined,
 } from "@ant-design/icons";
 import { DonutForm, DonutFormFields } from "./DonutForm";
-import { editDonut } from "../../donuts/firebaseDonutFunctions";
+import { deleteDonut, editDonut } from "../../donuts/firebaseDonutFunctions";
 import { Donut } from "../../donuts/Donut";
 import styles from "./EditDonut.module.css";
 import dayjs from "dayjs";
@@ -51,6 +51,20 @@ export const EditDonut = ({ donut, updateDonuts }: EditDonutProps) => {
     };
   };
 
+  const confirmDelete = (donut: Donut) => {
+    Modal.confirm({
+      title: `Delete donut ${donut.name}?`,
+      onOk: async () => {
+        await deleteDonut(donut);
+        updateDonuts();
+        message.success(`Donut ${donut.name} deleted successfully!`);
+      },
+      okText: "Delete",
+      okButtonProps: { danger: true },
+      cancelText: "Cancel",
+    });
+  };
+
   const items: MenuProps["items"] = [
     {
       key: "edit",
@@ -65,7 +79,7 @@ export const EditDonut = ({ donut, updateDonuts }: EditDonutProps) => {
       label: "Delete",
       icon: <DeleteOutlined />,
       danger: true,
-      onClick: () => console.log("Delete donut", donut),
+      onClick: () => confirmDelete(donut),
     },
   ];
 
