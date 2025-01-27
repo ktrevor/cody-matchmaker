@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Card } from "antd";
 import { Donut, formatDate } from "../../donuts/Donut";
 import { CalendarOutlined } from "@ant-design/icons";
@@ -11,8 +12,9 @@ interface DonutCardProps {
 }
 
 export const DonutCard = ({ donut, updateDonuts }: DonutCardProps) => {
+  const navigate = useNavigate();
   return (
-    <Card>
+    <Card onClick={() => navigate(`/groups`)} hoverable>
       <Meta
         title={donut.name}
         description={
