@@ -13,3 +13,5 @@ export function formatDate(date: Date): string {
     year: "numeric",
   });
 }
+
+export const dateFormat = ["ddd, MMM D, YYYY"];

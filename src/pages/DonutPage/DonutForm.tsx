@@ -8,6 +8,7 @@ import {
   DatePicker,
 } from "antd";
 import { Dayjs } from "dayjs";
+import { dateFormat } from "../../donuts/Donut";
 
 const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
@@ -56,7 +57,7 @@ export const DonutForm = ({
           name="date"
           rules={[{ required: true, message: "Date is required." }]}
         >
-          <DatePicker />
+          <DatePicker format={dateFormat} />
         </Form.Item>
 
         <Form.Item {...tailLayout}>
