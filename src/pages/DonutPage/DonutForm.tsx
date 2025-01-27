@@ -23,6 +23,8 @@ interface DonutFormProps {
   onFinish: (values: DonutFormFields) => void;
   onCancel: () => void;
   loading: boolean;
+  defaultValues?: DonutFormFields;
+  okText?: string;
 }
 
 export const DonutForm = ({
@@ -30,6 +32,7 @@ export const DonutForm = ({
   onFinish,
   onCancel,
   loading,
+  okText = "Create",
 }: DonutFormProps) => {
   return (
     <Spin spinning={loading}>
@@ -62,7 +65,7 @@ export const DonutForm = ({
               Cancel
             </Button>
             <Button type="primary" htmlType="submit">
-              Create
+              {okText}
             </Button>
           </Space>
         </Form.Item>

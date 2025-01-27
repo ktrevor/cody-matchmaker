@@ -1,14 +1,16 @@
 import { Card } from "antd";
 import { Donut, formatDate } from "../../donuts/Donut";
-import { CalendarOutlined, EllipsisOutlined } from "@ant-design/icons";
+import { CalendarOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import styles from "./DonutCard.module.css";
+import { EditDonut } from "./EditDonut";
 
 interface DonutCardProps {
   donut: Donut;
+  updateDonuts: () => void;
 }
 
-export const DonutCard = ({ donut }: DonutCardProps) => {
+export const DonutCard = ({ donut, updateDonuts }: DonutCardProps) => {
   return (
     <Card>
       <Meta
@@ -21,7 +23,9 @@ export const DonutCard = ({ donut }: DonutCardProps) => {
               </div>
               {formatDate(donut.date)}
             </div>
-            <EllipsisOutlined />
+            <div className={styles.edit}>
+              <EditDonut donut={donut} updateDonuts={updateDonuts} />
+            </div>
           </>
         }
       />

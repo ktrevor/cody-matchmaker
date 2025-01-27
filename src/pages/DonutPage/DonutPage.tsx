@@ -27,7 +27,7 @@ export const DonutPage = () => {
     <>
       <Title>Donuts</Title>
       <AddDonut updateDonuts={updateDonuts} />
-      <DonutsCardGrid donuts={donuts} />
+      <DonutsCardGrid donuts={donuts} updateDonuts={updateDonuts} />
     </>
   );
 };

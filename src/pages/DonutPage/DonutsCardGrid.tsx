@@ -4,9 +4,13 @@ import { DonutCard } from "./DonutCard";
 
 interface DonutsCardGridProps {
   donuts: Donut[];
+  updateDonuts: () => void;
 }
 
-export const DonutsCardGrid = ({ donuts }: DonutsCardGridProps) => {
+export const DonutsCardGrid = ({
+  donuts,
+  updateDonuts,
+}: DonutsCardGridProps) => {
   return (
     <Row
       gutter={16}
@@ -16,7 +20,7 @@ export const DonutsCardGrid = ({ donuts }: DonutsCardGridProps) => {
     >
       {donuts.map((donut) => (
         <Col span={8} key={donut.id}>
-          <DonutCard donut={donut} />
+          <DonutCard donut={donut} updateDonuts={updateDonuts} />
         </Col>
       ))}
     </Row>

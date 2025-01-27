@@ -16,11 +16,11 @@ export const AddDonut = ({ updateDonuts }: AddDonutProps) => {
     setIsModalOpen(true);
   };
 
-  const [createForm] = Form.useForm();
+  const [createDonutForm] = Form.useForm();
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    createForm.resetFields();
+    createDonutForm.resetFields();
   };
 
   const onFinish: FormProps<DonutFormFields>["onFinish"] = async (newDonut) => {
@@ -30,7 +30,7 @@ export const AddDonut = ({ updateDonuts }: AddDonutProps) => {
     setConfirmLoading(false);
     updateDonuts();
     message.success(`Donut ${newDonut.name} added successfully!`);
-    createForm.resetFields();
+    createDonutForm.resetFields();
   };
 
   return (
@@ -46,7 +46,7 @@ export const AddDonut = ({ updateDonuts }: AddDonutProps) => {
         closable={!confirmLoading}
       >
         <DonutForm
-          form={createForm}
+          form={createDonutForm}
           onFinish={onFinish}
           onCancel={handleCancel}
           loading={confirmLoading}

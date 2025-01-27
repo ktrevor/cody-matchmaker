@@ -1,3 +1,10 @@
+.edit {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 18px;
+}
+
 .date {
   display: flex;
 }

@@ -22,11 +22,11 @@ export const EditMember = ({
     setIsModalOpen(true);
   };
 
-  const [editForm] = Form.useForm();
+  const [editMemberForm] = Form.useForm();
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    editForm.resetFields();
+    editMemberForm.resetFields();
   };
 
   const onFinish: FormProps<MemberFormFields>["onFinish"] = async (newData) => {
@@ -36,7 +36,7 @@ export const EditMember = ({
     setConfirmLoading(false);
     updateMembers();
     message.success(`Member ${newData.name} updated successfully!`);
-    editForm.resetFields();
+    editMemberForm.resetFields();
   };
 
   const getDefaultValues = (member: Member): MemberFormFields => {
@@ -58,7 +58,7 @@ export const EditMember = ({
         closable={!confirmLoading}
       >
         <MemberForm
-          form={editForm}
+          form={editMemberForm}
           members={members.filter((member) => member.id !== memberToEdit.id)}
           onFinish={onFinish}
           onCancel={handleCancel}

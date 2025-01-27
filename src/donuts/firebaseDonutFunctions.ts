@@ -1,4 +1,11 @@
-import { addDoc, collection, getDocs, Timestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { DonutFormFields } from "../pages/DonutPage/DonutForm";
 import { db } from "../firebase/firebase";
 import { Donut } from "./Donut";
@@ -10,6 +17,23 @@ export const addDonut = async (donut: DonutFormFields) => {
     groupIds: [],
   };
   await addDoc(collection(db, "donuts"), newDonut);
+};
+
+export const editDonut = async (oldData: Donut, newData: DonutFormFields) => {
+  const donutRef = doc(db, "donuts", oldData.id);
+
+  const updatedFields: Partial<DonutFormFields> = {};
+
+  if (oldData.name !== newData.name) updatedFields.name = newData.name;
+  if (oldData.date !== newData.date.toDate()) updatedFields.date = newData.date;
+
+  if (Object.keys(updatedFields).length > 0) {
+    const updateDonut = {
+      ...updatedFields,
+      date: Timestamp.fromDate(newData.date.toDate()),
+    };
+    await updateDoc(donutRef, updateDonut);
+  }
 };
 
 export const getDonuts = async (): Promise<Donut[]> => {
