@@ -14,7 +14,7 @@ interface DonutCardProps {
 export const DonutCard = ({ donut, updateDonuts }: DonutCardProps) => {
   const navigate = useNavigate();
   return (
-    <Card onClick={() => navigate(`/groups`)} hoverable>
+    <Card onClick={() => navigate(`/groups`, { state: { donut } })} hoverable>
       <Meta
         title={donut.name}
         description={
