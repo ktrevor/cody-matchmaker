@@ -10,12 +10,13 @@ import {
 import { DonutFormFields } from "../pages/DonutPage/DonutForm";
 import { db } from "../firebase/firebase";
 import { Donut } from "./Donut";
+import { makeGroups } from "../matchmaker/matchmaker";
 
 export const addDonut = async (donut: DonutFormFields) => {
   const newDonut = {
     ...donut,
     date: Timestamp.fromDate(donut.date.toDate()),
-    groupIds: [],
+    groupIds: await makeGroups(),
   };
   await addDoc(collection(db, "donuts"), newDonut);
 };
