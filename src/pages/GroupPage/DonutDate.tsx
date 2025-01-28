@@ -9,7 +9,11 @@ interface DonutDateProps {
 export const DonutDate = ({ donut }: DonutDateProps) => {
   return (
     <Space.Compact size="large">
-      <DatePicker defaultValue={dayjs(donut.date)} format={dateFormat} />
+      <DatePicker
+        defaultValue={dayjs(donut.date)}
+        format={dateFormat}
+        allowClear={false}
+      />
     </Space.Compact>
   );
 };
