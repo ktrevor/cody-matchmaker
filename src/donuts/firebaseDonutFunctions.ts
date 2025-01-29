@@ -11,6 +11,8 @@ import { DonutFormFields } from "../pages/DonutPage/DonutForm";
 import { db } from "../firebase/firebase";
 import { Donut } from "./Donut";
 import { makeGroups } from "../matchmaker/matchmaker";
+import { Group } from "../groups/Group";
+import { getGroupById } from "../groups/firebaseGroupFunctions";
 
 export const addDonut = async (donut: DonutFormFields) => {
   const newDonut = {
@@ -59,6 +61,10 @@ export const getDonuts = async (): Promise<Donut[]> => {
     querySnapshot.docs.map(async (doc) => {
       const donutData = doc.data();
 
+      const groups: Group[] = await Promise.all(
+        donutData.groupIds.map((groupId: string) => getGroupById(groupId))
+      );
+
       const date =
         donutData.date instanceof Timestamp
           ? donutData.date.toDate()
@@ -68,7 +74,7 @@ export const getDonuts = async (): Promise<Donut[]> => {
         id: doc.id,
         name: donutData.name,
         date: date,
-        groupIds: donutData.groupIds,
+        groups: groups,
       } as Donut;
     })
   );

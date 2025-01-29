@@ -1,8 +1,10 @@
+import { Group } from "../groups/Group";
+
 export interface Donut {
   id: string;
   name: string;
   date: Date;
-  groupIds: string[];
+  groups: Group[];
 }
 
 export function formatDate(date: Date): string {

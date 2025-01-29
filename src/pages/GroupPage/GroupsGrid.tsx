@@ -4,6 +4,6 @@ interface GroupsGridProps {
   donut: Donut;
 }
 
-export const GroupDisplay = ({ donut }: GroupsGridProps) => {
+export const GroupsGrid = ({ donut }: GroupsGridProps) => {
   return null;
 };
