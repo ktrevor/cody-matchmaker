@@ -62,7 +62,7 @@ export const deleteMember = async (member: Member) => {
     await updateDoc(groupRef, { memberIds: updatedMemberIds });
   }
 
-  //if tree update leaf
+  //if tree update leaves
   const membersCollection = collection(db, "members");
   const treeQuery = query(membersCollection, where("treeId", "==", member.id));
   const treeSnapshot = await getDocs(treeQuery);
