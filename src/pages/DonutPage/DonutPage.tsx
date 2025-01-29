@@ -1,4 +1,4 @@
-import { Space, Typography } from "antd";
+import { Typography } from "antd";
 import { AddDonut } from "./AddDonut";
 import { DonutsCardGrid } from "./DonutsCardGrid";
 import { getDonuts } from "../../donuts/firebaseDonutFunctions";
