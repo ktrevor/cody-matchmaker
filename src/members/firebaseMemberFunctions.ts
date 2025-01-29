@@ -5,7 +5,9 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Member } from "./Member";
@@ -38,6 +40,41 @@ export const editMember = async (
 };
 
 export const deleteMember = async (member: Member) => {
+  //delete from groups
+  const groupsCollection = collection(db, "groups");
+  const groupSnapshot = await getDocs(groupsCollection);
+
+  let groupIdToUpdate: string | null = null;
+  let updatedMemberIds: string[] = [];
+
+  groupSnapshot.forEach((groupDoc) => {
+    const groupData = groupDoc.data();
+    if (groupData.memberIds.includes(member.id)) {
+      groupIdToUpdate = groupDoc.id;
+      updatedMemberIds = groupData.memberIds.filter(
+        (id: String) => id !== member.id
+      );
+    }
+  });
+
+  if (groupIdToUpdate) {
+    const groupRef = doc(db, "groups", groupIdToUpdate);
+    await updateDoc(groupRef, { memberIds: updatedMemberIds });
+  }
+
+  //if tree update leaf
+  const membersCollection = collection(db, "members");
+  const treeQuery = query(membersCollection, where("treeId", "==", member.id));
+  const treeSnapshot = await getDocs(treeQuery);
+
+  const updatePromises = treeSnapshot.docs.map(async (docSnap) => {
+    const memberRef = doc(db, "members", docSnap.id);
+    await updateDoc(memberRef, { treeId: null });
+  });
+
+  await Promise.all(updatePromises);
+
+  //delete member from members collection
   const memberRef = doc(db, "members", member.id);
   await deleteDoc(memberRef);
 };
