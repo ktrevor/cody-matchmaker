@@ -10,8 +10,6 @@ export const GroupPage = () => {
   const { donut } = location.state as { donut: Donut };
   const { Title } = Typography;
 
-  console.log(donut);
-
   return (
     <>
       <DonutName donut={donut} />

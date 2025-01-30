@@ -44,35 +44,30 @@ export const deleteMember = async (member: Member) => {
   const groupsCollection = collection(db, "groups");
   const groupSnapshot = await getDocs(groupsCollection);
 
-  let groupIdToUpdate: string | null = null;
-  let updatedMemberIds: string[] = [];
+  const updateGroups = groupSnapshot.docs
+    .filter((groupDoc) => groupDoc.data().memberIds.includes(member.id))
+    .map(async (groupDoc) => {
+      const groupRef = doc(db, "groups", groupDoc.id);
+      const updatedMemberIds = groupDoc
+        .data()
+        .memberIds.filter((id: string) => id !== member.id);
 
-  groupSnapshot.forEach((groupDoc) => {
-    const groupData = groupDoc.data();
-    if (groupData.memberIds.includes(member.id)) {
-      groupIdToUpdate = groupDoc.id;
-      updatedMemberIds = groupData.memberIds.filter(
-        (id: String) => id !== member.id
-      );
-    }
-  });
+      return updateDoc(groupRef, { memberIds: updatedMemberIds });
+    });
 
-  if (groupIdToUpdate) {
-    const groupRef = doc(db, "groups", groupIdToUpdate);
-    await updateDoc(groupRef, { memberIds: updatedMemberIds });
-  }
+  await Promise.all(updateGroups);
 
   //if tree update leaves
   const membersCollection = collection(db, "members");
   const treeQuery = query(membersCollection, where("treeId", "==", member.id));
   const treeSnapshot = await getDocs(treeQuery);
 
-  const updatePromises = treeSnapshot.docs.map(async (docSnap) => {
+  const updateTress = treeSnapshot.docs.map(async (docSnap) => {
     const memberRef = doc(db, "members", docSnap.id);
     await updateDoc(memberRef, { treeId: null });
   });
 
-  await Promise.all(updatePromises);
+  await Promise.all(updateTress);
 
   //delete member from members collection
   const memberRef = doc(db, "members", member.id);
