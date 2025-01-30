@@ -41,6 +41,15 @@ export const editDonut = async (oldData: Donut, newData: DonutFormFields) => {
 };
 
 export const deleteDonut = async (donut: Donut) => {
+  //delete groups
+  const deleteGroups = donut.groups.map(async (group) => {
+    const groupRef = doc(db, "groups", group.id);
+    return deleteDoc(groupRef);
+  });
+
+  await Promise.all(deleteGroups);
+
+  //delete donut
   const donutRef = doc(db, "donuts", donut.id);
   await deleteDoc(donutRef);
 };
