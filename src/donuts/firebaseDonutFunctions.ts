@@ -54,14 +54,6 @@ export const deleteDonut = async (donut: Donut) => {
   await deleteDoc(donutRef);
 };
 
-export const editName = async (newName: string, donut: Donut) => {
-  const donutRef = doc(db, "donuts", donut.id);
-  const updateDonut = {
-    name: newName,
-  };
-  await updateDoc(donutRef, updateDonut);
-};
-
 export const getDonuts = async (): Promise<Donut[]> => {
   const donutsCollection = collection(db, "donuts");
   const querySnapshot = await getDocs(donutsCollection);
