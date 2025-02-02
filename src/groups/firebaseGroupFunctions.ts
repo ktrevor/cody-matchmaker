@@ -20,6 +20,7 @@ export const getGroupById = async (groupId: string): Promise<Group> => {
 
   return {
     id: groupId,
+    name: groupData.name,
     members: members,
   } as Group;
 };

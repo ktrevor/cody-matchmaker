@@ -3,12 +3,14 @@ import { Group } from "../../groups/Group";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { Member } from "../../members/Member";
+import { AddGroupMember } from "./AddGroupMember";
 
 interface GroupCardProps {
   group: Group;
+  groups: Group[];
 }
 
-export const GroupCard = ({ group }: GroupCardProps) => {
+export const GroupCard = ({ group, groups }: GroupCardProps) => {
   const [members, setMembers] = useState<Member[]>(group.members);
 
   const handleDeleteMember = (memberId: string) => {
@@ -19,6 +21,14 @@ export const GroupCard = ({ group }: GroupCardProps) => {
   return (
     <Card>
       <List
+        header={group.name}
+        footer={
+          <AddGroupMember
+            group={group}
+            groups={groups}
+            updateGroup={() => null}
+          />
+        }
         dataSource={members}
         renderItem={(member, index) => (
           <List.Item
@@ -32,7 +42,7 @@ export const GroupCard = ({ group }: GroupCardProps) => {
               ></Button>,
             ]}
           >
-            <List.Item.Meta title={`${index + 1}. ${member.name}`} />
+            {`${index + 1}. ${member.name}`}
           </List.Item>
         )}
       />

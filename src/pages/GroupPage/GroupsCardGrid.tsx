@@ -16,7 +16,7 @@ export const GroupsCardGrid = ({ groups }: GroupsCardGridProps) => {
     >
       {groups.map((group) => (
         <Col span={8} key={group.id}>
-          <GroupCard group={group} />
+          <GroupCard group={group} groups={groups} />
         </Col>
       ))}
     </Row>

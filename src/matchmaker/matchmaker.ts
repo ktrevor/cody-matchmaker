@@ -11,9 +11,11 @@ export const makeGroups = async (): Promise<String[]> => {
   const groupCollection = collection(db, "groups");
 
   for (let i = 0; i < members.length; i += groupSize) {
+    const groupName = `Group ${Math.floor(i / groupSize) + 1}`;
     const groupMembers = members.slice(i, i + groupSize);
 
     const groupDoc = await addDoc(groupCollection, {
+      name: groupName,
       memberIds: groupMembers.map((member) => member.id),
     });
 
