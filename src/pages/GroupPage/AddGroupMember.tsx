@@ -18,11 +18,6 @@ export const AddGroupMember = ({
 }: AddGroupMemberProps) => {
   const [members, setMembers] = useState<Member[]>([]);
 
-  groups;
-  group;
-
-  const suffix = <PlusCircleOutlined />;
-
   useEffect(() => {
     const fetchMembers = async () => {
       const fetchedMembers = await getMembers();
@@ -41,6 +36,8 @@ export const AddGroupMember = ({
     );
     return groupFound ? `(${groupFound.name})` : "";
   };
+
+  const suffix = <PlusCircleOutlined />;
 
   return (
     <Select
