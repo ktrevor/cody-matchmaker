@@ -51,6 +51,7 @@ export const AddGroupMember = ({
           value: member.id,
         }))}
         placeholder="Add member"
+        suffixIcon={null}
       />
       <Button
         type="primary"

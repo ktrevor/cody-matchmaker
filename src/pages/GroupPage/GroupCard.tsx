@@ -1,6 +1,7 @@
 import { Button, Card, List } from "antd";
 import { Group } from "../../groups/Group";
 import { CloseCircleOutlined } from "@ant-design/icons";
+import styles from "./GroupCard.module.css";
 
 interface GroupCardProps {
   group: Group;
@@ -9,13 +10,21 @@ interface GroupCardProps {
 }
 
 export const GroupCard = ({ group, updateGroup, children }: GroupCardProps) => {
+  const numMembers = group.members.length;
   return (
     <Card>
       <List
-        header={group.name}
+        header={
+          <div className={styles.header}>
+            <div>{group.name}</div>
+            <div>
+              {numMembers} {numMembers === 1 ? "member" : "members"}
+            </div>
+          </div>
+        }
         footer={children}
         dataSource={group.members}
-        renderItem={(member, index) => (
+        renderItem={(member) => (
           <List.Item
             key={member.id}
             actions={[
@@ -27,7 +36,7 @@ export const GroupCard = ({ group, updateGroup, children }: GroupCardProps) => {
               ></Button>,
             ]}
           >
-            {`${index + 1}. ${member.name}`}
+            {member.name}
           </List.Item>
         )}
       />
