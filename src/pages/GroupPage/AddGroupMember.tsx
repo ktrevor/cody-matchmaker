@@ -1,14 +1,14 @@
-import { Select } from "antd";
+import { Button, Select, Space } from "antd";
 import { getMembers } from "../../members/firebaseMemberFunctions";
 import { useEffect, useState } from "react";
 import { Member } from "../../members/Member";
 import { Group } from "../../groups/Group";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 
 interface AddGroupMemberProps {
   group: Group;
   groups: Group[];
-  updateGroup: () => void;
+  updateGroup: (newMembers: Member[]) => void;
 }
 
 export const AddGroupMember = ({
@@ -17,6 +17,7 @@ export const AddGroupMember = ({
   updateGroup,
 }: AddGroupMemberProps) => {
   const [members, setMembers] = useState<Member[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -27,7 +28,7 @@ export const AddGroupMember = ({
   }, []);
 
   const filteredMembers = members.filter(
-    (member) => !group.members.includes(member)
+    (member) => !group.members.some((m) => m.id === member.id)
   );
 
   const getGroupNameForMember = (member: Member) => {
@@ -37,19 +38,33 @@ export const AddGroupMember = ({
     return groupFound ? `(${groupFound.name})` : "";
   };
 
-  const suffix = <PlusCircleOutlined />;
+  const handleAddMembers = () => {
+    const newMembers = members.filter((member) =>
+      selectedMembers.includes(member.name)
+    );
+    updateGroup(newMembers);
+    setSelectedMembers([]);
+  };
 
   return (
-    <Select
-      mode="multiple"
-      style={{ width: "100%" }}
-      showSearch
-      options={filteredMembers.map((member) => ({
-        label: `${member.name} ${getGroupNameForMember(member)}`,
-        value: member.name,
-      }))}
-      placeholder="Add member"
-      suffixIcon={suffix}
-    />
+    <Space.Compact style={{ width: "100%" }}>
+      <Select
+        mode="multiple"
+        style={{ width: "100%" }}
+        showSearch
+        value={selectedMembers}
+        onChange={setSelectedMembers}
+        options={filteredMembers.map((member) => ({
+          label: `${member.name} ${getGroupNameForMember(member)}`,
+          value: member.name,
+        }))}
+        placeholder="Add member"
+      />
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        onClick={handleAddMembers}
+      />
+    </Space.Compact>
   );
 };

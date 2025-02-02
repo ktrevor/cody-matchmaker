@@ -18,6 +18,10 @@ export const GroupCard = ({ group, groups }: GroupCardProps) => {
     setMembers(updatedMembers);
   };
 
+  const handleAddMembers = (newMembers: Member[]) => {
+    setMembers((prevMembers) => [...prevMembers, ...newMembers]);
+  };
+
   return (
     <Card>
       <List
@@ -26,7 +30,7 @@ export const GroupCard = ({ group, groups }: GroupCardProps) => {
           <AddGroupMember
             group={group}
             groups={groups}
-            updateGroup={() => null}
+            updateGroup={handleAddMembers}
           />
         }
         dataSource={members}
