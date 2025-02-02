@@ -6,9 +6,9 @@ import { Group } from "../../groups/Group";
 import { PlusOutlined } from "@ant-design/icons";
 
 interface AddGroupMemberProps {
-  group: Group;
+  group: Member[];
   groups: Group[];
-  updateGroup: (newMembers: Member[]) => void;
+  updateGroup: (newMember: Member) => void;
 }
 
 export const AddGroupMember = ({
@@ -17,7 +17,7 @@ export const AddGroupMember = ({
   updateGroup,
 }: AddGroupMemberProps) => {
   const [members, setMembers] = useState<Member[]>([]);
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -28,7 +28,7 @@ export const AddGroupMember = ({
   }, []);
 
   const filteredMembers = members.filter(
-    (member) => !group.members.some((m) => m.id === member.id)
+    (member) => !group.some((m) => m.id === member.id)
   );
 
   const getGroupNameForMember = (member: Member) => {
@@ -38,32 +38,34 @@ export const AddGroupMember = ({
     return groupFound ? `(${groupFound.name})` : "";
   };
 
-  const handleAddMembers = () => {
-    const newMembers = members.filter((member) =>
-      selectedMembers.includes(member.name)
-    );
-    updateGroup(newMembers);
-    setSelectedMembers([]);
+  const handleAddMember = () => {
+    if (!selectedMemberId) return;
+
+    const newMember = members.find((member) => member.id === selectedMemberId);
+    if (newMember) {
+      updateGroup(newMember);
+      setSelectedMemberId(null);
+    }
   };
 
   return (
     <Space.Compact style={{ width: "100%" }}>
       <Select
-        mode="multiple"
-        style={{ width: "100%" }}
+        style={{ flex: 1 }}
         showSearch
-        value={selectedMembers}
-        onChange={setSelectedMembers}
+        filterOption={true}
+        value={selectedMemberId}
+        onChange={setSelectedMemberId}
         options={filteredMembers.map((member) => ({
           label: `${member.name} ${getGroupNameForMember(member)}`,
-          value: member.name,
+          value: member.id,
         }))}
         placeholder="Add member"
       />
       <Button
         type="primary"
         icon={<PlusOutlined />}
-        onClick={handleAddMembers}
+        onClick={handleAddMember}
       />
     </Space.Compact>
   );
