@@ -8,7 +8,7 @@ import { PlusOutlined } from "@ant-design/icons";
 interface AddGroupMemberProps {
   group: Group;
   groups: Group[];
-  updateGroup: (targetGroup: Group, newMember: Member) => void;
+  updateGroup: (targetGroup: Group, newMemberId: string) => void;
 }
 
 export const AddGroupMember = ({
@@ -17,7 +17,7 @@ export const AddGroupMember = ({
   updateGroup,
 }: AddGroupMemberProps) => {
   const [members, setMembers] = useState<Member[]>([]);
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -44,11 +44,11 @@ export const AddGroupMember = ({
         style={{ flex: 1 }}
         showSearch
         filterOption={true}
-        value={selectedMember}
-        onChange={setSelectedMember}
+        value={selectedMemberId}
+        onChange={setSelectedMemberId}
         options={filteredMembers.map((member) => ({
           label: `${member.name} ${getGroupNameForMember(member)}`,
-          value: member,
+          value: member.id,
         }))}
         placeholder="Add member"
       />
@@ -56,8 +56,9 @@ export const AddGroupMember = ({
         type="primary"
         icon={<PlusOutlined />}
         onClick={() => {
-          if (selectedMember) {
-            updateGroup(group, selectedMember);
+          if (selectedMemberId) {
+            updateGroup(group, selectedMemberId);
+            setSelectedMemberId(null);
           }
         }}
       />

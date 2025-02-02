@@ -1,13 +1,15 @@
 import { Col, Row } from "antd";
 import { Group } from "../../groups/Group";
 import { GroupCard } from "./GroupCard";
-import { AddGroupMember } from "./AddGroupMember"; // Import AddGroupMember
+import { AddGroupMember } from "./AddGroupMember";
 import { useState, useEffect } from "react";
-import { Member } from "../../members/Member";
+import { getMembers } from "../../members/firebaseMemberFunctions";
 
 interface GroupsCardGridProps {
   initialGroups: Group[];
 }
+
+const members = await getMembers();
 
 export const GroupsCardGrid = ({ initialGroups }: GroupsCardGridProps) => {
   const [groups, setGroups] = useState<Group[]>(initialGroups);
@@ -16,37 +18,33 @@ export const GroupsCardGrid = ({ initialGroups }: GroupsCardGridProps) => {
     setGroups(initialGroups);
   }, [initialGroups]);
 
-  const handleAddMemberToGroup = (targetGroup: Group, newMember: Member) => {
+  const handleAddMemberToGroup = (targetGroup: Group, newMemberId: string) => {
+    const newMember = members.find((member) => member.id === newMemberId);
+    if (!newMember) return;
+
+    // remove member from old group
+    handleDeleteMemberFromGroup(newMemberId);
+
+    // add member to new group
     setGroups((prevGroups) =>
       prevGroups.map((group) => {
-        // remove member from old group
-        handleDeleteMemberFromGroup(targetGroup, newMember);
-
-        // add member to new group
         if (group.id === targetGroup.id) {
           return { ...group, members: [...group.members, newMember] };
         }
-
         return group;
       })
     );
   };
 
-  const handleDeleteMemberFromGroup = (
-    targetGroup: Group,
-    deleteMember: Member
-  ) => {
+  const handleDeleteMemberFromGroup = (deleteMemberId: string) => {
     setGroups((prevGroups) =>
       prevGroups.map((currentGroup) => {
-        if (currentGroup.id === targetGroup.id) {
-          return {
-            ...currentGroup,
-            members: currentGroup.members.filter(
-              (member) => member.id !== deleteMember.id
-            ),
-          };
-        }
-        return currentGroup;
+        return {
+          ...currentGroup,
+          members: currentGroup.members.filter(
+            (member) => member.id !== deleteMemberId
+          ),
+        };
       })
     );
   };
@@ -62,19 +60,20 @@ export const GroupsCardGrid = ({ initialGroups }: GroupsCardGridProps) => {
         <Col span={8} key={group.id}>
           <GroupCard
             group={group}
-            updateGroup={(targetGroup, newMember) =>
-              handleDeleteMemberFromGroup(targetGroup, newMember)
+            updateGroup={(deleteMemberId) =>
+              handleDeleteMemberFromGroup(deleteMemberId)
             }
-          >
-            <AddGroupMember
-              key={group.id}
-              group={group}
-              groups={groups}
-              updateGroup={(targetGroup, newMember) =>
-                handleAddMemberToGroup(targetGroup, newMember)
-              }
-            />
-          </GroupCard>
+            children={
+              <AddGroupMember
+                key={group.id}
+                group={group}
+                groups={groups}
+                updateGroup={(targetGroup, newMemberId) =>
+                  handleAddMemberToGroup(targetGroup, newMemberId)
+                }
+              />
+            }
+          />
         </Col>
       ))}
     </Row>
