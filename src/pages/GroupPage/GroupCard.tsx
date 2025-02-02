@@ -1,39 +1,22 @@
 import { Button, Card, List } from "antd";
 import { Group } from "../../groups/Group";
 import { CloseCircleOutlined } from "@ant-design/icons";
-import { useState } from "react";
 import { Member } from "../../members/Member";
-import { AddGroupMember } from "./AddGroupMember";
+import { ReactNode } from "react";
 
 interface GroupCardProps {
   group: Group;
-  groups: Group[];
+  updateGroup: (targetGroup: Group, newMember: Member) => void;
+  children: ReactNode;
 }
 
-export const GroupCard = ({ group, groups }: GroupCardProps) => {
-  const [members, setMembers] = useState<Member[]>(group.members);
-
-  const handleDeleteMember = (memberId: string) => {
-    const updatedMembers = members.filter((member) => member.id !== memberId);
-    setMembers(updatedMembers);
-  };
-
-  const handleAddMember = (newMember: Member) => {
-    setMembers((prevMembers) => [...prevMembers, newMember]);
-  };
-
+export const GroupCard = ({ group, updateGroup, children }: GroupCardProps) => {
   return (
     <Card>
       <List
         header={group.name}
-        footer={
-          <AddGroupMember
-            group={members}
-            groups={groups}
-            updateGroup={handleAddMember}
-          />
-        }
-        dataSource={members}
+        footer={children}
+        dataSource={group.members}
         renderItem={(member, index) => (
           <List.Item
             key={member.id}
@@ -42,7 +25,7 @@ export const GroupCard = ({ group, groups }: GroupCardProps) => {
                 type="text"
                 danger
                 icon={<CloseCircleOutlined />}
-                onClick={() => handleDeleteMember(member.id)}
+                onClick={() => updateGroup(group, member)}
               ></Button>,
             ]}
           >

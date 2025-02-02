@@ -16,7 +16,7 @@ export const GroupPage = () => {
       <DonutDate donut={donut} />
       <Title>Group Management</Title>
       <Title>Groups</Title>
-      <GroupsCardGrid groups={donut.groups} />
+      <GroupsCardGrid initialGroups={donut.groups} />
     </>
   );
 };

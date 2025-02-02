@@ -6,9 +6,9 @@ import { Group } from "../../groups/Group";
 import { PlusOutlined } from "@ant-design/icons";
 
 interface AddGroupMemberProps {
-  group: Member[];
+  group: Group;
   groups: Group[];
-  updateGroup: (newMember: Member) => void;
+  updateGroup: (targetGroup: Group, newMember: Member) => void;
 }
 
 export const AddGroupMember = ({
@@ -17,7 +17,7 @@ export const AddGroupMember = ({
   updateGroup,
 }: AddGroupMemberProps) => {
   const [members, setMembers] = useState<Member[]>([]);
-  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -28,7 +28,7 @@ export const AddGroupMember = ({
   }, []);
 
   const filteredMembers = members.filter(
-    (member) => !group.some((m) => m.id === member.id)
+    (member) => !group.members.some((m) => m.id === member.id)
   );
 
   const getGroupNameForMember = (member: Member) => {
@@ -38,34 +38,28 @@ export const AddGroupMember = ({
     return groupFound ? `(${groupFound.name})` : "";
   };
 
-  const handleAddMember = () => {
-    if (!selectedMemberId) return;
-
-    const newMember = members.find((member) => member.id === selectedMemberId);
-    if (newMember) {
-      updateGroup(newMember);
-      setSelectedMemberId(null);
-    }
-  };
-
   return (
     <Space.Compact style={{ width: "100%" }}>
       <Select
         style={{ flex: 1 }}
         showSearch
         filterOption={true}
-        value={selectedMemberId}
-        onChange={setSelectedMemberId}
+        value={selectedMember}
+        onChange={setSelectedMember}
         options={filteredMembers.map((member) => ({
           label: `${member.name} ${getGroupNameForMember(member)}`,
-          value: member.id,
+          value: member,
         }))}
         placeholder="Add member"
       />
       <Button
         type="primary"
         icon={<PlusOutlined />}
-        onClick={handleAddMember}
+        onClick={() => {
+          if (selectedMember) {
+            updateGroup(group, selectedMember);
+          }
+        }}
       />
     </Space.Compact>
   );
