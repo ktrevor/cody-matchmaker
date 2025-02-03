@@ -1,15 +1,18 @@
-import { Typography } from "antd";
+import { Button, message, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { DonutName } from "./DonutName";
 import { DonutDate } from "./DonutDate";
 import { GroupsCardGrid } from "./GroupsCardGrid";
 import { Group } from "../../groups/Group";
-import { SaveDonut } from "./SaveDonut";
 import { useDirtyContext } from "../../components/DirtyContext";
 import { useDonutContext } from "../../components/DonutContext";
+import { Donut } from "../../donuts/Donut";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
+import { SaveOutlined } from "@ant-design/icons";
 
 export const GroupPage = () => {
-  const { donut } = useDonutContext();
+  const { donut, setDonut } = useDonutContext();
   const { Title } = Typography;
 
   const { setIsDirty } = useDirtyContext();
@@ -18,12 +21,12 @@ export const GroupPage = () => {
   const [groups, setGroups] = useState<Group[]>(donut.groups);
 
   useEffect(() => {
-    setIsDirty(false); // Set clean state on page load
+    setIsDirty(false);
   }, [setIsDirty]);
 
   const handleNameChange = (newName: string) => {
     setName(newName);
-    setIsDirty(true); // Mark as dirty when changes occur
+    setIsDirty(true);
   };
 
   const handleDateChange = (newDate: Date) => {
@@ -36,6 +39,24 @@ export const GroupPage = () => {
     setIsDirty(true);
   };
 
+  const handleSave = async () => {
+    const updatedFields: Partial<Donut> = {};
+
+    if (donut.name !== name) updatedFields.name = name;
+    if (donut.date.getTime() !== date.getTime()) updatedFields.date = date;
+    if (JSON.stringify(donut.groups) !== JSON.stringify(groups))
+      updatedFields.groups = groups;
+
+    if (Object.keys(updatedFields).length > 0) {
+      const donutRef = doc(db, "donuts", donut.id);
+      await updateDoc(donutRef, updatedFields);
+      setDonut({ ...donut, ...updatedFields });
+      setIsDirty(false);
+    }
+
+    message.success(`Donut ${donut.name} saved successfully!`);
+  };
+
   return (
     <>
       <DonutName name={name} updateName={handleNameChange} />
@@ -46,13 +67,9 @@ export const GroupPage = () => {
         initialGroups={groups}
         updateGroups={handleGroupsChange}
       />
-      <SaveDonut
-        donut={donut}
-        name={name}
-        date={date}
-        groups={groups}
-        cleanDonut={() => setIsDirty(false)}
-      />
+      <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
+        Save
+      </Button>
     </>
   );
 };
