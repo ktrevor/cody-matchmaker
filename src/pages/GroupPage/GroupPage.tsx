@@ -1,31 +1,29 @@
-import { useLocation } from "react-router-dom";
 import { Typography } from "antd";
 import { useEffect, useState } from "react";
 import { DonutName } from "./DonutName";
-import { Donut } from "../../donuts/Donut";
 import { DonutDate } from "./DonutDate";
 import { GroupsCardGrid } from "./GroupsCardGrid";
 import { Group } from "../../groups/Group";
 import { SaveDonut } from "./SaveDonut";
 import { useDirtyContext } from "../../components/DirtyContext";
+import { useDonutContext } from "../../components/DonutContext";
 
 export const GroupPage = () => {
-  const location = useLocation();
-  const { donut } = location.state as { donut: Donut };
+  const { donut } = useDonutContext();
   const { Title } = Typography;
-  const { isDirty, setIsDirty } = useDirtyContext();
 
+  const { setIsDirty } = useDirtyContext();
   const [name, setName] = useState<string>(donut.name);
   const [date, setDate] = useState<Date>(donut.date);
   const [groups, setGroups] = useState<Group[]>(donut.groups);
 
   useEffect(() => {
-    setIsDirty(false);
-  }, []);
+    setIsDirty(false); // Set clean state on page load
+  }, [setIsDirty]);
 
   const handleNameChange = (newName: string) => {
     setName(newName);
-    setIsDirty(true);
+    setIsDirty(true); // Mark as dirty when changes occur
   };
 
   const handleDateChange = (newDate: Date) => {

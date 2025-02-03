@@ -9,7 +9,7 @@ import {
 interface DirtyContextType {
   isDirty: boolean;
   setIsDirty: (value: boolean) => void;
-  confirmNavigation: (event: BeforeUnloadEvent) => void; // Function to handle navigation event
+  confirmLeave: () => boolean;
 }
 
 const DirtyContext = createContext<DirtyContextType | null>(null);
@@ -17,13 +17,25 @@ const DirtyContext = createContext<DirtyContextType | null>(null);
 export const DirtyProvider = ({ children }: { children: ReactNode }) => {
   const [isDirty, setIsDirty] = useState(false);
 
-  const confirmNavigation = (event: BeforeUnloadEvent) => {
-    if (isDirty) {
-      event.preventDefault();
-    }
+  const confirmLeave = (): boolean => {
+    return window.confirm(
+      "You have unsaved changes that will be lost. Are you sure you want to leave this page?"
+    );
   };
 
   useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (isDirty) {
+        const confirm = confirmLeave();
+        if (!confirm) {
+          window.history.pushState(null, "", window.location.href);
+        } else {
+        }
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (isDirty) {
         event.preventDefault();
@@ -33,12 +45,13 @@ export const DirtyProvider = ({ children }: { children: ReactNode }) => {
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
+      window.removeEventListener("popstate", handlePopState);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [isDirty]);
 
   return (
-    <DirtyContext.Provider value={{ isDirty, setIsDirty, confirmNavigation }}>
+    <DirtyContext.Provider value={{ isDirty, setIsDirty, confirmLeave }}>
       {children}
     </DirtyContext.Provider>
   );
