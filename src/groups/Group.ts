@@ -1,4 +1,7 @@
+import { Member } from "../members/Member";
+
 export interface Group {
   id: string;
-  memberIds: string[];
+  name: string;
+  members: Member[];
 }

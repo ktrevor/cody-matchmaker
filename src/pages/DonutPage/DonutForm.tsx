@@ -8,6 +8,7 @@ import {
   DatePicker,
 } from "antd";
 import { Dayjs } from "dayjs";
+import { dateFormat } from "../../donuts/Donut";
 
 const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
@@ -23,6 +24,8 @@ interface DonutFormProps {
   onFinish: (values: DonutFormFields) => void;
   onCancel: () => void;
   loading: boolean;
+  defaultValues?: DonutFormFields;
+  okText?: string;
 }
 
 export const DonutForm = ({
@@ -30,6 +33,7 @@ export const DonutForm = ({
   onFinish,
   onCancel,
   loading,
+  okText = "Create",
 }: DonutFormProps) => {
   return (
     <Spin spinning={loading}>
@@ -53,7 +57,7 @@ export const DonutForm = ({
           name="date"
           rules={[{ required: true, message: "Date is required." }]}
         >
-          <DatePicker />
+          <DatePicker format={dateFormat} />
         </Form.Item>
 
         <Form.Item {...tailLayout}>
@@ -62,7 +66,7 @@ export const DonutForm = ({
               Cancel
             </Button>
             <Button type="primary" htmlType="submit">
-              Create
+              {okText}
             </Button>
           </Space>
         </Form.Item>
