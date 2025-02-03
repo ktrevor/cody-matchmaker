@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { CoffeeOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
+import { useDirtyContext } from "../components/DirtyContext";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -22,6 +23,8 @@ const pages: MenuItem[] = [
 export const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isDirty } = useDirtyContext();
+
   const [current, setCurrent] = useState(location.pathname);
 
   useEffect(() => {
@@ -30,6 +33,14 @@ export const Navbar = () => {
 
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key);
+
+    if (isDirty) {
+      const confirm = window.confirm(
+        "You have unsaved changes that will be lost. Are you sure you want to leave this page?"
+      );
+      if (!confirm) return;
+    }
+
     navigate(e.key);
   };
 

@@ -8,17 +8,20 @@ import { MemberPage } from "./pages/MemberPage/MemberPage";
 import { Navbar } from "./components/Navbar";
 import { DonutPage } from "./pages/DonutPage/DonutPage";
 import { GroupPage } from "./pages/GroupPage/GroupPage";
+import { DirtyProvider } from "./components/DirtyContext";
 
 const App = () => {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Navigate to="/donuts" />} />
-        <Route path="/donuts" element={<DonutPage />} />
-        <Route path="/members" element={<MemberPage />} />
-        <Route path="/groups" element={<GroupPage />} />
-      </Routes>
+      <DirtyProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Navigate to="/donuts" />} />
+          <Route path="/donuts" element={<DonutPage />} />
+          <Route path="/members" element={<MemberPage />} />
+          <Route path="/groups" element={<GroupPage />} />
+        </Routes>
+      </DirtyProvider>
     </Router>
   );
 };
