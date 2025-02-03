@@ -7,16 +7,21 @@ import { getMembers } from "../../members/firebaseMemberFunctions";
 
 interface GroupsCardGridProps {
   initialGroups: Group[];
+  updateGroups: (groups: Group[]) => void;
 }
 
 const members = await getMembers();
 
-export const GroupsCardGrid = ({ initialGroups }: GroupsCardGridProps) => {
+export const GroupsCardGrid = ({
+  initialGroups,
+  updateGroups,
+}: GroupsCardGridProps) => {
   const [groups, setGroups] = useState<Group[]>(initialGroups);
 
   useEffect(() => {
-    setGroups(initialGroups);
-  }, [initialGroups]);
+    setGroups(groups);
+    updateGroups(groups);
+  }, [groups]);
 
   const handleAddMemberToGroup = (targetGroup: Group, newMemberId: string) => {
     const newMember = members.find((member) => member.id === newMemberId);

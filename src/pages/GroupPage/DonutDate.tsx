@@ -1,17 +1,25 @@
 import { DatePicker, Space } from "antd";
-import { dateFormat, Donut } from "../../donuts/Donut";
-import dayjs from "dayjs";
+import { dateFormat } from "../../donuts/Donut";
+import dayjs, { Dayjs } from "dayjs";
+import { useState } from "react";
 
 interface DonutDateProps {
-  donut: Donut;
+  date: Date;
+  updateDate: (date: Date) => void;
 }
 
-export const DonutDate = ({ donut }: DonutDateProps) => {
+export const DonutDate = ({ date, updateDate }: DonutDateProps) => {
+  const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs(date));
+
   return (
     <Space.Compact size="large">
       <DatePicker
-        defaultValue={dayjs(donut.date)}
+        value={currentDate}
         format={dateFormat}
+        onChange={(value) => {
+          setCurrentDate(value);
+          updateDate(value.toDate());
+        }}
         allowClear={false}
       />
     </Space.Compact>

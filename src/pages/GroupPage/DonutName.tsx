@@ -1,19 +1,16 @@
 import { Input, Space } from "antd";
-import { Donut } from "../../donuts/Donut";
-import { useState } from "react";
 
 interface DonutNameProps {
-  donut: Donut;
+  name: string;
+  updateName: (name: string) => void;
 }
 
-export const DonutName = ({ donut }: DonutNameProps) => {
-  const [currentName, setCurrentName] = useState(donut.name);
-
+export const DonutName = ({ name, updateName }: DonutNameProps) => {
   return (
     <Space.Compact size="large">
       <Input
-        value={currentName}
-        onChange={(e) => setCurrentName(e.target.value)}
+        value={name}
+        onChange={(e) => updateName(e.target.value)}
         placeholder={"large size"}
       />
     </Space.Compact>
