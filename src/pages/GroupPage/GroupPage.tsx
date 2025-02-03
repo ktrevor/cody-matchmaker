@@ -1,10 +1,10 @@
 import { useLocation } from "react-router-dom";
 import { DonutName } from "./DonutName";
 import { Donut } from "../../donuts/Donut";
-import { Modal, Typography } from "antd";
+import { Typography } from "antd";
 import { DonutDate } from "./DonutDate";
 import { GroupsCardGrid } from "./GroupsCardGrid";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Group } from "../../groups/Group";
 import { SaveDonut } from "./SaveDonut";
 
