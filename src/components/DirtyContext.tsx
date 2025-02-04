@@ -18,25 +18,15 @@ export const DirtyProvider = ({ children }: { children: ReactNode }) => {
   const [isDirty, setIsDirty] = useState(false);
 
   const confirmLeave = (): boolean => {
-    return window.confirm(
-      "You have unsaved changes that will be lost. Are you sure you want to leave this page?"
+    const confirm = window.confirm(
+      "You have unsaved changes that will be lost. Leave anyway?"
     );
+    if (confirm) setIsDirty(false);
+    return confirm;
   };
 
   useEffect(() => {
-    const handlePopState = (event: PopStateEvent) => {
-      if (isDirty) {
-        const confirm = confirmLeave();
-        if (confirm) {
-          setIsDirty(false); // Reset dirty state
-        } else {
-          window.history.pushState(null, "", window.location.href);
-        }
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
+    // refresh, close tab
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (isDirty) {
         event.preventDefault();
@@ -46,7 +36,6 @@ export const DirtyProvider = ({ children }: { children: ReactNode }) => {
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      window.removeEventListener("popstate", handlePopState);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [isDirty]);

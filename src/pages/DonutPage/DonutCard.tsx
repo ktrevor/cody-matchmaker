@@ -16,7 +16,7 @@ export const DonutCard = ({ donut, updateDonuts }: DonutCardProps) => {
   return (
     <Card
       onClick={() => {
-        window.history.pushState({ donut }, "", "/groups");
+        window.history.pushState(null, "", `/groups/${donut.id}`);
         navigate(`/groups/${donut.id}`);
       }}
       hoverable

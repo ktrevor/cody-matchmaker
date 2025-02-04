@@ -1,5 +1,5 @@
 import { useDirtyContext } from "../components/DirtyContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Menu } from "antd";
 import { CoffeeOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
@@ -19,6 +19,7 @@ const pages = [
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isDirty, confirmLeave } = useDirtyContext();
 
   const onClick: MenuProps["onClick"] = (e) => {
@@ -27,5 +28,12 @@ export const Navbar = () => {
     }
   };
 
-  return <Menu onClick={onClick} items={pages} mode="horizontal" />;
+  return (
+    <Menu
+      onClick={onClick}
+      selectedKeys={[location.pathname]}
+      items={pages}
+      mode="horizontal"
+    />
+  );
 };

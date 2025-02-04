@@ -64,7 +64,7 @@ export const GroupPage = () => {
       return updated;
     });
 
-    // find and remove the member from the old group
+    // FIND and remove the member from the old group
     setGroups((prevGroups) =>
       prevGroups.map((group) => {
         if (group.members.some((member) => member.id === newMember.id)) {
