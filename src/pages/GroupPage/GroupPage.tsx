@@ -49,7 +49,6 @@ export const GroupPage = () => {
   };
 
   const handleAddMemberToGroup = (targetGroup: Group, newMember: Member) => {
-    // Track the member addition to the new group
     setAddedMembers((prev) => {
       const updated = new Map(prev);
       updated.set(newMember, targetGroup);
@@ -76,7 +75,6 @@ export const GroupPage = () => {
       })
     );
 
-    // Add the new member to the target group
     setGroups((prevGroups) =>
       prevGroups.map((group) => {
         if (group.id === targetGroup.id) {
