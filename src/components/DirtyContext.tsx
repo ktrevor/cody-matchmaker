@@ -12,21 +12,31 @@ interface DirtyContextType {
   confirmLeave: () => boolean;
 }
 
-const DirtyContext = createContext<DirtyContextType | null>(null);
+const DirtyContext = createContext<DirtyContextType | undefined>(undefined);
 
 export const DirtyProvider = ({ children }: { children: ReactNode }) => {
   const [isDirty, setIsDirty] = useState(false);
 
   const confirmLeave = (): boolean => {
-    const confirm = window.confirm(
+    const shouldLeave = window.confirm(
       "You have unsaved changes that will be lost. Leave anyway?"
     );
-    if (confirm) setIsDirty(false);
-    return confirm;
+    if (shouldLeave) setIsDirty(false);
+    return shouldLeave;
   };
 
   useEffect(() => {
-    // refresh, close tab
+    // browser back
+    const handlePopState = (event: PopStateEvent) => {
+      if (isDirty) {
+        const leave = confirmLeave();
+        if (!leave) {
+          window.history.pushState(null, "", window.location.pathname);
+        }
+      }
+    };
+
+    // refresh, tab close
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (isDirty) {
         event.preventDefault();
@@ -34,9 +44,13 @@ export const DirtyProvider = ({ children }: { children: ReactNode }) => {
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("popstate", handlePopState);
+
+    window.history.pushState(null, "", window.location.pathname);
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, [isDirty]);
 
@@ -47,4 +61,12 @@ export const DirtyProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useDirtyContext = () => useContext(DirtyContext)!;
+export const useDirtyContext = (): DirtyContextType => {
+  const context = useContext(DirtyContext);
+  if (!context) {
+    throw new Error(
+      "useDirtyContext must be used within a DirtyProvider. Ensure that your component is wrapped with DirtyProvider in the component tree."
+    );
+  }
+  return context;
+};
