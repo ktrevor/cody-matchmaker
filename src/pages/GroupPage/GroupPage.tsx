@@ -1,5 +1,5 @@
 import { Button, message, Typography } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DonutName } from "./DonutName";
 import { DonutDate } from "./DonutDate";
 import { GroupsCardGrid } from "./GroupsCardGrid";
@@ -13,11 +13,8 @@ import {
   addMemberToGroup,
   deleteMemberFromGroup,
 } from "../../groups/firebaseGroupFunctions";
-import { getMembers } from "../../members/firebaseMemberFunctions";
 import { Group } from "../../groups/Group";
 import { Member } from "../../members/Member";
-
-const members = await getMembers();
 
 export const GroupPage = () => {
   const { donut, setDonut } = useDonutContext();
@@ -33,10 +30,6 @@ export const GroupPage = () => {
   const [deletedMembers, setDeletedMembers] = useState<Map<Member, Group>>(
     new Map()
   );
-
-  useEffect(() => {
-    setIsDirty(false);
-  }, [setIsDirty]);
 
   const handleNameChange = (newName: string) => {
     setName(newName);

@@ -27,9 +27,10 @@ export const DirtyProvider = ({ children }: { children: ReactNode }) => {
     const handlePopState = (event: PopStateEvent) => {
       if (isDirty) {
         const confirm = confirmLeave();
-        if (!confirm) {
-          window.history.pushState(null, "", window.location.href);
+        if (confirm) {
+          setIsDirty(false); // Reset dirty state
         } else {
+          window.history.pushState(null, "", window.location.href);
         }
       }
     };
