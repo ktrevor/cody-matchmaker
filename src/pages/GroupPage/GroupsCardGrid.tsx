@@ -2,58 +2,19 @@ import { Col, Row } from "antd";
 import { Group } from "../../groups/Group";
 import { GroupCard } from "./GroupCard";
 import { AddGroupMember } from "./AddGroupMember";
-import { useState, useEffect } from "react";
-import { getMembers } from "../../members/firebaseMemberFunctions";
+import { Member } from "../../members/Member";
 
 interface GroupsCardGridProps {
-  initialGroups: Group[];
-  updateGroups: (groups: Group[]) => void;
+  groups: Group[];
+  onAdd: (group: Group, newMember: Member) => void;
+  onDelete: (deleteMember: Member) => void;
 }
 
-const members = await getMembers();
-
 export const GroupsCardGrid = ({
-  initialGroups,
-  updateGroups,
+  groups,
+  onAdd,
+  onDelete,
 }: GroupsCardGridProps) => {
-  const [groups, setGroups] = useState<Group[]>(initialGroups);
-
-  useEffect(() => {
-    setGroups(groups);
-    updateGroups(groups);
-  }, [groups]);
-
-  const handleAddMemberToGroup = (targetGroup: Group, newMemberId: string) => {
-    const newMember = members.find((member) => member.id === newMemberId);
-    if (!newMember) return;
-
-    // remove member from old group
-    handleDeleteMemberFromGroup(newMemberId);
-
-    // add member to new group
-    setGroups((prevGroups) =>
-      prevGroups.map((group) => {
-        if (group.id === targetGroup.id) {
-          return { ...group, members: [...group.members, newMember] };
-        }
-        return group;
-      })
-    );
-  };
-
-  const handleDeleteMemberFromGroup = (deleteMemberId: string) => {
-    setGroups((prevGroups) =>
-      prevGroups.map((currentGroup) => {
-        return {
-          ...currentGroup,
-          members: currentGroup.members.filter(
-            (member) => member.id !== deleteMemberId
-          ),
-        };
-      })
-    );
-  };
-
   return (
     <Row
       gutter={16}
@@ -65,16 +26,14 @@ export const GroupsCardGrid = ({
         <Col span={8} key={group.id}>
           <GroupCard
             group={group}
-            updateGroup={(deleteMemberId) =>
-              handleDeleteMemberFromGroup(deleteMemberId)
-            }
+            updateGroup={(deleteMember) => onDelete(deleteMember)}
             children={
               <AddGroupMember
                 key={group.id}
                 group={group}
                 groups={groups}
-                updateGroup={(targetGroup, newMemberId) =>
-                  handleAddMemberToGroup(targetGroup, newMemberId)
+                updateGroup={(targetGroup, newMember) =>
+                  onAdd(targetGroup, newMember)
                 }
               />
             }

@@ -2,10 +2,11 @@ import { Button, Card, List } from "antd";
 import { Group } from "../../groups/Group";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import styles from "./GroupCard.module.css";
+import { Member } from "../../members/Member";
 
 interface GroupCardProps {
   group: Group;
-  updateGroup: (deleteMemberId: string) => void;
+  updateGroup: (deleteMember: Member) => void;
   children: React.ReactNode;
 }
 
@@ -32,7 +33,7 @@ export const GroupCard = ({ group, updateGroup, children }: GroupCardProps) => {
                 type="text"
                 danger
                 icon={<CloseCircleOutlined />}
-                onClick={() => updateGroup(member.id)}
+                onClick={() => updateGroup(member)}
               ></Button>,
             ]}
           >

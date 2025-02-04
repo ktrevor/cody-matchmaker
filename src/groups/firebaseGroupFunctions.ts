@@ -1,4 +1,10 @@
-import { arrayRemove, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Member } from "../members/Member";
 import { Group } from "./Group";
@@ -31,6 +37,15 @@ export const deleteMemberFromGroup = async (
 ): Promise<void> => {
   const groupRef = doc(db, "groups", group.id);
   await updateDoc(groupRef, {
-    members: arrayRemove(member.id),
+    memberIds: arrayRemove(member.id),
+  });
+};
+export const addMemberToGroup = async (
+  group: Group,
+  member: Member
+): Promise<void> => {
+  const groupRef = doc(db, "groups", group.id);
+  await updateDoc(groupRef, {
+    memberIds: arrayUnion(member),
   });
 };
