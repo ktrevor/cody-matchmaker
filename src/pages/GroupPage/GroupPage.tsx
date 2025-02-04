@@ -1,10 +1,10 @@
 import { Button, message, Typography } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DonutName } from "./DonutName";
 import { DonutDate } from "./DonutDate";
 import { GroupsCardGrid } from "./GroupsCardGrid";
 import { useDirtyContext } from "../../components/DirtyContext";
-import { useDonutContext } from "../../components/DonutContext";
+import { useParams } from "react-router-dom";
 import { Donut } from "../../donuts/Donut";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
@@ -15,21 +15,37 @@ import {
 } from "../../groups/firebaseGroupFunctions";
 import { Group } from "../../groups/Group";
 import { Member } from "../../members/Member";
+import { getDonutById } from "../../donuts/firebaseDonutFunctions";
 
 export const GroupPage = () => {
-  const { donut, setDonut } = useDonutContext();
+  const { donutId } = useParams();
   const { Title } = Typography;
   const { setIsDirty } = useDirtyContext();
 
-  const [name, setName] = useState<string>(donut.name);
-  const [date, setDate] = useState<Date>(donut.date);
-  const [groups, setGroups] = useState<Group[]>(donut.groups);
+  const [donut, setDonut] = useState<Donut | null>(null);
+  const [name, setName] = useState<string>("");
+  const [date, setDate] = useState<Date>(new Date());
+  const [groups, setGroups] = useState<Group[]>([]);
   const [addedMembers, setAddedMembers] = useState<Map<Member, Group>>(
     new Map()
   );
   const [deletedMembers, setDeletedMembers] = useState<Map<Member, Group>>(
     new Map()
   );
+
+  useEffect(() => {
+    const fetchDonut = async () => {
+      if (donutId) {
+        const donutData = await getDonutById(donutId);
+        setDonut(donutData);
+        setName(donutData.name);
+        setDate(donutData.date);
+        setGroups(donutData.groups);
+      }
+    };
+
+    fetchDonut();
+  }, [donutId]);
 
   const handleNameChange = (newName: string) => {
     setName(newName);
@@ -107,6 +123,8 @@ export const GroupPage = () => {
   };
 
   const handleSave = async () => {
+    if (!donut) return;
+
     const updatedFields: Partial<Donut> = {};
 
     if (donut.name !== name) updatedFields.name = name;

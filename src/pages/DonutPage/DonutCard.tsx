@@ -5,7 +5,6 @@ import { CalendarOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import styles from "./DonutCard.module.css";
 import { EditDonut } from "./EditDonut";
-import { useDonutContext } from "../../components/DonutContext";
 
 interface DonutCardProps {
   donut: Donut;
@@ -13,14 +12,12 @@ interface DonutCardProps {
 }
 
 export const DonutCard = ({ donut, updateDonuts }: DonutCardProps) => {
-  const { setDonut } = useDonutContext();
   const navigate = useNavigate();
   return (
     <Card
       onClick={() => {
-        setDonut(donut);
         window.history.pushState({ donut }, "", "/groups");
-        navigate(`/groups`);
+        navigate(`/groups/${donut.id}`);
       }}
       hoverable
     >
