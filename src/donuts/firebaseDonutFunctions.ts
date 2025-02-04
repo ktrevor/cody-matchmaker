@@ -3,6 +3,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   Timestamp,
   updateDoc,
@@ -81,4 +82,29 @@ export const getDonuts = async (): Promise<Donut[]> => {
   );
 
   return donuts;
+};
+
+export const getDonutById = async (donutId: string): Promise<Donut> => {
+  const donutDocRef = doc(db, "donuts", donutId);
+  const donutDoc = await getDoc(donutDocRef);
+
+  if (!donutDoc.exists()) {
+    throw new Error(`Donut with ID ${donutId} not found`);
+  }
+
+  const donutData = donutDoc.data();
+
+  const groups: Group[] = await Promise.all(
+    donutData.groupIds.map((groupId: string) => getGroupById(groupId))
+  );
+
+  const date =
+    donutData.date instanceof Timestamp ? donutData.date.toDate() : new Date();
+
+  return {
+    id: donutDoc.id,
+    name: donutData.name,
+    date: date,
+    groups: groups,
+  } as Donut;
 };
