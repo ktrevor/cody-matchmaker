@@ -46,6 +46,6 @@ export const addMemberToGroup = async (
 ): Promise<void> => {
   const groupRef = doc(db, "groups", group.id);
   await updateDoc(groupRef, {
-    memberIds: arrayUnion(member),
+    memberIds: arrayUnion(member.id),
   });
 };

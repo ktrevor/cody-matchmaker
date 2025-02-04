@@ -6,8 +6,8 @@ import { Member } from "../../members/Member";
 
 interface GroupsCardGridProps {
   groups: Group[];
-  onAdd: (group: Group, newMember: Member) => void;
-  onDelete: (deleteMember: Member) => void;
+  onAdd: (targetGroup: Group, newMember: Member) => void;
+  onDelete: (targetGroup: Group, deleteMember: Member) => void;
 }
 
 export const GroupsCardGrid = ({
@@ -26,7 +26,9 @@ export const GroupsCardGrid = ({
         <Col span={8} key={group.id}>
           <GroupCard
             group={group}
-            updateGroup={(deleteMember) => onDelete(deleteMember)}
+            updateGroup={(targetGroup, deleteMember) =>
+              onDelete(targetGroup, deleteMember)
+            }
             children={
               <AddGroupMember
                 key={group.id}

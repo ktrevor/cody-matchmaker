@@ -6,7 +6,7 @@ import { Member } from "../../members/Member";
 
 interface GroupCardProps {
   group: Group;
-  updateGroup: (deleteMember: Member) => void;
+  updateGroup: (targetGroup: Group, deleteMember: Member) => void;
   children: React.ReactNode;
 }
 
@@ -33,7 +33,7 @@ export const GroupCard = ({ group, updateGroup, children }: GroupCardProps) => {
                 type="text"
                 danger
                 icon={<CloseCircleOutlined />}
-                onClick={() => updateGroup(member)}
+                onClick={() => updateGroup(group, member)}
               ></Button>,
             ]}
           >

@@ -30,7 +30,7 @@ export const GroupPage = () => {
   const [addedMembers, setAddedMembers] = useState<Map<Member, Group>>(
     new Map()
   );
-  const [removedMembers, setRemovedMembers] = useState<Map<Member, Group>>(
+  const [deletedMembers, setDeletedMembers] = useState<Map<Member, Group>>(
     new Map()
   );
 
@@ -49,12 +49,34 @@ export const GroupPage = () => {
   };
 
   const handleAddMemberToGroup = (targetGroup: Group, newMember: Member) => {
+    // Track the member addition to the new group
     setAddedMembers((prev) => {
       const updated = new Map(prev);
       updated.set(newMember, targetGroup);
       return updated;
     });
 
+    // find and remove the member from the old group
+    setGroups((prevGroups) =>
+      prevGroups.map((group) => {
+        if (group.members.some((member) => member.id === newMember.id)) {
+          const updatedMembers = group.members.filter(
+            (member) => member.id !== newMember.id
+          );
+
+          setDeletedMembers((prev) => {
+            const updated = new Map(prev);
+            updated.set(newMember, group);
+            return updated;
+          });
+
+          return { ...group, members: updatedMembers };
+        }
+        return group;
+      })
+    );
+
+    // Add the new member to the target group
     setGroups((prevGroups) =>
       prevGroups.map((group) => {
         if (group.id === targetGroup.id) {
@@ -67,15 +89,18 @@ export const GroupPage = () => {
     setIsDirty(true);
   };
 
-  const handleDeleteMemberFromGroup = (deleteMember: Member) => {
+  const handleDeleteMemberFromGroup = (
+    targetGroup: Group,
+    deleteMember: Member
+  ) => {
     setGroups((prevGroups) =>
       prevGroups.map((currentGroup) => {
-        const updatedMembers = currentGroup.members.filter(
-          (member) => member.id !== deleteMember.id
-        );
+        if (currentGroup.id === targetGroup.id) {
+          const updatedMembers = currentGroup.members.filter(
+            (member) => member.id !== deleteMember.id
+          );
 
-        if (updatedMembers.length !== currentGroup.members.length) {
-          setRemovedMembers((prev) => {
+          setDeletedMembers((prev) => {
             const updated = new Map(prev);
             updated.set(deleteMember, currentGroup);
             return updated;
@@ -101,7 +126,7 @@ export const GroupPage = () => {
         await addMemberToGroup(group, member);
       }
 
-      for (const [member, group] of removedMembers) {
+      for (const [member, group] of deletedMembers) {
         await deleteMemberFromGroup(group, member);
       }
     }
