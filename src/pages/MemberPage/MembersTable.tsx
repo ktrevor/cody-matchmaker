@@ -68,6 +68,11 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
       key: "name",
     },
     {
+      title: "Slack ID",
+      dataIndex: "slackId",
+      key: "slackId",
+    },
+    {
       title: "Grade",
       dataIndex: "grade",
       key: "grade",

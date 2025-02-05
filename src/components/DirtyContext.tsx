@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useState,
-  useContext,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useState, useContext, ReactNode } from "react";
 
 interface DirtyContextType {
   isDirty: boolean;
@@ -24,37 +18,6 @@ export const DirtyProvider = ({ children }: { children: ReactNode }) => {
     if (shouldLeave) setIsDirty(false);
     return shouldLeave;
   };
-
-  useEffect(() => {
-    // browser back
-    const handlePopState = (event: PopStateEvent) => {
-      if (isDirty) {
-        const leave = confirmLeave();
-        if (!leave) {
-          window.history.pushState(null, "", window.location.pathname);
-        } else {
-          window.history.back();
-        }
-      }
-    };
-
-    // refresh, tab close
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (isDirty) {
-        event.preventDefault();
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    window.addEventListener("popstate", handlePopState);
-
-    window.history.pushState(null, "", window.location.pathname);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [isDirty]);
 
   return (
     <DirtyContext.Provider value={{ isDirty, setIsDirty, confirmLeave }}>

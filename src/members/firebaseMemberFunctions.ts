@@ -26,6 +26,8 @@ export const editMember = async (
   const updatedFields: Partial<MemberFormFields> = {};
 
   if (oldData.name !== newData.name) updatedFields.name = newData.name;
+  if (oldData.slackId !== newData.slackId)
+    updatedFields.slackId = newData.slackId;
   if (oldData.grade !== newData.grade) updatedFields.grade = newData.grade;
   if (oldData.gender !== newData.gender) updatedFields.gender = newData.gender;
   if (oldData.joined !== newData.joined) updatedFields.joined = newData.joined;
@@ -85,6 +87,7 @@ export const getMembers = async (): Promise<Member[]> => {
       return {
         id: doc.id,
         name: memberData.name,
+        slackId: memberData.slackId,
         joined: memberData.joined,
         gender: memberData.gender,
         grade: memberData.grade,
@@ -110,6 +113,7 @@ export const getMemberById = async (memberId: string): Promise<Member> => {
   return {
     id: memberId,
     name: memberData.name,
+    slackId: memberData.slackId,
     joined: memberData.joined,
     gender: memberData.gender,
     grade: memberData.grade,

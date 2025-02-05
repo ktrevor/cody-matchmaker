@@ -2,6 +2,7 @@ export type Semester = `${"Fall" | "Spring"} ${number}`;
 
 export interface Member {
   id: string;
+  slackId: string;
   name: string;
   joined: Semester;
   gender: "Male" | "Female" | "Non-binary" | "Other";

@@ -4,7 +4,7 @@ import { DonutName } from "./DonutName";
 import { DonutDate } from "./DonutDate";
 import { GroupsCardGrid } from "./GroupsCardGrid";
 import { useDirtyContext } from "../../components/DirtyContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Donut } from "../../donuts/Donut";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
@@ -20,7 +20,8 @@ import { getDonutById } from "../../donuts/firebaseDonutFunctions";
 export const GroupPage = () => {
   const { donutId } = useParams();
   const { Title } = Typography;
-  const { setIsDirty } = useDirtyContext();
+  const { isDirty, setIsDirty, confirmLeave } = useDirtyContext();
+  const navigate = useNavigate();
 
   const [donut, setDonut] = useState<Donut | null>(null);
   const [name, setName] = useState<string>("");
@@ -46,6 +47,21 @@ export const GroupPage = () => {
 
     fetchDonut();
   }, [donutId]);
+
+  useEffect(() => {
+    // browswer back, refresh, tab close
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (isDirty) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isDirty]);
 
   const handleNameChange = (newName: string) => {
     setName(newName);

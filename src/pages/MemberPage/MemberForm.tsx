@@ -24,6 +24,7 @@ const tailLayout = {
 
 export type MemberFormFields = {
   name: string;
+  slackId: string;
   grade: string;
   gender: string;
   joined: string;
@@ -80,6 +81,14 @@ export const MemberForm = ({
           label="Name"
           name="name"
           rules={[{ required: true, message: "Name is required." }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item<MemberFormFields>
+          label="Slack ID"
+          name="slackId"
+          rules={[{ required: true, message: "Slack ID is required." }]}
         >
           <Input />
         </Form.Item>
