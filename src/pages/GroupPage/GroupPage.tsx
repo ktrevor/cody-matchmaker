@@ -20,8 +20,7 @@ import { getDonutById } from "../../donuts/firebaseDonutFunctions";
 export const GroupPage = () => {
   const { donutId } = useParams();
   const { Title } = Typography;
-  const { isDirty, setIsDirty, confirmLeave } = useDirtyContext();
-  const navigate = useNavigate();
+  const { isDirty, setIsDirty } = useDirtyContext();
 
   const [donut, setDonut] = useState<Donut | null>(null);
   const [name, setName] = useState<string>("");
