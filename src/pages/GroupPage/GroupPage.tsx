@@ -4,7 +4,7 @@ import { DonutName } from "./DonutName";
 import { DonutDate } from "./DonutDate";
 import { GroupsCardGrid } from "./GroupsCardGrid";
 import { useDirtyContext } from "../../components/DirtyContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Donut } from "../../donuts/Donut";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
