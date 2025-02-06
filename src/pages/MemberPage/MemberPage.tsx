@@ -22,12 +22,11 @@ export const MemberPage = () => {
     const data = await getMembers();
     setMembers(data);
   };
-  
+
   return (
     <>
-      <Title>Member Management</Title>
+      <Title>{`Members (${members.length})`}</Title>
       <AddMember updateMembers={updateMembers} members={members} />
-      <Title>Members</Title>
       <MemberTable updateMembers={updateMembers} members={members} />
     </>
   );

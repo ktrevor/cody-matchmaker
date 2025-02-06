@@ -1,4 +1,4 @@
-import { useDirtyContext } from "../components/DirtyContext";
+import { useDirtyContext } from "./DirtyProvider";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Menu } from "antd";
 import { CoffeeOutlined, UserOutlined } from "@ant-design/icons";

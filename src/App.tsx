@@ -8,7 +8,7 @@ import { MemberPage } from "./pages/MemberPage/MemberPage";
 import { Navbar } from "./components/Navbar";
 import { DonutPage } from "./pages/DonutPage/DonutPage";
 import { GroupPage } from "./pages/GroupPage/GroupPage";
-import { DirtyProvider } from "./components/DirtyContext";
+import { DirtyProvider } from "./components/DirtyProvider";
 
 const App = () => {
   return (
