@@ -2,15 +2,12 @@ import { useState } from "react";
 import { Button, Modal, Form, FormProps, message } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
 import { addMember } from "../../members/firebaseMemberFunctions";
-import { Member } from "../../members/Member";
 import { MemberForm, MemberFormFields } from "./MemberForm";
+import { useMembersContext } from "../../components/MembersProvider";
 
-interface AddMemberProps {
-  updateMembers: () => void;
-  members: Member[];
-}
+export const AddMember = () => {
+  const { members, updateMembers } = useMembersContext();
 
-export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -33,7 +30,7 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
     setIsModalOpen(false);
     setConfirmLoading(false);
     updateMembers();
-    message.success(`Member ${newMember.name} added successfully!`);
+    message.success(`Member "${newMember.name}" added successfully!`);
     addMemberForm.resetFields();
   };
 

@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
-import { Table, Space, Modal, message } from "antd";
+import { Table, Space, Modal, message, Button } from "antd";
 import { Member } from "../../members/Member";
-import {
-  deleteMember,
-  getMemberById,
-} from "../../members/firebaseMemberFunctions";
+import { deleteMember } from "../../members/firebaseMemberFunctions";
 import { EditMember } from "./EditMember";
+import { useMembersContext } from "../../components/MembersProvider";
+import { DeleteOutlined } from "@ant-design/icons";
 
-interface MemberTableProps {
-  members: Member[];
-  updateMembers: () => void;
-}
+export const MemberTable = () => {
+  const { members, updateMembers } = useMembersContext();
 
-export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
   const [treeNames, setTreeNames] = useState<{ [key: string]: string }>({});
 
   const [pagination, setPagination] = useState({
@@ -21,20 +17,26 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
   });
 
   const updatePageMembers = () => {
-    // Get the members on the current page
+    // get members on current page
     const startIndex = (pagination.current - 1) * pagination.pageSize;
     const endIndex = pagination.current * pagination.pageSize;
     const currentPageMembers = members.slice(startIndex, endIndex);
 
-    // Fetch tree names for the members with trees being displayed on the current page
-    currentPageMembers.forEach((member) => {
-      if (member.treeId && !treeNames[member.treeId]) {
-        getMemberById(member.treeId).then((treeMember) => {
-          setTreeNames((prev) => ({
-            ...prev,
-            [String(member.treeId)]: treeMember.name,
-          }));
-        });
+    const findTrees: Member[] = [];
+
+    // get tree names for members that need it
+    currentPageMembers.forEach((pageMember) => {
+      if (pageMember.treeId && !treeNames[pageMember.treeId]) {
+        findTrees.push(pageMember);
+      }
+    });
+
+    members.forEach((member) => {
+      if (findTrees.some((findTree) => findTree.id === member.id)) {
+        setTreeNames((prev) => ({
+          ...prev,
+          [String(member.treeId)]: member.name,
+        }));
       }
     });
   };
@@ -47,6 +49,7 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
     updatePageMembers();
   }, [members, pagination]);
 
+  //delete member
   const confirmDelete = (member: Member) => {
     Modal.confirm({
       title: `Delete member ${member.name}?`,
@@ -105,12 +108,12 @@ export const MemberTable = ({ members, updateMembers }: MemberTableProps) => {
       key: "action",
       render: (_: any, record: Member) => (
         <Space size="middle">
-          <EditMember
-            memberToEdit={record}
-            members={members}
-            updateMembers={updateMembers}
+          <EditMember memberToEdit={record} />
+          <Button
+            icon={<DeleteOutlined />}
+            danger
+            onClick={() => confirmDelete(record)}
           />
-          <a onClick={() => confirmDelete(record)}>Delete</a>
         </Space>
       ),
     },

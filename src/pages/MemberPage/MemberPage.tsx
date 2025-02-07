@@ -1,33 +1,23 @@
-import { Typography } from "antd";
+import { Spin, Typography } from "antd";
 import { AddMember } from "./AddMember";
 import { MemberTable } from "./MembersTable";
-import { getMembers } from "../../members/firebaseMemberFunctions";
-import { useEffect, useState } from "react";
-import { Member } from "../../members/Member";
+import { useMembersContext } from "../../components/MembersProvider";
+import styles from "./MembersPage.module.css";
 
 const { Title } = Typography;
 
 export const MemberPage = () => {
-  const [members, setMembers] = useState<Member[]>([]);
+  const { members, loading } = useMembersContext();
 
-  useEffect(() => {
-    const fetchMembers = async () => {
-      const data = await getMembers();
-      setMembers(data);
-    };
-    fetchMembers();
-  }, []);
-
-  const updateMembers = async () => {
-    const data = await getMembers();
-    setMembers(data);
-  };
+  if (loading) {
+    return <Spin className={styles.loading} size="large" />;
+  }
 
   return (
     <>
       <Title>{`Members (${members.length})`}</Title>
-      <AddMember updateMembers={updateMembers} members={members} />
-      <MemberTable updateMembers={updateMembers} members={members} />
+      <AddMember />
+      <MemberTable />
     </>
   );
 };

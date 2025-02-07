@@ -1,20 +1,18 @@
 import { useState } from "react";
-import { Modal, Form, FormProps, message } from "antd";
+import { Modal, Form, FormProps, message, Button } from "antd";
 import { Member } from "../../members/Member";
 import { MemberForm, MemberFormFields } from "./MemberForm";
 import { editMember } from "../../members/firebaseMemberFunctions";
+import { useMembersContext } from "../../components/MembersProvider";
+import { EditOutlined } from "@ant-design/icons";
 
 interface EditMemberProps {
   memberToEdit: Member;
-  members: Member[];
-  updateMembers: () => void;
 }
 
-export const EditMember = ({
-  memberToEdit,
-  members,
-  updateMembers,
-}: EditMemberProps) => {
+export const EditMember = ({ memberToEdit }: EditMemberProps) => {
+  const { members, updateMembers } = useMembersContext();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -35,7 +33,7 @@ export const EditMember = ({
     setIsModalOpen(false);
     setConfirmLoading(false);
     updateMembers();
-    message.success(`Member ${newData.name} updated successfully!`);
+    message.success(`Member "${newData.name}" updated successfully!`);
     editMemberForm.resetFields();
   };
 
@@ -49,7 +47,9 @@ export const EditMember = ({
 
   return (
     <>
-      <a onClick={showModal}>Edit</a>
+      <Button onClick={showModal}>
+        <EditOutlined />
+      </Button>
       <Modal
         title="Edit member"
         open={isModalOpen}
