@@ -5,11 +5,12 @@ import { deleteMember } from "../../members/firebaseMemberFunctions";
 import { EditMember } from "./EditMember";
 import { useMembersContext } from "../../components/MembersProvider";
 import { DeleteOutlined } from "@ant-design/icons";
+import { TableRowSelection } from "antd/es/table/interface";
 
 export const MemberTable = () => {
   const { members, updateMembers } = useMembersContext();
-
   const [treeNames, setTreeNames] = useState<{ [key: string]: string }>({});
+  const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
 
   const [pagination, setPagination] = useState({
     current: 1,
@@ -52,11 +53,31 @@ export const MemberTable = () => {
   //delete member
   const confirmDelete = (member: Member) => {
     Modal.confirm({
-      title: `Delete member ${member.name}?`,
+      title: `Delete member "${member.name}"?`,
       onOk: async () => {
         await deleteMember(member);
         updateMembers();
-        message.success(`Member ${member.name} deleted successfully!`);
+        message.success(`Member "${member.name}" deleted successfully!`);
+      },
+      okText: "Delete",
+      okButtonProps: { danger: true },
+      cancelText: "Cancel",
+    });
+  };
+
+  //delete selected members
+  const deleteSelectedMembers = () => {
+    Modal.confirm({
+      title: `Delete selected member(s)?`,
+      onOk: async () => {
+        await Promise.all(
+          selectedMembers.map(async (memberToDelete) => {
+            await deleteMember(memberToDelete);
+          })
+        );
+        updateMembers();
+        setSelectedMembers([]); //clear selection
+        message.success("Selected members deleted successfully!");
       },
       okText: "Delete",
       okButtonProps: { danger: true },
@@ -123,12 +144,27 @@ export const MemberTable = () => {
     setPagination(pagination);
   };
 
+  const rowSelection: TableRowSelection<Member> = {
+    onChange: (_, selectedRows) => {
+      setSelectedMembers(selectedRows);
+    },
+  };
+
   return (
-    <Table
-      dataSource={members.map((member) => ({ ...member, key: member.id }))}
-      columns={columns}
-      pagination={pagination}
-      onChange={handleTableChange}
-    />
+    <>
+      <Button
+        icon={<DeleteOutlined />}
+        danger
+        onClick={deleteSelectedMembers}
+        disabled={selectedMembers.length === 0}
+      />
+      <Table
+        rowSelection={rowSelection}
+        dataSource={members.map((member) => ({ ...member, key: member.id }))}
+        columns={columns}
+        pagination={pagination}
+        onChange={handleTableChange}
+      />
+    </>
   );
 };
