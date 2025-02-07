@@ -15,3 +15,14 @@ export interface Member {
     | "Onlyfamilia";
   treeId: string | null;
 }
+
+export const getNextGrade = (
+  currentGrade: "Freshman" | "Sophomore" | "Junior" | "Senior"
+) => {
+  const grades = ["Freshman", "Sophmore", "Junior", "Senior"];
+  const currentIndex = grades.indexOf(currentGrade);
+  if (currentIndex === grades.length - 1) {
+    return null;
+  }
+  return grades[currentIndex + 1];
+};

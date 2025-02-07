@@ -10,7 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { Member } from "./Member";
+import { getNextGrade, Member } from "./Member";
 import { MemberFormFields } from "../pages/MemberPage/MemberForm";
 
 export const addMember = async (memberData: MemberFormFields) => {
@@ -120,4 +120,27 @@ export const getMemberById = async (memberId: string): Promise<Member> => {
     forest: memberData.forest,
     treeId: memberData.treeId,
   } as Member;
+};
+
+export const promoteMembersGrades = async (
+  members: Member[]
+): Promise<void> => {
+  for (const member of members) {
+    const memberRef = doc(db, "members", member.id);
+    const memberSnap = await getDoc(memberRef);
+
+    if (!memberSnap.exists()) {
+      throw new Error(`Member with ID ${member.id} not found`);
+    }
+
+    const currentGrade = memberSnap.data().grade;
+    const nextGrade = getNextGrade(currentGrade);
+
+    if (!nextGrade) {
+      await deleteMember(member);
+      continue;
+    }
+
+    await updateDoc(memberRef, { grade: nextGrade });
+  }
 };
