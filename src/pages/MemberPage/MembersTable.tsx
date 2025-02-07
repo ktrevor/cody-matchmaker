@@ -1,5 +1,13 @@
 import { useState, useEffect, Key } from "react";
-import { Table, Space, Modal, message, Button, List } from "antd";
+import {
+  Table,
+  Space,
+  Modal,
+  message,
+  Button,
+  List,
+  TableColumnsType,
+} from "antd";
 import { Member } from "../../members/Member";
 import {
   deleteMember,
@@ -8,7 +16,6 @@ import {
 import { EditMember } from "./EditMember";
 import { useMembersContext } from "../../components/MembersProvider";
 import { DeleteOutlined } from "@ant-design/icons";
-import { ColumnsType } from "antd/es/table";
 
 export const MemberTable = () => {
   const { members, updateMembers } = useMembersContext();
@@ -92,7 +99,7 @@ export const MemberTable = () => {
     });
   };
 
-  const columns: ColumnsType<Member> = [
+  const columns: TableColumnsType<Member> = [
     {
       title: "Name",
       dataIndex: "name",
