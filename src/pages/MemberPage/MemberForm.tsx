@@ -12,7 +12,7 @@ import { Member } from "../../members/Member";
 import { useEffect } from "react";
 import { Semester, useJoinedContext } from "../../components/JoinedProvider";
 
-const capitalizeName = (name: string) => {
+const normalizeName = (name: string) => {
   return name
     .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
@@ -63,7 +63,7 @@ export const MemberForm = ({
   const handleFinish = (memberData: MemberFormFields) => {
     const transformedMemberFormFields = {
       ...memberData,
-      name: capitalizeName(memberData.name),
+      name: normalizeName(memberData.name),
       treeId: memberData.treeId === "None" ? null : memberData.treeId,
     };
 
