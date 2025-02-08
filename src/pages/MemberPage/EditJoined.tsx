@@ -1,22 +1,19 @@
 import { Button, Modal, Input, List, Form } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Semester, useJoinedContext } from "../../components/JoinedProvider";
+import {
+  Semester,
+  sortSemesters,
+  useJoinedContext,
+} from "../../components/JoinedProvider";
 import { useState, useEffect } from "react";
 
-const semesterRegex = /^(Fall|Spring) \d{4}$/;
+const semesterRegex = /^(fall|spring) \d{4}$/i;
 
-const sortSemesters = (semesters: Semester[]): Semester[] => {
-  return [...semesters].sort((a, b) => {
-    const [seasonA, yearA] = a.split(" ");
-    const [seasonB, yearB] = b.split(" ");
-    const seasonOrder = seasonA === "Fall" ? 0 : 1; //fall then spring
-    const yearAInt = parseInt(yearA);
-    const yearBInt = parseInt(yearB);
-
-    if (seasonOrder === 0 && seasonB === "Spring") return -1; //fall before spring
-    if (seasonA === "Spring" && seasonB === "Fall") return 1; //spring after fall
-    return yearAInt - yearBInt; //sort by year
-  });
+const normalizeSemester = (semester: string): Semester => {
+  const [season, year] = semester.split(" ");
+  return `${
+    season.charAt(0).toUpperCase() + season.slice(1).toLowerCase()
+  } ${year}` as Semester;
 };
 
 export const EditJoined = () => {
@@ -44,7 +41,7 @@ export const EditJoined = () => {
   };
 
   const handleAddSemester = (values: { newSemester: Semester }) => {
-    const newSemester = values.newSemester;
+    const newSemester = normalizeSemester(values.newSemester);
     const updatedSemesters = [...currentSemesters, newSemester];
     setCurrentSemesters(sortSemesters(updatedSemesters));
     joinedForm.resetFields();

@@ -4,6 +4,22 @@ import { db } from "../firebase/firebase";
 
 export type Semester = `${"Fall" | "Spring"} ${number}`;
 
+export const sortSemesters = (semesters: Semester[]): Semester[] => {
+  return [...semesters].sort((a, b) => {
+    const [seasonA, yearA] = a.split(" ");
+    const [seasonB, yearB] = b.split(" ");
+
+    const yearAInt = parseInt(yearA);
+    const yearBInt = parseInt(yearB);
+
+    if (yearAInt !== yearBInt) {
+      return yearBInt - yearAInt; //sort by year
+    }
+
+    return seasonA.localeCompare(seasonB); //sort alphabetically
+  });
+};
+
 interface JoinedContextType {
   semesters: Semester[];
   updateSemesters: (semesters: Semester[]) => void;
@@ -19,7 +35,7 @@ export const JoinedProvider = ({ children }: { children: React.ReactNode }) => {
       const docRef = doc(db, "config", "joined");
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setSemesters(docSnap.data().semesters || []);
+        setSemesters(sortSemesters(docSnap.data().semesters) || []);
       }
     };
     fetchSemesters();
@@ -30,7 +46,7 @@ export const JoinedProvider = ({ children }: { children: React.ReactNode }) => {
     await setDoc(docRef, {
       semesters: updatedSemesters,
     });
-    setSemesters(updatedSemesters);
+    setSemesters(sortSemesters(updatedSemesters));
   };
 
   return (
