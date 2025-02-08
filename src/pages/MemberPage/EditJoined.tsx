@@ -24,7 +24,7 @@ export const EditJoined = () => {
 
   useEffect(() => {
     setCurrentSemesters(sortSemesters(semesters));
-  }, [semesters]);
+  }, [isModalOpen, semesters]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -37,7 +37,6 @@ export const EditJoined = () => {
 
   const handleCancel = () => {
     joinedForm.resetFields();
-    setCurrentSemesters(sortSemesters(semesters)); //restore
     setIsModalOpen(false);
   };
 

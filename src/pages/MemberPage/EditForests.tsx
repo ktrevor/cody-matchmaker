@@ -17,10 +17,16 @@ export const EditForests = () => {
   const [currentForests, setCurrentForests] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [forestForm] = Form.useForm();
+  const [forestInputs, setForestInputs] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    setCurrentForests(forests);
-  }, [forests]);
+    setCurrentForests([...forests]);
+    const initialInputs: Record<string, string> = {};
+    forests.forEach((forest) => {
+      initialInputs[forest] = forest;
+    });
+    setForestInputs(initialInputs);
+  }, [isModalOpen, forests]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -33,7 +39,6 @@ export const EditForests = () => {
 
   const handleCancel = () => {
     forestForm.resetFields();
-    setCurrentForests(forests);
     setIsModalOpen(false);
   };
 
@@ -42,12 +47,32 @@ export const EditForests = () => {
     const newForest = normalizeForest(value.newForest);
     const updatedForests = [...currentForests, newForest];
     setCurrentForests(updatedForests);
+    setForestInputs((prev) => ({
+      ...prev,
+      [newForest]: newForest,
+    }));
     forestForm.resetFields();
   };
 
   const handleDeleteForest = (forest: string) => {
     const updatedForests = currentForests.filter((f) => f !== forest);
     setCurrentForests(updatedForests);
+    const updatedInputs = { ...forestInputs };
+    delete updatedInputs[forest];
+    setForestInputs(updatedInputs);
+  };
+
+  const handleRenameForest = (oldForest: string, newForest: string) => {
+    const normalizedNewForest = normalizeForest(newForest);
+    const updatedForests = currentForests.map((forest) =>
+      forest === oldForest ? normalizedNewForest : forest
+    );
+    setCurrentForests(updatedForests);
+
+    setForestInputs((prev) => ({
+      ...prev,
+      [normalizedNewForest]: normalizedNewForest,
+    }));
   };
 
   return (
@@ -114,7 +139,26 @@ export const EditForests = () => {
                 ),
               ]}
             >
-              {forest}
+              <Input
+                value={forestInputs[forest]}
+                onChange={(e) =>
+                  setForestInputs((prev) => ({
+                    ...prev,
+                    [forest]: e.target.value,
+                  }))
+                }
+                onBlur={(e) => {
+                  const updatedValue = e.target.value.trim();
+                  if (updatedValue === "") {
+                    setForestInputs((prev) => ({
+                      ...prev,
+                      [forest]: forest,
+                    }));
+                  } else {
+                    handleRenameForest(forest, updatedValue);
+                  }
+                }}
+              />
             </List.Item>
           )}
         />
