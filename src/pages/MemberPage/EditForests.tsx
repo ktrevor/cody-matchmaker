@@ -3,6 +3,8 @@ import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useForestsContext } from "../../components/ForestsProvider";
 import { useMembersContext } from "../../components/MembersProvider";
+import { MemberFormFields } from "./MemberForm";
+import { editMember } from "../../members/firebaseMemberFunctions";
 
 const normalizeForest = (forest: string) => {
   return forest
@@ -13,11 +15,14 @@ const normalizeForest = (forest: string) => {
 
 export const EditForests = () => {
   const { forests, updateForests } = useForestsContext();
-  const { members } = useMembersContext();
+  const { members, updateMembers } = useMembersContext();
   const [currentForests, setCurrentForests] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [forestForm] = Form.useForm();
   const [forestInputs, setForestInputs] = useState<Record<string, string>>({});
+  const [renamedForests, setRenamedForests] = useState<Record<string, string>>(
+    {}
+  );
 
   useEffect(() => {
     setCurrentForests([...forests]);
@@ -33,8 +38,22 @@ export const EditForests = () => {
   };
 
   const handleOk = () => {
-    updateForests(currentForests);
     setIsModalOpen(false);
+    updateForests(currentForests);
+    Object.keys(renamedForests).forEach((oldForest) => {
+      const newForest = renamedForests[oldForest];
+
+      members.forEach((member) => {
+        if (member.forest === oldForest) {
+          const updatedMember: MemberFormFields = {
+            ...member,
+            forest: newForest,
+          };
+          editMember(member, updatedMember);
+        }
+      });
+    });
+    updateMembers();
   };
 
   const handleCancel = () => {
@@ -82,6 +101,11 @@ export const EditForests = () => {
       ...prev,
       [normalizedNewForest]: normalizedNewForest,
     }));
+
+    setRenamedForests((prev) => ({
+      ...prev,
+      [oldForest]: normalizedNewForest,
+    }));
   };
 
   return (
@@ -123,53 +147,60 @@ export const EditForests = () => {
         <List
           bordered
           dataSource={currentForests}
-          renderItem={(forest) => (
-            <List.Item
-              actions={[
-                members.some((member) => member.forest === forest) ? (
-                  <Tooltip
-                    title={"Reassign current forest members before deleting."}
-                  >
+          renderItem={(forest) => {
+            const isForestUsed = members.some(
+              (member) => member.forest === forest
+            );
+            const isRenamedForest =
+              Object.values(renamedForests).includes(forest);
+
+            return (
+              <List.Item
+                actions={[
+                  isForestUsed || isRenamedForest ? (
+                    <Tooltip
+                      title={"Reassign current forest members before deleting."}
+                    >
+                      <Button
+                        type="primary"
+                        disabled
+                        icon={<DeleteOutlined />}
+                        danger
+                      />
+                    </Tooltip>
+                  ) : (
                     <Button
                       type="primary"
-                      disabled
                       icon={<DeleteOutlined />}
                       onClick={() => handleDeleteForest(forest)}
                       danger
                     />
-                  </Tooltip>
-                ) : (
-                  <Button
-                    type="primary"
-                    icon={<DeleteOutlined />}
-                    onClick={() => handleDeleteForest(forest)}
-                    danger
-                  />
-                ),
-              ]}
-            >
-              <Input
-                value={forestInputs[forest]}
-                onChange={(e) =>
-                  setForestInputs((prev) => ({
-                    ...prev,
-                    [forest]: e.target.value,
-                  }))
-                }
-                onBlur={(e) => {
-                  const updatedValue = e.target.value.trim();
-                  if (updatedValue === "") {
+                  ),
+                ]}
+              >
+                <Input
+                  value={forestInputs[forest]}
+                  onChange={(e) =>
                     setForestInputs((prev) => ({
                       ...prev,
-                      [forest]: forest,
-                    }));
-                  } else {
-                    handleRenameForest(forest, updatedValue);
+                      [forest]: e.target.value,
+                    }))
                   }
-                }}
-              />
-            </List.Item>
-          )}
+                  onBlur={(e) => {
+                    const updatedValue = e.target.value.trim();
+                    if (updatedValue === "") {
+                      setForestInputs((prev) => ({
+                        ...prev,
+                        [forest]: forest,
+                      }));
+                    } else {
+                      handleRenameForest(forest, updatedValue);
+                    }
+                  }}
+                />
+              </List.Item>
+            );
+          }}
         />
       </Modal>
     </>
