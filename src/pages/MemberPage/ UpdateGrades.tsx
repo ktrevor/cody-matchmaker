@@ -22,8 +22,8 @@ export const UpdateGrades = () => {
 
   const handleOk = async () => {
     const seniorIds = new Set(seniors.map((senior) => senior.id));
-    const membersToPromote = members.filter(
-      (member) => !seniorIds.has(member.id)
+    const membersToPromote = members.filter((member) =>
+      seniorIds.has(member.id)
     );
 
     await promoteMembersGrades(membersToPromote);
