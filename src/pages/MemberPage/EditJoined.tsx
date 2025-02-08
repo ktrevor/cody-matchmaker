@@ -98,7 +98,7 @@ export const EditJoined = () => {
 
         <List
           bordered
-          dataSource={currentSemesters} // Use sorted currentSemesters
+          dataSource={currentSemesters}
           renderItem={(semester) => (
             <List.Item
               actions={[

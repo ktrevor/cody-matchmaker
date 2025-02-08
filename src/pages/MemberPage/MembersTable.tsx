@@ -1,23 +1,13 @@
 import { useState, useEffect, Key } from "react";
-import {
-  Table,
-  Space,
-  Modal,
-  message,
-  Button,
-  List,
-  TableColumnsType,
-} from "antd";
+import { Table, Space, Modal, message, Button, TableColumnsType } from "antd";
 import { Member } from "../../members/Member";
-import {
-  deleteMember,
-  promoteMembersGrades,
-} from "../../members/firebaseMemberFunctions";
+import { deleteMember } from "../../members/firebaseMemberFunctions";
 import { EditMember } from "./EditMember";
 import { useMembersContext } from "../../components/MembersProvider";
 import { DeleteOutlined } from "@ant-design/icons";
-import { useJoinedContext } from "../../components/JoinedProvider";
 import { EditJoined } from "./EditJoined";
+import { useJoinedContext } from "../../components/JoinedProvider";
+import { UpdateGrades } from "./ UpdateGrades";
 
 export const MemberTable = () => {
   const { members, updateMembers } = useMembersContext();
@@ -72,31 +62,6 @@ export const MemberTable = () => {
         message.success(`Member "${member.name}" deleted successfully!`);
       },
       okText: "Delete",
-      okButtonProps: { danger: true },
-      cancelText: "Cancel",
-    });
-  };
-
-  const promoteMembers = () => {
-    const seniors = members.filter((member) => member.grade === "Senior");
-    Modal.confirm({
-      title: `Remove seniors and move members up a grade?`,
-      content: (
-        <List
-          header={<div>Seniors</div>}
-          bordered
-          dataSource={seniors}
-          renderItem={(member) => (
-            <List.Item key={member.id}>{member.name}</List.Item>
-          )}
-        />
-      ),
-      onOk: async () => {
-        await promoteMembersGrades(members);
-        updateMembers();
-        message.success("Members promoted successfully!");
-      },
-      okText: "Confirm",
       okButtonProps: { danger: true },
       cancelText: "Cancel",
     });
@@ -199,9 +164,7 @@ export const MemberTable = () => {
   return (
     <>
       <EditJoined />
-      <Button danger onClick={promoteMembers}>
-        Update grades
-      </Button>
+      <UpdateGrades />
       <Table
         dataSource={members.map((member) => ({ ...member, key: member.id }))}
         columns={columns}
