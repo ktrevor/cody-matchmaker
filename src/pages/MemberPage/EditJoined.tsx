@@ -41,6 +41,7 @@ export const EditJoined = () => {
   };
 
   const handleAddSemester = (values: { newSemester: Semester }) => {
+    if (!values.newSemester) return;
     const newSemester = normalizeSemester(values.newSemester);
     const updatedSemesters = [...currentSemesters, newSemester];
     setCurrentSemesters(sortSemesters(updatedSemesters));
@@ -81,7 +82,7 @@ export const EditJoined = () => {
             rules={[
               {
                 pattern: semesterRegex,
-                message: `Invalid format. Use "Fall YYYY" or "Spring YYYY".`,
+                message: `Invalid format. Use "Fall YYYY" or "Spring YYYY"`,
               },
             ]}
           >
