@@ -52,6 +52,15 @@ export const EditJoined = () => {
       return;
     }
     const newSemester = normalizeSemester(value.newSemester);
+    if (currentSemesters.includes(newSemester)) {
+      joinedForm.setFields([
+        {
+          name: "newSemester",
+          errors: ["Semester already exists."],
+        },
+      ]);
+      return;
+    }
     const updatedSemesters = [...currentSemesters, newSemester];
     setCurrentSemesters(sortSemesters(updatedSemesters));
     joinedForm.resetFields();

@@ -45,6 +45,15 @@ export const EditForests = () => {
   const handleAddForest = (value: { newForest: string }) => {
     if (!value.newForest) return;
     const newForest = normalizeForest(value.newForest);
+    if (currentForests.includes(newForest)) {
+      forestForm.setFields([
+        {
+          name: "newForest",
+          errors: ["Forest already exists."],
+        },
+      ]);
+      return;
+    }
     const updatedForests = [...currentForests, newForest];
     setCurrentForests(updatedForests);
     setForestInputs((prev) => ({
