@@ -16,9 +16,12 @@ import {
 import { EditMember } from "./EditMember";
 import { useMembersContext } from "../../components/MembersProvider";
 import { DeleteOutlined } from "@ant-design/icons";
+import { useJoinedContext } from "../../components/JoinedProvider";
+import { EditJoined } from "./EditJoined";
 
 export const MemberTable = () => {
   const { members, updateMembers } = useMembersContext();
+  const { semesters } = useJoinedContext();
   const [treeNames, setTreeNames] = useState<{ [key: string]: string }>({});
 
   const [pagination, setPagination] = useState({
@@ -142,16 +145,10 @@ export const MemberTable = () => {
       title: "Joined",
       dataIndex: "joined",
       key: "joined",
-      filters: [
-        { text: "Spring 2025", value: "Spring 2025" },
-        { text: "Fall 2024", value: "Fall 2024" },
-        { text: "Spring 2024", value: "Spring 2024" },
-        { text: "Fall 2023", value: "Fall 2023" },
-        { text: "Spring 2023", value: "Spring 2023" },
-        { text: "Fall 2022", value: "Fall 2022" },
-        { text: "Spring 2022", value: "Spring 2022" },
-        { text: "Fall 2021", value: "Fall 2021" },
-      ],
+      filters: semesters.map((semester) => ({
+        text: semester,
+        value: semester,
+      })),
       onFilter: (value: boolean | Key, record: Member) => {
         return record.joined.includes(value as string);
       },
@@ -201,8 +198,9 @@ export const MemberTable = () => {
 
   return (
     <>
+      <EditJoined />
       <Button danger onClick={promoteMembers}>
-        Promote
+        Update grades
       </Button>
       <Table
         dataSource={members.map((member) => ({ ...member, key: member.id }))}

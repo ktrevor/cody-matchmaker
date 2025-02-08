@@ -1,4 +1,4 @@
-export type Semester = `${"Fall" | "Spring"} ${number}`;
+import { Semester } from "../components/JoinedProvider";
 
 export interface Member {
   id: string;
