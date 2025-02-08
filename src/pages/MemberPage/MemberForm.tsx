@@ -10,6 +10,7 @@ import {
 } from "antd";
 import { Member } from "../../members/Member";
 import { useEffect } from "react";
+import { Semester, useJoinedContext } from "../../components/JoinedProvider";
 
 const capitalizeName = (name: string) => {
   return name
@@ -27,7 +28,7 @@ export type MemberFormFields = {
   slackId: string;
   grade: string;
   gender: string;
-  joined: string;
+  joined: Semester;
   forest: string;
   treeId: string | null;
 };
@@ -51,6 +52,8 @@ export const MemberForm = ({
   defaultValues,
   okText = "Submit",
 }: MemberFormProps) => {
+  const { semesters } = useJoinedContext();
+
   useEffect(() => {
     if (defaultValues) {
       form.setFieldsValue(defaultValues);
@@ -125,14 +128,11 @@ export const MemberForm = ({
           rules={[{ required: true, message: "Joined is required." }]}
         >
           <Select>
-            <Select.Option value="Spring 2025">Spring 2025</Select.Option>
-            <Select.Option value="Fall 2024">Fall 2024</Select.Option>
-            <Select.Option value="Spring 2024">Spring 2024</Select.Option>
-            <Select.Option value="Fall 2023">Fall 2023</Select.Option>
-            <Select.Option value="Spring 2023">Spring 2023</Select.Option>
-            <Select.Option value="Fall 2022">Fall 2022</Select.Option>
-            <Select.Option value="Spring 2022">Spring 2022</Select.Option>
-            <Select.Option value="Fall 2021">Fall 2021</Select.Option>
+            {semesters.map((semester) => (
+              <Select.Option key={semester} value={semester}>
+                {semester}
+              </Select.Option>
+            ))}
           </Select>
         </Form.Item>
 
