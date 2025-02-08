@@ -36,13 +36,23 @@ export const EditJoined = () => {
   };
 
   const handleCancel = () => {
+    joinedForm.resetFields();
     setCurrentSemesters(sortSemesters(semesters)); //restore
     setIsModalOpen(false);
   };
 
-  const handleAddSemester = (values: { newSemester: Semester }) => {
-    if (!values.newSemester) return;
-    const newSemester = normalizeSemester(values.newSemester);
+  const handleAddSemester = (value: { newSemester: Semester }) => {
+    if (!value.newSemester) return;
+    if (!semesterRegex.test(value.newSemester)) {
+      joinedForm.setFields([
+        {
+          name: "newSemester",
+          errors: ['Invalid format. Use "Fall YYYY" or "Spring YYYY".'],
+        },
+      ]);
+      return;
+    }
+    const newSemester = normalizeSemester(value.newSemester);
     const updatedSemesters = [...currentSemesters, newSemester];
     setCurrentSemesters(sortSemesters(updatedSemesters));
     joinedForm.resetFields();
@@ -62,6 +72,7 @@ export const EditJoined = () => {
         title="Edit joined options"
         open={isModalOpen}
         onOk={handleOk}
+        onClose={handleCancel}
         onCancel={handleCancel}
         footer={[
           <Button key="cancel" onClick={handleCancel}>
@@ -77,15 +88,7 @@ export const EditJoined = () => {
           onFinish={handleAddSemester}
           initialValues={{ newSemester: "" }}
         >
-          <Form.Item
-            name="newSemester"
-            rules={[
-              {
-                pattern: semesterRegex,
-                message: `Invalid format. Use "Fall YYYY" or "Spring YYYY"`,
-              },
-            ]}
-          >
+          <Form.Item name="newSemester">
             <Input placeholder="Enter new semester" />
           </Form.Item>
         </Form>

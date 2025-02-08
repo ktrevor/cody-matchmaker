@@ -60,7 +60,7 @@ export const useJoinedContext = () => {
   const context = useContext(JoinedContext);
   if (!context) {
     throw new Error(
-      "useJoinedContext must be used within a JoinedProvider. Ensure that your component is wrapped with MembersProvider in the component tree."
+      "useJoinedContext must be used within a JoinedProvider. Ensure that your component is wrapped with JoinedProvider in the component tree."
     );
   }
   return context;

@@ -7,12 +7,7 @@ export interface Member {
   joined: Semester;
   gender: "Male" | "Female" | "Non-binary" | "Other";
   grade: "Freshman" | "Sophomore" | "Junior" | "Senior";
-  forest:
-    | "Lost in the Woods"
-    | "Ragtag"
-    | "Magic Tree House"
-    | "Howl's Moving Forest"
-    | "Onlyfamilia";
+  forest: string;
   treeId: string | null;
 }
 

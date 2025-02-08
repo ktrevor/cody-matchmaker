@@ -11,6 +11,7 @@ import {
 import { Member } from "../../members/Member";
 import { useEffect } from "react";
 import { Semester, useJoinedContext } from "../../components/JoinedProvider";
+import { useForestsContext } from "../../components/ForestsProvider";
 
 const normalizeName = (name: string) => {
   return name
@@ -53,6 +54,7 @@ export const MemberForm = ({
   okText = "Submit",
 }: MemberFormProps) => {
   const { semesters } = useJoinedContext();
+  const { forests } = useForestsContext();
 
   useEffect(() => {
     if (defaultValues) {
@@ -142,17 +144,11 @@ export const MemberForm = ({
           rules={[{ required: true, message: "Forest is required." }]}
         >
           <Select>
-            <Select.Option value="Lost In The Woods">
-              Lost In The Woods
-            </Select.Option>
-            <Select.Option value="Ragtag">Ragtag</Select.Option>
-            <Select.Option value="Howl's Moving Forest">
-              Howl's Moving Forest
-            </Select.Option>
-            <Select.Option value="Magic Tree House">
-              Magic Tree House
-            </Select.Option>
-            <Select.Option value="Onlyfamilia">Onlyfamilia</Select.Option>
+            {forests.map((forest) => (
+              <Select.Option key={forest} value={forest}>
+                {forest}
+              </Select.Option>
+            ))}
           </Select>
         </Form.Item>
 

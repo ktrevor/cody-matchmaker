@@ -8,10 +8,13 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { EditJoined } from "./EditJoined";
 import { useJoinedContext } from "../../components/JoinedProvider";
 import { UpdateGrades } from "./ UpdateGrades";
+import { useForestsContext } from "../../components/ForestsProvider";
+import { EditForests } from "./EditForests";
 
 export const MemberTable = () => {
   const { members, updateMembers } = useMembersContext();
   const { semesters } = useJoinedContext();
+  const { forests } = useForestsContext();
   const [treeNames, setTreeNames] = useState<{ [key: string]: string }>({});
 
   const [pagination, setPagination] = useState({
@@ -122,13 +125,10 @@ export const MemberTable = () => {
       title: "Forest",
       dataIndex: "forest",
       key: "forest",
-      filters: [
-        { text: "Lost in the Woods", value: "Lost in the Woods" },
-        { text: "Ragtag", value: "Ragtag" },
-        { text: "Magic Tree House", value: "Magic Tree House" },
-        { text: "Howl's Moving Forest", value: "Howl's Moving Forest" },
-        { text: "Onlyfamilia", value: "Onlyfamilia" },
-      ],
+      filters: forests.map((forest) => ({
+        text: forest,
+        value: forest,
+      })),
       onFilter: (value: boolean | Key, record: Member) => {
         return record.forest.includes(value as string);
       },
@@ -165,6 +165,7 @@ export const MemberTable = () => {
     <>
       <EditJoined />
       <UpdateGrades />
+      <EditForests />
       <Table
         dataSource={members.map((member) => ({ ...member, key: member.id }))}
         columns={columns}
