@@ -38,7 +38,6 @@ export const EditForests = () => {
   };
 
   const handleOk = () => {
-    setIsModalOpen(false);
     updateForests(currentForests);
     Object.keys(renamedForests).forEach((oldForest) => {
       const newForest = renamedForests[oldForest];
@@ -53,6 +52,7 @@ export const EditForests = () => {
         }
       });
     });
+    setIsModalOpen(false);
     updateMembers();
   };
 
@@ -117,7 +117,6 @@ export const EditForests = () => {
         title="Edit forest options"
         open={isModalOpen}
         onOk={handleOk}
-        onClose={handleCancel}
         onCancel={handleCancel}
         footer={[
           <Button key="cancel" onClick={handleCancel}>
@@ -127,6 +126,7 @@ export const EditForests = () => {
             Save
           </Button>,
         ]}
+        closable={false}
       >
         <Form
           form={forestForm}

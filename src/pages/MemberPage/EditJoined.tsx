@@ -80,8 +80,8 @@ export const EditJoined = () => {
         title="Edit joined options"
         open={isModalOpen}
         onOk={handleOk}
-        onClose={handleCancel}
         onCancel={handleCancel}
+        closable={false}
         footer={[
           <Button key="cancel" onClick={handleCancel}>
             Cancel

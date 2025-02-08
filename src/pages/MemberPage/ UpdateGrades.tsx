@@ -27,9 +27,9 @@ export const UpdateGrades = () => {
     );
 
     await promoteMembersGrades(membersToPromote);
+    setIsModalOpen(false);
     updateMembers();
     message.success("Members promoted successfully!");
-    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
@@ -59,6 +59,7 @@ export const UpdateGrades = () => {
             Confirm
           </Button>,
         ]}
+        closable={false}
       >
         <Text>Remove the following seniors and move members up a grade?</Text>
         <List

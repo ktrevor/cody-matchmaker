@@ -14,7 +14,6 @@ export const EditMember = ({ memberToEdit }: EditMemberProps) => {
   const { members, updateMembers } = useMembersContext();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -28,13 +27,11 @@ export const EditMember = ({ memberToEdit }: EditMemberProps) => {
   };
 
   const onFinish: FormProps<MemberFormFields>["onFinish"] = async (newData) => {
-    setConfirmLoading(true);
     await editMember(memberToEdit, newData);
     setIsModalOpen(false);
-    setConfirmLoading(false);
+    editMemberForm.resetFields();
     updateMembers();
     message.success(`Member "${newData.name}" updated successfully!`);
-    editMemberForm.resetFields();
   };
 
   const getDefaultValues = (member: Member): MemberFormFields => {
@@ -53,16 +50,15 @@ export const EditMember = ({ memberToEdit }: EditMemberProps) => {
       <Modal
         title="Edit member"
         open={isModalOpen}
-        onCancel={confirmLoading ? undefined : handleCancel}
+        onClose={handleCancel}
         footer={null}
-        closable={!confirmLoading}
+        closable={false}
       >
         <MemberForm
           form={editMemberForm}
           members={members.filter((member) => member.id !== memberToEdit.id)}
           onFinish={onFinish}
           onCancel={handleCancel}
-          loading={confirmLoading}
           okText="Save"
           defaultValues={getDefaultValues(memberToEdit)}
         />

@@ -9,7 +9,6 @@ export const AddMember = () => {
   const { members, updateMembers } = useMembersContext();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -25,13 +24,11 @@ export const AddMember = () => {
   const onFinish: FormProps<MemberFormFields>["onFinish"] = async (
     newMember
   ) => {
-    setConfirmLoading(true);
     await addMember(newMember);
     setIsModalOpen(false);
-    setConfirmLoading(false);
+    addMemberForm.resetFields();
     updateMembers();
     message.success(`Member "${newMember.name}" added successfully!`);
-    addMemberForm.resetFields();
   };
 
   return (
@@ -42,16 +39,14 @@ export const AddMember = () => {
       <Modal
         title="Add member"
         open={isModalOpen}
-        onCancel={confirmLoading ? undefined : handleCancel}
         footer={null}
-        closable={!confirmLoading}
+        closable={false}
       >
         <MemberForm
           form={addMemberForm}
           members={members}
           onFinish={onFinish}
           onCancel={handleCancel}
-          loading={confirmLoading}
         />
       </Modal>
     </>

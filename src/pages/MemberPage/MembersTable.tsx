@@ -1,18 +1,17 @@
 import { useState, useEffect, Key } from "react";
-import { Table, Space, Modal, message, Button, TableColumnsType } from "antd";
+import { Table, Space, TableColumnsType } from "antd";
 import { Member } from "../../members/Member";
-import { deleteMember } from "../../members/firebaseMemberFunctions";
 import { EditMember } from "./EditMember";
 import { useMembersContext } from "../../components/MembersProvider";
-import { DeleteOutlined } from "@ant-design/icons";
 import { EditJoined } from "./EditJoined";
 import { useJoinedContext } from "../../components/JoinedProvider";
 import { UpdateGrades } from "./ UpdateGrades";
 import { useForestsContext } from "../../components/ForestsProvider";
 import { EditForests } from "./EditForests";
+import { DeleteMember } from "./DeleteMember";
 
 export const MemberTable = () => {
-  const { members, updateMembers } = useMembersContext();
+  const { members } = useMembersContext();
   const { semesters } = useJoinedContext();
   const { forests } = useForestsContext();
   const [treeNames, setTreeNames] = useState<{ [key: string]: string }>({});
@@ -54,21 +53,6 @@ export const MemberTable = () => {
   useEffect(() => {
     updatePageMembers();
   }, [members, pagination]);
-
-  //delete member
-  const confirmDelete = (member: Member) => {
-    Modal.confirm({
-      title: `Delete member "${member.name}"?`,
-      onOk: async () => {
-        await deleteMember(member);
-        updateMembers();
-        message.success(`Member "${member.name}" deleted successfully!`);
-      },
-      okText: "Delete",
-      okButtonProps: { danger: true },
-      cancelText: "Cancel",
-    });
-  };
 
   const columns: TableColumnsType<Member> = [
     {
@@ -147,11 +131,7 @@ export const MemberTable = () => {
       render: (_: any, record: Member) => (
         <Space size="middle">
           <EditMember memberToEdit={record} />
-          <Button
-            icon={<DeleteOutlined />}
-            danger
-            onClick={() => confirmDelete(record)}
-          />
+          <DeleteMember memberToDelete={record} />
         </Space>
       ),
     },
