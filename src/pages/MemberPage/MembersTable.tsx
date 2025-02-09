@@ -1,15 +1,16 @@
-import { useState, useEffect, Key } from "react";
-import { Table, Space, TableColumnsType, Input, Button } from "antd";
+import { useState, useEffect, Key, useRef } from "react";
+import { Table, Space, Input, Button, InputRef, TableColumnsType } from "antd";
 import { Member } from "../../members/Member";
 import { EditMember } from "./EditMember";
 import { useMembersContext } from "../../components/MembersProvider";
 import { EditJoined } from "./EditJoined";
 import { useJoinedContext } from "../../components/JoinedProvider";
-import { UpdateGrades } from "./ UpdateGrades";
 import { useForestsContext } from "../../components/ForestsProvider";
 import { EditForests } from "./EditForests";
 import { DeleteMember } from "./DeleteMember";
 import { SearchOutlined } from "@ant-design/icons";
+import { FilterDropdownProps } from "antd/es/table/interface";
+import UpdateGrades from "./ UpdateGrades";
 
 export const MemberTable = () => {
   const { members } = useMembersContext();
@@ -17,31 +18,35 @@ export const MemberTable = () => {
   const { forests } = useForestsContext();
   const [treeNames, setTreeNames] = useState<{ [key: string]: string }>({});
 
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef<InputRef>(null);
+
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 5,
   });
 
   const updatePageMembers = () => {
-    // get members on current page
     const startIndex = (pagination.current - 1) * pagination.pageSize;
     const endIndex = pagination.current * pagination.pageSize;
     const currentPageMembers = members.slice(startIndex, endIndex);
 
-    const findTrees: Member[] = [];
+    const treeIds: string[] = [];
 
-    // get tree names for members that need it
+    // find treeIds for members who have trees
     currentPageMembers.forEach((pageMember) => {
       if (pageMember.treeId && !treeNames[pageMember.treeId]) {
-        findTrees.push(pageMember);
+        treeIds.push(pageMember.treeId);
       }
     });
 
+    //find names of trees
     members.forEach((member) => {
-      if (findTrees.some((findTree) => findTree.id === member.id)) {
+      if (treeIds.includes(member.id)) {
         setTreeNames((prev) => ({
           ...prev,
-          [String(member.treeId)]: member.name,
+          [String(member.id)]: member.name,
         }));
       }
     });
@@ -55,90 +60,135 @@ export const MemberTable = () => {
     updatePageMembers();
   }, [members, pagination]);
 
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: FilterDropdownProps["confirm"],
+    dataIndex: string
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  const getColumnSearchProps = (
+    dataIndex: keyof Member
+  ): TableColumnsType<Member>[number] => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => {
+      const placeholderText =
+        dataIndex === "slackId"
+          ? "Search with slack ID"
+          : dataIndex === "treeId"
+          ? "Search with tree name"
+          : `Search with ${dataIndex}`;
+
+      return (
+        <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+          <Input
+            ref={searchInput}
+            placeholder={placeholderText}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() =>
+                handleSearch(selectedKeys as string[], confirm, dataIndex)
+              }
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => clearFilters && handleReset(clearFilters)}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </Button>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => {
+                confirm({ closeDropdown: false });
+                setSearchText((selectedKeys as string[])[0]);
+                setSearchedColumn(dataIndex);
+              }}
+            >
+              Filter
+            </Button>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => {
+                close();
+              }}
+            >
+              Close
+            </Button>
+          </Space>
+        </div>
+      );
+    },
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+    ),
+    onFilter: (value, record) => {
+      if (dataIndex === "treeId") {
+        return record.treeId
+          ? treeNames[record.treeId]
+              ?.toLowerCase()
+              .startsWith((value as string).toLowerCase())
+          : false;
+      }
+
+      return record[dataIndex]
+        ? record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .startsWith((value as string).toLowerCase())
+        : false;
+    },
+    filterDropdownProps: {
+      onOpenChange(open) {
+        if (open) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
+    },
+  });
+
   const columns: TableColumnsType<Member> = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: any) => (
-        <>
-          <Input
-            placeholder="Search for name"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-          />
-          <Button
-            type="primary"
-            onClick={() => {
-              clearFilters();
-              confirm();
-            }}
-          >
-            Clear
-          </Button>
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            icon={<SearchOutlined />}
-          >
-            Search
-          </Button>
-        </>
-      ),
-      filterIcon: () => <SearchOutlined />,
-      onFilter: (value: any, record: Member) => {
-        return record.name.toLowerCase().startsWith(value.toLowerCase());
-      },
+      ...getColumnSearchProps("name"),
     },
     {
       title: "Slack ID",
       dataIndex: "slackId",
       key: "slackId",
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: any) => (
-        <>
-          <Input
-            placeholder="Search for ID"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-          />
-          <Button
-            type="primary"
-            onClick={() => {
-              clearFilters();
-              confirm();
-            }}
-          >
-            Clear
-          </Button>
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            icon={<SearchOutlined />}
-          >
-            Search
-          </Button>
-        </>
-      ),
-      filterIcon: () => <SearchOutlined />,
-      onFilter: (value: any, record: Member) => {
-        return record.slackId.toLowerCase().startsWith(value.toLowerCase());
-      },
+      ...getColumnSearchProps("slackId"),
     },
     {
       title: "Grade",
@@ -194,53 +244,12 @@ export const MemberTable = () => {
     },
     {
       title: "Tree",
-      dataIndex: "tree",
+      dataIndex: "treeId",
       key: "tree",
       render: (_: any, record: Member) => {
         return record.treeId ? treeNames[record.treeId] : "None";
       },
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: any) => (
-        <>
-          <Input
-            placeholder="Search for tree"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-          />
-          <Button
-            type="primary"
-            onClick={() => {
-              clearFilters();
-              confirm();
-            }}
-          >
-            Clear
-          </Button>
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            icon={<SearchOutlined />}
-          >
-            Search
-          </Button>
-        </>
-      ),
-      filterIcon: () => <SearchOutlined />,
-      onFilter: (value: any, record: Member) => {
-        if (value.toLowerCase() === "none") {
-          return !record.treeId;
-        }
-        return record.treeId
-          ? treeNames[record.treeId].toLowerCase().includes(value.toLowerCase())
-          : false;
-      },
+      ...getColumnSearchProps("treeId"),
     },
     {
       title: "Action",
