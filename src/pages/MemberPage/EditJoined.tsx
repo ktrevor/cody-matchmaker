@@ -1,4 +1,4 @@
-import { Button, Modal, Input, List, Form } from "antd";
+import { Button, Modal, Input, List, Form, Space } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
   Semester,
@@ -81,7 +81,7 @@ export const EditJoined = () => {
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
-        closable={false}
+        onClose={handleCancel}
         footer={[
           <Button key="cancel" onClick={handleCancel}>
             Cancel
@@ -91,21 +91,24 @@ export const EditJoined = () => {
           </Button>,
         ]}
       >
-        <Form
-          form={joinedForm}
-          onFinish={handleAddSemester}
-          initialValues={{ newSemester: "" }}
-        >
-          <Form.Item name="newSemester">
-            <Input placeholder="Enter new semester" />
-          </Form.Item>
-        </Form>
+        <Space.Compact style={{ width: "100%" }}>
+          <Form
+            form={joinedForm}
+            onFinish={handleAddSemester}
+            initialValues={{ newSemester: "" }}
+            style={{ width: "100%" }}
+          >
+            <Form.Item name="newSemester">
+              <Input placeholder="Enter new semester" />
+            </Form.Item>
+          </Form>
 
-        <Button
-          type="primary"
-          onClick={() => joinedForm.submit()}
-          icon={<PlusOutlined />}
-        />
+          <Button
+            type="primary"
+            onClick={() => joinedForm.submit()}
+            icon={<PlusOutlined />}
+          />
+        </Space.Compact>
 
         <List
           bordered
