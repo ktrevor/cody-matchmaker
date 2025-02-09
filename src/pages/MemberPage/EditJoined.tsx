@@ -117,7 +117,7 @@ export const EditJoined = () => {
             <List.Item
               actions={[
                 <Button
-                  type="primary"
+                  type="link"
                   icon={<DeleteOutlined />}
                   onClick={() => handleDeleteSemester(semester)}
                   danger

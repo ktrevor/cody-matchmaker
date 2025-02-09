@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal, message, Button, Space } from "antd";
 import { Member } from "../../members/Member";
 import { useMembersContext } from "../../components/MembersProvider";
-import { DeleteFilled, ExclamationCircleFilled } from "@ant-design/icons";
+import { DeleteOutlined, ExclamationCircleFilled } from "@ant-design/icons";
 import { deleteMember } from "../../members/firebaseMemberFunctions";
 
 interface DeleteMemberProps {
@@ -42,7 +42,7 @@ export const DeleteMember = ({ memberToDelete }: DeleteMemberProps) => {
   return (
     <>
       <Button type={"link"} onClick={showModal} danger>
-        <DeleteFilled />
+        <DeleteOutlined />
       </Button>
       <Modal
         title={

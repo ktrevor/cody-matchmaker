@@ -4,7 +4,7 @@ import { Member } from "../../members/Member";
 import { MemberForm, MemberFormFields } from "./MemberForm";
 import { editMember } from "../../members/firebaseMemberFunctions";
 import { useMembersContext } from "../../components/MembersProvider";
-import { EditFilled } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 
 interface EditMemberProps {
   memberToEdit: Member;
@@ -55,7 +55,7 @@ export const EditMember = ({ memberToEdit }: EditMemberProps) => {
   return (
     <>
       <Button type="link" onClick={showModal}>
-        <EditFilled />
+        <EditOutlined />
       </Button>
       <Modal
         title="Edit member"
