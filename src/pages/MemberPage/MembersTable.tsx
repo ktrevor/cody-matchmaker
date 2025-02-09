@@ -1,5 +1,5 @@
 import { useState, useEffect, Key } from "react";
-import { Table, Space, TableColumnsType } from "antd";
+import { Table, Space, TableColumnsType, Input, Button } from "antd";
 import { Member } from "../../members/Member";
 import { EditMember } from "./EditMember";
 import { useMembersContext } from "../../components/MembersProvider";
@@ -9,6 +9,7 @@ import { UpdateGrades } from "./ UpdateGrades";
 import { useForestsContext } from "../../components/ForestsProvider";
 import { EditForests } from "./EditForests";
 import { DeleteMember } from "./DeleteMember";
+import { SearchOutlined } from "@ant-design/icons";
 
 export const MemberTable = () => {
   const { members } = useMembersContext();
@@ -59,11 +60,85 @@ export const MemberTable = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }: any) => (
+        <>
+          <Input
+            placeholder="Search for name"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm()}
+          />
+          <Button
+            type="primary"
+            onClick={() => {
+              clearFilters();
+              confirm();
+            }}
+          >
+            Clear
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => confirm()}
+            icon={<SearchOutlined />}
+          >
+            Search
+          </Button>
+        </>
+      ),
+      filterIcon: () => <SearchOutlined />,
+      onFilter: (value: any, record: Member) => {
+        return record.name.toLowerCase().startsWith(value.toLowerCase());
+      },
     },
     {
       title: "Slack ID",
       dataIndex: "slackId",
       key: "slackId",
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }: any) => (
+        <>
+          <Input
+            placeholder="Search for ID"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm()}
+          />
+          <Button
+            type="primary"
+            onClick={() => {
+              clearFilters();
+              confirm();
+            }}
+          >
+            Clear
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => confirm()}
+            icon={<SearchOutlined />}
+          >
+            Search
+          </Button>
+        </>
+      ),
+      filterIcon: () => <SearchOutlined />,
+      onFilter: (value: any, record: Member) => {
+        return record.slackId.toLowerCase().startsWith(value.toLowerCase());
+      },
     },
     {
       title: "Grade",
@@ -123,6 +198,48 @@ export const MemberTable = () => {
       key: "tree",
       render: (_: any, record: Member) => {
         return record.treeId ? treeNames[record.treeId] : "None";
+      },
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }: any) => (
+        <>
+          <Input
+            placeholder="Search for tree"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm()}
+          />
+          <Button
+            type="primary"
+            onClick={() => {
+              clearFilters();
+              confirm();
+            }}
+          >
+            Clear
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => confirm()}
+            icon={<SearchOutlined />}
+          >
+            Search
+          </Button>
+        </>
+      ),
+      filterIcon: () => <SearchOutlined />,
+      onFilter: (value: any, record: Member) => {
+        if (value.toLowerCase() === "none") {
+          return !record.treeId;
+        }
+        return record.treeId
+          ? treeNames[record.treeId].toLowerCase().includes(value.toLowerCase())
+          : false;
       },
     },
     {
