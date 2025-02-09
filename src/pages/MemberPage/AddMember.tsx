@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Modal, Form, FormProps, message } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
 import { addMember } from "../../members/firebaseMemberFunctions";
@@ -6,15 +6,25 @@ import { MemberForm, MemberFormFields } from "./MemberForm";
 import { useMembersContext } from "../../components/MembersProvider";
 
 export const AddMember = () => {
-  const { members, updateMembers } = useMembersContext();
-
+  const { members, updateMembers, loading } = useMembersContext();
+  const [addMemberForm] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
+
+  useEffect(() => {
+    if (waitingForUpdate && !loading) {
+      setWaitingForUpdate(false);
+      setConfirmLoading(false);
+      setIsModalOpen(false);
+      message.success(`Member added successfully!`);
+      addMemberForm.resetFields();
+    }
+  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
-
-  const [addMemberForm] = Form.useForm();
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -24,11 +34,10 @@ export const AddMember = () => {
   const onFinish: FormProps<MemberFormFields>["onFinish"] = async (
     newMember
   ) => {
+    setConfirmLoading(true);
     await addMember(newMember);
-    setIsModalOpen(false);
-    addMemberForm.resetFields();
     updateMembers();
-    message.success(`Member "${newMember.name}" added successfully!`);
+    setWaitingForUpdate(true);
   };
 
   return (
@@ -37,7 +46,7 @@ export const AddMember = () => {
         Add member
       </Button>
       <Modal
-        title="Add member"
+        title={"Add member"}
         open={isModalOpen}
         footer={null}
         closable={false}
@@ -45,6 +54,8 @@ export const AddMember = () => {
         <MemberForm
           form={addMemberForm}
           members={members}
+          loading={confirmLoading}
+          okText={"Add"}
           onFinish={onFinish}
           onCancel={handleCancel}
         />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Form, FormProps, message, Button } from "antd";
 import { Member } from "../../members/Member";
 import { MemberForm, MemberFormFields } from "./MemberForm";
@@ -11,9 +11,18 @@ interface EditMemberProps {
 }
 
 export const EditMember = ({ memberToEdit }: EditMemberProps) => {
-  const { members, updateMembers } = useMembersContext();
-
+  const { members, updateMembers, loading } = useMembersContext();
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
+
+  useEffect(() => {
+    if (waitingForUpdate && !loading) {
+      setWaitingForUpdate(false);
+      setConfirmLoading(false);
+      setIsModalOpen(false);
+    }
+  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -27,11 +36,12 @@ export const EditMember = ({ memberToEdit }: EditMemberProps) => {
   };
 
   const onFinish: FormProps<MemberFormFields>["onFinish"] = async (newData) => {
+    setConfirmLoading(true);
     await editMember(memberToEdit, newData);
-    setIsModalOpen(false);
-    editMemberForm.resetFields();
     updateMembers();
+    setWaitingForUpdate(true);
     message.success(`Member "${newData.name}" updated successfully!`);
+    editMemberForm.resetFields();
   };
 
   const getDefaultValues = (member: Member): MemberFormFields => {
@@ -44,7 +54,7 @@ export const EditMember = ({ memberToEdit }: EditMemberProps) => {
 
   return (
     <>
-      <Button onClick={showModal}>
+      <Button type="link" onClick={showModal}>
         <EditOutlined />
       </Button>
       <Modal
@@ -59,6 +69,7 @@ export const EditMember = ({ memberToEdit }: EditMemberProps) => {
           members={members.filter((member) => member.id !== memberToEdit.id)}
           onFinish={onFinish}
           onCancel={handleCancel}
+          loading={confirmLoading}
           okText="Save"
           defaultValues={getDefaultValues(memberToEdit)}
         />

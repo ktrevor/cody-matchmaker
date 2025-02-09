@@ -1,4 +1,4 @@
-import { Form, FormInstance, Button, Input, Select, Space, Radio } from "antd";
+import { Form, FormInstance, Button, Input, Select, Radio, Space } from "antd";
 import { Member } from "../../members/Member";
 import { useEffect } from "react";
 import { Semester, useJoinedContext } from "../../components/JoinedProvider";
@@ -30,6 +30,7 @@ interface MemberFormProps {
   members: Member[];
   onFinish: (values: MemberFormFields) => void;
   onCancel: () => void;
+  loading: boolean;
   defaultValues?: MemberFormFields;
   okText?: string;
 }
@@ -39,6 +40,7 @@ export const MemberForm = ({
   members,
   onFinish,
   onCancel,
+  loading,
   defaultValues,
   okText = "Submit",
 }: MemberFormProps) => {
@@ -160,12 +162,12 @@ export const MemberForm = ({
         />
       </Form.Item>
 
-      <Form.Item {...tailLayout}>
+      <Form.Item {...tailLayout} style={{ marginBottom: 0 }}>
         <Space>
           <Button htmlType="button" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={loading}>
             {okText}
           </Button>
         </Space>
