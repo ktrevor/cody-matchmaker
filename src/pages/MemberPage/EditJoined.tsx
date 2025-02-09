@@ -98,7 +98,7 @@ export const EditJoined = () => {
             initialValues={{ newSemester: "" }}
             style={{ width: "100%" }}
           >
-            <Form.Item name="newSemester">
+            <Form.Item name="newSemester" style={{ marginBottom: 12 }}>
               <Input placeholder="Enter new semester" />
             </Form.Item>
           </Form>
@@ -123,10 +123,17 @@ export const EditJoined = () => {
                   danger
                 />,
               ]}
+              style={{
+                maxHeight: 50,
+              }}
             >
               {semester}
             </List.Item>
           )}
+          style={{
+            maxHeight: 410,
+            overflowY: "auto",
+          }}
         />
       </Modal>
     </>
