@@ -36,8 +36,8 @@ export const EditJoined = () => {
   };
 
   const handleCancel = () => {
-    joinedForm.resetFields();
     setIsModalOpen(false);
+    joinedForm.resetFields();
   };
 
   const handleAddSemester = (value: { newSemester: Semester }) => {
