@@ -17,15 +17,21 @@ export const ForestProvider = ({ children }: { children: React.ReactNode }) => {
       const docRef = doc(db, "config", "forests");
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setForests(docSnap.data().forests || []);
+        const fetchedForests = docSnap.data().forests || [];
+        setForests(
+          fetchedForests.sort((a: string, b: string) => a.localeCompare(b))
+        );
       }
     };
     fetchForests();
   }, []);
 
   const updateForests = async (updatedForests: string[]) => {
+    const sortedForests = [...updatedForests].sort((a, b) =>
+      a.localeCompare(b)
+    );
     const docRef = doc(db, "config", "forests");
-    await setDoc(docRef, { forests: updatedForests });
+    await setDoc(docRef, { forests: sortedForests });
     setForests(updatedForests);
   };
 

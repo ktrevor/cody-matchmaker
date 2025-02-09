@@ -1,4 +1,4 @@
-import { Button, Modal, Input, List, Form, Tooltip } from "antd";
+import { Button, Modal, Input, List, Form, Tooltip, Space } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useForestsContext } from "../../components/ForestsProvider";
@@ -128,25 +128,28 @@ export const EditForests = () => {
         ]}
         closable={false}
       >
-        <Form
-          form={forestForm}
-          onFinish={handleAddForest}
-          initialValues={{ newForest: "" }}
-        >
-          <Form.Item name="newForest">
-            <Input placeholder="Enter new forest" />
-          </Form.Item>
-        </Form>
+        <Space.Compact style={{ width: "100%" }}>
+          <Form
+            form={forestForm}
+            onFinish={handleAddForest}
+            initialValues={{ newForest: "" }}
+            style={{ width: "100%" }}
+          >
+            <Form.Item name="newForest" style={{ marginBottom: 12 }}>
+              <Input placeholder="Enter new forest" />
+            </Form.Item>
+          </Form>
 
-        <Button
-          type="primary"
-          onClick={() => forestForm.submit()}
-          icon={<PlusOutlined />}
-        />
+          <Button
+            type="primary"
+            onClick={() => forestForm.submit()}
+            icon={<PlusOutlined />}
+          />
+        </Space.Compact>
 
         <List
           bordered
-          dataSource={currentForests}
+          dataSource={[...currentForests].sort((a, b) => a.localeCompare(b))}
           renderItem={(forest) => {
             const isForestUsed = members.some(
               (member) => member.forest === forest
@@ -162,7 +165,7 @@ export const EditForests = () => {
                       title={"Reassign current forest members before deleting."}
                     >
                       <Button
-                        type="primary"
+                        type="link"
                         disabled
                         icon={<DeleteOutlined />}
                         danger
@@ -170,13 +173,16 @@ export const EditForests = () => {
                     </Tooltip>
                   ) : (
                     <Button
-                      type="primary"
+                      type="link"
                       icon={<DeleteOutlined />}
                       onClick={() => handleDeleteForest(forest)}
                       danger
                     />
                   ),
                 ]}
+                style={{
+                  maxHeight: 50,
+                }}
               >
                 <Input
                   value={forestInputs[forest]}
@@ -200,6 +206,10 @@ export const EditForests = () => {
                 />
               </List.Item>
             );
+          }}
+          style={{
+            maxHeight: 410,
+            overflowY: "auto",
           }}
         />
       </Modal>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button, Modal, Form, FormProps, message } from "antd";
-import { UserAddOutlined } from "@ant-design/icons";
 import { addMember } from "../../members/firebaseMemberFunctions";
 import { MemberForm, MemberFormFields } from "./MemberForm";
 import { useMembersContext } from "../../components/MembersProvider";
@@ -42,7 +41,7 @@ export const AddMember = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal} icon={<UserAddOutlined />}>
+      <Button type="primary" onClick={showModal}>
         Add member
       </Button>
       <Modal

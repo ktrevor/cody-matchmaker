@@ -23,7 +23,7 @@ export const EditJoined = () => {
   const [joinedForm] = Form.useForm();
 
   useEffect(() => {
-    setCurrentSemesters(sortSemesters(semesters));
+    setCurrentSemesters(semesters);
   }, [isModalOpen, semesters]);
 
   const showModal = () => {
@@ -62,13 +62,13 @@ export const EditJoined = () => {
       return;
     }
     const updatedSemesters = [...currentSemesters, newSemester];
-    setCurrentSemesters(sortSemesters(updatedSemesters));
+    setCurrentSemesters(updatedSemesters);
     joinedForm.resetFields();
   };
 
   const handleDeleteSemester = (semester: Semester) => {
     const updatedSemesters = currentSemesters.filter((s) => s !== semester);
-    setCurrentSemesters(sortSemesters(updatedSemesters));
+    setCurrentSemesters(updatedSemesters);
   };
 
   return (
@@ -112,7 +112,7 @@ export const EditJoined = () => {
 
         <List
           bordered
-          dataSource={currentSemesters}
+          dataSource={sortSemesters(currentSemesters)}
           renderItem={(semester) => (
             <List.Item
               actions={[
