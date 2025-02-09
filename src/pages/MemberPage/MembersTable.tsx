@@ -269,9 +269,13 @@ export const MemberTable = () => {
 
   return (
     <>
-      <EditJoined />
-      <UpdateGrades />
-      <EditForests />
+      <Space
+        style={{ width: "100%", justifyContent: "flex-end", marginBottom: 12 }}
+      >
+        <EditJoined />
+        <UpdateGrades />
+        <EditForests />
+      </Space>
       <Table
         dataSource={members.map((member) => ({ ...member, key: member.id }))}
         columns={columns}

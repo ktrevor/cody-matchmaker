@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import { Typography, Row, Col } from "antd";
 import { AddMember } from "./AddMember";
 import { MemberTable } from "./MembersTable";
 import { useMembersContext } from "../../components/MembersProvider";
@@ -10,9 +10,23 @@ export const MemberPage = () => {
 
   return (
     <>
-      <Title>{`Members (${members.length})`}</Title>
-      <AddMember />
-      <MemberTable />
+      <Row>
+        <Col span={24}>
+          <Title level={1}>{`Members (${members.length})`}</Title>
+        </Col>
+      </Row>
+
+      <Row style={{ marginBottom: 16 }}>
+        <Col span={24}>
+          <AddMember />
+        </Col>
+      </Row>
+
+      <Row style={{ flex: 1 }}>
+        <Col span={24}>
+          <MemberTable />
+        </Col>
+      </Row>
     </>
   );
 };
