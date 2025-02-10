@@ -3,6 +3,7 @@ import { Button, Modal, Form, FormProps, message } from "antd";
 import { addMember } from "../../members/firebaseMemberFunctions";
 import { MemberForm, MemberFormFields } from "./MemberForm";
 import { useMembersContext } from "../../components/MembersProvider";
+import { PlusOutlined } from "@ant-design/icons";
 
 export const AddMember = () => {
   const { members, updateMembers, loading } = useMembersContext();
@@ -41,7 +42,7 @@ export const AddMember = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
         Add member
       </Button>
       <Modal
