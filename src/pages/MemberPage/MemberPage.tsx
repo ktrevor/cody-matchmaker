@@ -16,7 +16,7 @@ export const MemberPage = () => {
         </Col>
       </Row>
 
-      <Row style={{ marginBottom: 16 }}>
+      <Row>
         <Col span={24}>
           <AddMember />
         </Col>
