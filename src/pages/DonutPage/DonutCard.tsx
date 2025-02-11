@@ -4,7 +4,7 @@ import { Donut, formatDate } from "../../donuts/Donut";
 import { CalendarOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import styles from "./DonutCard.module.css";
-import { EditDonut } from "./EditDonut";
+import { DonutMenu } from "./DonutMenu";
 
 interface DonutCardProps {
   donut: Donut;
@@ -30,7 +30,7 @@ export const DonutCard = ({ donut }: DonutCardProps) => {
               {formatDate(donut.date)}
             </div>
             <div className={styles.edit} onClick={(e) => e.stopPropagation()}>
-              <EditDonut donut={donut} />
+              <DonutMenu donut={donut} />
             </div>
           </>
         }

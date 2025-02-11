@@ -1,43 +1,39 @@
 import { useEffect, useState } from "react";
-import { Dropdown, Form, FormProps, MenuProps, message, Modal } from "antd";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  EllipsisOutlined,
-} from "@ant-design/icons";
-import { DonutForm, DonutFormFields } from "./DonutForm";
-import { deleteDonut, editDonut } from "../../donuts/firebaseDonutFunctions";
+import { Modal, Form, FormProps, message } from "antd";
 import { Donut } from "../../donuts/Donut";
-import styles from "./EditDonut.module.css";
-import dayjs from "dayjs";
 import { useDonutsContext } from "../../components/DonutsProvider";
+import { DonutForm, DonutFormFields } from "./DonutForm";
+import { editDonut } from "../../donuts/firebaseDonutFunctions";
+import dayjs from "dayjs";
 
 interface EditDonutProps {
-  donut: Donut;
+  donutToEdit: Donut;
+  onClose: () => void;
 }
 
-export const EditDonut = ({ donut }: EditDonutProps) => {
-  const { updateDonuts } = useDonutsContext();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export const EditDonut = ({ donutToEdit, onClose }: EditDonutProps) => {
+  const { updateDonuts, loading } = useDonutsContext();
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
 
-  const showModal = () => {
-    setTimeout(() => {
-      setIsModalOpen(true);
-    }, 100);
-  };
+  useEffect(() => {
+    if (waitingForUpdate && !loading) {
+      setWaitingForUpdate(false);
+      setConfirmLoading(false);
+      onClose();
+    }
+  }, [loading]);
 
   const [editDonutForm] = Form.useForm();
 
   const handleCancel = () => {
-    setIsModalOpen(false);
+    onClose();
     editDonutForm.resetFields();
   };
 
   const onFinish: FormProps<DonutFormFields>["onFinish"] = async (newData) => {
     setConfirmLoading(true);
-    await editDonut(donut, newData);
-    setIsModalOpen(false);
+    await editDonut(donutToEdit, newData);
     setConfirmLoading(false);
     updateDonuts();
     message.success(`Donut "${newData.name}" updated successfully!`);
@@ -52,66 +48,22 @@ export const EditDonut = ({ donut }: EditDonutProps) => {
     };
   };
 
-  const confirmDelete = (donut: Donut) => {
-    Modal.confirm({
-      title: `Delete donut ${donut.name}?`,
-      onOk: async () => {
-        await deleteDonut(donut);
-        updateDonuts();
-        message.success(`Donut ${donut.name} deleted successfully!`);
-      },
-      okText: "Delete",
-      okButtonProps: { danger: true },
-      cancelText: "Cancel",
-    });
-  };
-
-  const items: MenuProps["items"] = [
-    {
-      key: "edit",
-      label: "Edit",
-      icon: <EditOutlined />,
-      onClick: () => {
-        showModal();
-      },
-    },
-    {
-      key: "delete",
-      label: "Delete",
-      icon: <DeleteOutlined />,
-      danger: true,
-      onClick: () => confirmDelete(donut),
-    },
-  ];
-
-  useEffect(() => {
-    if (isModalOpen) {
-      editDonutForm.setFieldsValue(getDefaultValues(donut));
-    }
-  }, [isModalOpen]);
-
   return (
-    <>
-      <Dropdown menu={{ items }} trigger={["click"]}>
-        <div onClick={(e) => e.preventDefault()} className={styles.ellipsis}>
-          <EllipsisOutlined />
-        </div>
-      </Dropdown>
-      <Modal
-        title="Edit donut"
-        open={isModalOpen}
+    <Modal
+      title="Edit donut"
+      open
+      onCancel={handleCancel}
+      footer={null}
+      closable={false}
+    >
+      <DonutForm
+        form={editDonutForm}
+        onFinish={onFinish}
         onCancel={handleCancel}
-        footer={null}
-        closable={false}
-      >
-        <DonutForm
-          form={editDonutForm}
-          onFinish={onFinish}
-          onCancel={handleCancel}
-          loading={confirmLoading}
-          okText={"Save"}
-        />
-      </Modal>
-    </>
+        loading={confirmLoading}
+        okText={"Save"}
+        defaultValues={getDefaultValues(donutToEdit)}
+      />
+    </Modal>
   );
 };

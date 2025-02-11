@@ -57,7 +57,7 @@ export const DonutForm = ({
           name="date"
           rules={[{ required: true, message: "Date is required." }]}
         >
-          <DatePicker format={dateFormat} />
+          <DatePicker format={dateFormat} style={{ width: "100%" }} />
         </Form.Item>
 
         <Form.Item {...tailLayout} style={{ marginBottom: 0 }}>
