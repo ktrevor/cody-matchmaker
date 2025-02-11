@@ -10,13 +10,14 @@ import { deleteDonut, editDonut } from "../../donuts/firebaseDonutFunctions";
 import { Donut } from "../../donuts/Donut";
 import styles from "./EditDonut.module.css";
 import dayjs from "dayjs";
+import { useDonutsContext } from "../../components/DonutsProvider";
 
 interface EditDonutProps {
   donut: Donut;
-  updateDonuts: () => void;
 }
 
-export const EditDonut = ({ donut, updateDonuts }: EditDonutProps) => {
+export const EditDonut = ({ donut }: EditDonutProps) => {
+  const { updateDonuts } = useDonutsContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -39,7 +40,7 @@ export const EditDonut = ({ donut, updateDonuts }: EditDonutProps) => {
     setIsModalOpen(false);
     setConfirmLoading(false);
     updateDonuts();
-    message.success(`Donut ${newData.name} updated successfully!`);
+    message.success(`Donut "${newData.name}" updated successfully!`);
     editDonutForm.resetFields();
   };
 
@@ -99,9 +100,9 @@ export const EditDonut = ({ donut, updateDonuts }: EditDonutProps) => {
       <Modal
         title="Edit donut"
         open={isModalOpen}
-        onCancel={confirmLoading ? undefined : handleCancel}
+        onCancel={handleCancel}
         footer={null}
-        closable={!confirmLoading}
+        closable={false}
       >
         <DonutForm
           form={editDonutForm}

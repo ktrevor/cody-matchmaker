@@ -9,7 +9,7 @@ export const DonutPage = () => {
     <>
       <Title level={1}>Donuts</Title>
       <AddDonut />
-      <DonutsCardGrid donuts={[]} updateDonuts={() => null} />
+      <DonutsCardGrid />
     </>
   );
 };

@@ -60,7 +60,7 @@ export const DonutForm = ({
           <DatePicker format={dateFormat} />
         </Form.Item>
 
-        <Form.Item {...tailLayout}>
+        <Form.Item {...tailLayout} style={{ marginBottom: 0 }}>
           <Space>
             <Button htmlType="button" onClick={onCancel}>
               Cancel

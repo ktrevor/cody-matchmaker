@@ -8,10 +8,9 @@ import { EditDonut } from "./EditDonut";
 
 interface DonutCardProps {
   donut: Donut;
-  updateDonuts: () => void;
 }
 
-export const DonutCard = ({ donut, updateDonuts }: DonutCardProps) => {
+export const DonutCard = ({ donut }: DonutCardProps) => {
   const navigate = useNavigate();
   return (
     <Card
@@ -31,7 +30,7 @@ export const DonutCard = ({ donut, updateDonuts }: DonutCardProps) => {
               {formatDate(donut.date)}
             </div>
             <div className={styles.edit} onClick={(e) => e.stopPropagation()}>
-              <EditDonut donut={donut} updateDonuts={updateDonuts} />
+              <EditDonut donut={donut} />
             </div>
           </>
         }

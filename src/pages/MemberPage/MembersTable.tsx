@@ -58,7 +58,7 @@ export const MemberTable = () => {
 
   useEffect(() => {
     updatePageMembers();
-  }, [members, pagination]);
+  }, [pagination]);
 
   const handleSearch = (
     selectedKeys: string[],
