@@ -11,6 +11,7 @@ import { DeleteMember } from "./DeleteMember";
 import { SearchOutlined } from "@ant-design/icons";
 import { FilterDropdownProps } from "antd/es/table/interface";
 import UpdateGrades from "./ UpdateGrades";
+import { getMembers } from "../../members/firebaseMemberFunctions";
 
 export const MemberTable = () => {
   const { members } = useMembersContext();
@@ -31,6 +32,8 @@ export const MemberTable = () => {
     const startIndex = (pagination.current - 1) * pagination.pageSize;
     const endIndex = pagination.current * pagination.pageSize;
     const currentPageMembers = members.slice(startIndex, endIndex);
+
+    console.log(members);
 
     const treeIds: string[] = [];
 
@@ -58,7 +61,7 @@ export const MemberTable = () => {
 
   useEffect(() => {
     updatePageMembers();
-  }, [pagination]);
+  }, [members, pagination]);
 
   const handleSearch = (
     selectedKeys: string[],
@@ -277,7 +280,7 @@ export const MemberTable = () => {
         <EditForests />
       </Space>
       <Table
-        dataSource={members.map((member) => ({
+        dataSource={[...members].map((member) => ({
           ...member,
           key: member.id,
         }))}
