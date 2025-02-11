@@ -277,7 +277,7 @@ export const MemberTable = () => {
         <EditForests />
       </Space>
       <Table
-        dataSource={[...members].map((member) => ({
+        dataSource={members.map((member) => ({
           ...member,
           key: member.id,
         }))}

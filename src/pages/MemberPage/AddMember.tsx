@@ -17,8 +17,6 @@ export const AddMember = () => {
       setWaitingForUpdate(false);
       setConfirmLoading(false);
       setIsModalOpen(false);
-      message.success(`Member added successfully!`);
-      addMemberForm.resetFields();
     }
   }, [loading]);
 
@@ -38,6 +36,8 @@ export const AddMember = () => {
     await addMember(newMember);
     updateMembers();
     setWaitingForUpdate(true);
+    message.success(`Member "${newMember.name}" added successfully!`);
+    addMemberForm.resetFields();
   };
 
   return (

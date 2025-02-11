@@ -5,8 +5,11 @@ import {
   doc,
   getDoc,
   getDocs,
+  limit,
+  query,
   Timestamp,
   updateDoc,
+  writeBatch,
 } from "firebase/firestore";
 import { DonutFormFields } from "../pages/DonutPage/DonutForm";
 import { db } from "../firebase/firebase";
@@ -59,6 +62,8 @@ export const getDonuts = async (): Promise<Donut[]> => {
   const donutsCollection = collection(db, "donuts");
   const querySnapshot = await getDocs(donutsCollection);
 
+  if (querySnapshot.empty) return [];
+
   const donuts: Donut[] = await Promise.all(
     querySnapshot.docs.map(async (doc) => {
       const donutData = doc.data();
@@ -107,4 +112,21 @@ export const getDonutById = async (donutId: string): Promise<Donut> => {
     date: date,
     groups: groups,
   } as Donut;
+};
+
+const BATCH_SIZE = 500;
+
+export const deleteCollection = async (collectionName: string) => {
+  const collectionRef = collection(db, collectionName);
+
+  while (true) {
+    const q = query(collectionRef, limit(BATCH_SIZE));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) break;
+
+    const batch = writeBatch(db);
+    snapshot.docs.forEach((docSnap) => batch.delete(docSnap.ref));
+    await batch.commit();
+  }
 };

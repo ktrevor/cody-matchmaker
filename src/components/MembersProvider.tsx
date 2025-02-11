@@ -40,7 +40,6 @@ export const MembersProvider = ({ children }: { children: ReactNode }) => {
     }
     setLoading(false);
   };
-
   const updateMembers = async () => {
     setLoading(true);
     const data = await getMembers();
