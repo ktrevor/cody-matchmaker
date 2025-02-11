@@ -1,4 +1,5 @@
 import { Group } from "../groups/Group";
+import dayjs from "dayjs";
 
 export interface Donut {
   id: string;
@@ -8,12 +9,7 @@ export interface Donut {
 }
 
 export function formatDate(date: Date): string {
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  return dayjs(date).format("ddd, MMM D, YYYY");
 }
 
 export const dateFormat = ["ddd, MMM D, YYYY"];

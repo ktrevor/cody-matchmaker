@@ -4,7 +4,6 @@ import { useDonutsContext } from "../../components/DonutsProvider";
 
 export const DonutsCardGrid = () => {
   const { donuts } = useDonutsContext();
-  console.log(donuts);
   return (
     <Row
       gutter={16}
