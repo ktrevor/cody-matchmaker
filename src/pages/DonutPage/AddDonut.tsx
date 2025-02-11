@@ -1,16 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, FormProps, message, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { DonutForm, DonutFormFields } from "./DonutForm";
 import { addDonut } from "../../donuts/firebaseDonutFunctions";
+import { useDonutsContext } from "../../components/DonutsProvider";
 
-interface AddDonutProps {
-  updateDonuts: () => void;
-}
-
-export const AddDonut = ({ updateDonuts }: AddDonutProps) => {
+export const AddDonut = () => {
+  const { updateDonuts, loading } = useDonutsContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
+
+  useEffect(() => {
+    if (waitingForUpdate && !loading) {
+      setWaitingForUpdate(false);
+      setConfirmLoading(false);
+      setIsModalOpen(false);
+    }
+  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -27,9 +34,8 @@ export const AddDonut = ({ updateDonuts }: AddDonutProps) => {
     setConfirmLoading(true);
     await addDonut(newDonut);
     setIsModalOpen(false);
-    setConfirmLoading(false);
     updateDonuts();
-    message.success(`Donut ${newDonut.name} added successfully!`);
+    message.success(`Donut "${newDonut.name}" added successfully!`);
     createDonutForm.resetFields();
   };
 
@@ -41,15 +47,16 @@ export const AddDonut = ({ updateDonuts }: AddDonutProps) => {
       <Modal
         title="Create new donut"
         open={isModalOpen}
-        onCancel={confirmLoading ? undefined : handleCancel}
+        onCancel={handleCancel}
         footer={null}
-        closable={!confirmLoading}
+        closable={false}
       >
         <DonutForm
           form={createDonutForm}
           onFinish={onFinish}
           onCancel={handleCancel}
           loading={confirmLoading}
+          okText={"Create"}
         />
       </Modal>
     </>

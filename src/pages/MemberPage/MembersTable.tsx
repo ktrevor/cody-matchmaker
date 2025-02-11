@@ -277,7 +277,10 @@ export const MemberTable = () => {
         <EditForests />
       </Space>
       <Table
-        dataSource={members.map((member) => ({ ...member, key: member.id }))}
+        dataSource={[...members].map((member) => ({
+          ...member,
+          key: member.id,
+        }))}
         columns={columns}
         pagination={pagination}
         onChange={handleTableChange}
