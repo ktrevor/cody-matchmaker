@@ -23,6 +23,7 @@ export const addDonut = async (donut: DonutFormFields) => {
     ...donut,
     date: Timestamp.fromDate(donut.date.toDate()),
     groupIds: await makeGroups(),
+    sent: false,
   };
   await addDoc(collection(db, "donuts"), newDonut);
 };
@@ -82,6 +83,7 @@ export const getDonuts = async (): Promise<Donut[]> => {
         name: donutData.name,
         date: date,
         groups: groups,
+        sent: donutData.sent,
       } as Donut;
     })
   );
@@ -111,6 +113,7 @@ export const getDonutById = async (donutId: string): Promise<Donut> => {
     name: donutData.name,
     date: date,
     groups: groups,
+    sent: donutData.sent,
   } as Donut;
 };
 

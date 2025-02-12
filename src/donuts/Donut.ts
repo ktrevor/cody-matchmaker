@@ -6,6 +6,7 @@ export interface Donut {
   name: string;
   date: Date;
   groups: Group[];
+  sent: boolean;
 }
 
 export function formatDate(date: Date): string {

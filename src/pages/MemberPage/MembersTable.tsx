@@ -25,15 +25,13 @@ export const MemberTable = () => {
 
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 5,
+    pageSize: 3,
   });
 
   const updatePageMembers = () => {
     const startIndex = (pagination.current - 1) * pagination.pageSize;
     const endIndex = pagination.current * pagination.pageSize;
     const currentPageMembers = members.slice(startIndex, endIndex);
-
-    console.log(members);
 
     const treeIds: string[] = [];
 
