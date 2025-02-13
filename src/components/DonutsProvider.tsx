@@ -22,22 +22,13 @@ export const DonutsProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const cachedDonuts = localStorage.getItem("donuts");
-    if (cachedDonuts) {
-      setDonuts(JSON.parse(cachedDonuts));
-    } else {
-      fetchDonuts();
-    }
+    fetchDonuts();
   }, []);
 
   const fetchDonuts = async () => {
     setLoading(true);
-    const cachedDonuts = localStorage.getItem("donuts");
-    if (!cachedDonuts) {
-      const data = await getDonuts();
-      setDonuts(data);
-      localStorage.setItem("donuts", JSON.stringify(data));
-    }
+    const data = await getDonuts();
+    setDonuts(data);
     setLoading(false);
   };
 
@@ -45,7 +36,6 @@ export const DonutsProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     const data = await getDonuts();
     setDonuts(data);
-    localStorage.setItem("donuts", JSON.stringify(data));
     setLoading(false);
   };
 

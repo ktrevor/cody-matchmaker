@@ -22,31 +22,19 @@ export const MembersProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const cachedMembers = localStorage.getItem("members");
-    if (cachedMembers) {
-      setMembers(JSON.parse(cachedMembers));
-    } else {
-      fetchMembers();
-    }
+    fetchMembers();
   }, []);
 
   const fetchMembers = async () => {
     setLoading(true);
-    const cachedMembers = localStorage.getItem("members");
-    if (!cachedMembers) {
-      const data = await getMembers();
-      setMembers(data);
-      localStorage.setItem("members", JSON.stringify(data));
-    }
+    const data = await getMembers();
+    setMembers(data);
     setLoading(false);
   };
   const updateMembers = async () => {
     setLoading(true);
-    console.log("members before update", members);
     const data = await getMembers();
     setMembers(data);
-    console.log("members after update", members);
-    localStorage.setItem("members", JSON.stringify(data));
     setLoading(false);
   };
 
