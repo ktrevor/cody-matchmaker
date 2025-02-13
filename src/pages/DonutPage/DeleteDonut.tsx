@@ -24,11 +24,11 @@ export const DeleteDonut = ({ donutToDelete, onClose }: DeleteDonutProps) => {
     }
   }, [loading]);
 
-  const handleOk = () => {
+  const handleOk = async () => {
     setConfirmLoading(true);
-    deleteDonut(donutToDelete);
-    updateDonuts();
+    await deleteDonut(donutToDelete);
     setWaitingForUpdate(true);
+    updateDonuts();
   };
 
   const handleCancel = () => {

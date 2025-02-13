@@ -22,10 +22,10 @@ export const DeleteAllDonuts = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
     setConfirmLoading(true);
-    deleteCollection("donuts");
-    deleteCollection("groups");
+    await deleteCollection("donuts");
+    await deleteCollection("groups");
     updateDonuts();
     setWaitingForUpdate(true);
     message.success(`All donuts deleted successfully!`);

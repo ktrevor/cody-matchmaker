@@ -18,7 +18,7 @@ import { makeGroups } from "../matchmaker/matchmaker";
 import { Group } from "../groups/Group";
 import { getGroupById } from "../groups/firebaseGroupFunctions";
 
-export const addDonut = async (donut: DonutFormFields) => {
+export const addDonut = async (donut: DonutFormFields): Promise<void> => {
   const newDonut = {
     ...donut,
     date: Timestamp.fromDate(donut.date.toDate()),
@@ -28,7 +28,10 @@ export const addDonut = async (donut: DonutFormFields) => {
   await addDoc(collection(db, "donuts"), newDonut);
 };
 
-export const editDonut = async (oldData: Donut, newData: DonutFormFields) => {
+export const editDonut = async (
+  oldData: Donut,
+  newData: DonutFormFields
+): Promise<void> => {
   const donutRef = doc(db, "donuts", oldData.id);
 
   const updatedFields: Partial<DonutFormFields> = {};
@@ -45,7 +48,7 @@ export const editDonut = async (oldData: Donut, newData: DonutFormFields) => {
   }
 };
 
-export const deleteDonut = async (donut: Donut) => {
+export const deleteDonut = async (donut: Donut): Promise<void> => {
   //delete groups
   const deleteGroups = donut.groups.map(async (group) => {
     const groupRef = doc(db, "groups", group.id);
@@ -119,7 +122,9 @@ export const getDonutById = async (donutId: string): Promise<Donut> => {
 
 const BATCH_SIZE = 500;
 
-export const deleteCollection = async (collectionName: string) => {
+export const deleteCollection = async (
+  collectionName: string
+): Promise<void> => {
   const collectionRef = collection(db, collectionName);
 
   while (true) {
