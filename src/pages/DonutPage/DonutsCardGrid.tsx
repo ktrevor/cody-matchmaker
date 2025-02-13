@@ -94,7 +94,6 @@ export const DonutsCardGrid = () => {
               onChange={handleDateChange}
               allowClear
               format={dateFormat}
-              style={{ width: 250 }}
             />
             <Button.Group>
               <Button
