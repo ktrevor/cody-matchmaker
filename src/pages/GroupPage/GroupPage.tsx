@@ -15,9 +15,10 @@ import {
 } from "../../groups/firebaseGroupFunctions";
 import { Group } from "../../groups/Group";
 import { Member } from "../../members/Member";
-import { getDonutById } from "../../donuts/firebaseDonutFunctions";
+import { useDonutsContext } from "../../components/DonutsProvider";
 
 export const GroupPage = () => {
+  const { donuts } = useDonutsContext();
   const { donutId } = useParams();
   const { Title } = Typography;
   const { isDirty, setIsDirty } = useDirtyContext();
@@ -34,21 +35,20 @@ export const GroupPage = () => {
   );
 
   useEffect(() => {
-    const fetchDonut = async () => {
-      if (donutId) {
-        const donutData = await getDonutById(donutId);
+    if (donutId) {
+      const donutData = donuts.find((donut) => donut.id === donutId);
+
+      if (donutData) {
         setDonut(donutData);
         setName(donutData.name);
         setDate(donutData.date);
         setGroups(donutData.groups);
       }
-    };
-
-    fetchDonut();
-  }, [donutId]);
+    }
+  }, [donutId, donuts]);
 
   useEffect(() => {
-    // browswer back, refresh, tab close
+    // browswer refresh, tab close
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (isDirty) {
         event.preventDefault();
@@ -169,8 +169,7 @@ export const GroupPage = () => {
     <>
       <DonutName name={name} updateName={handleNameChange} />
       <DonutDate date={date} updateDate={handleDateChange} />
-      <Title>Group Management</Title>
-      <Title>Groups</Title>
+      <Title level={1}>Groups</Title>
       <GroupsCardGrid
         groups={groups}
         onAdd={handleAddMemberToGroup}

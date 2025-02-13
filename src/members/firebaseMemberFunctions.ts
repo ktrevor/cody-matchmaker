@@ -41,7 +41,7 @@ export const editMember = async (
   }
 };
 
-export const deleteMember = async (member: Member) => {
+export const deleteMember = async (member: Member): Promise<void> => {
   //delete from groups
   const groupsCollection = collection(db, "groups");
   const groupSnapshot = await getDocs(groupsCollection);

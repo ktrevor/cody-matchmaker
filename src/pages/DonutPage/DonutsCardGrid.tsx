@@ -47,7 +47,7 @@ export const DonutsCardGrid = () => {
     }
   };
 
-  const filteredDonuts = donuts.filter((donut) => {
+  const filteredDonuts = [...donuts].filter((donut) => {
     const matchesSearch = donut.name
       .toLowerCase()
       .startsWith(searchQuery.toLowerCase());
@@ -94,7 +94,6 @@ export const DonutsCardGrid = () => {
               onChange={handleDateChange}
               allowClear
               format={dateFormat}
-              style={{ width: 250 }}
             />
             <Button.Group>
               <Button

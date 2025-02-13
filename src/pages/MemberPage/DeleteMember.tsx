@@ -20,6 +20,7 @@ export const DeleteMember = ({ memberToDelete }: DeleteMemberProps) => {
       setWaitingForUpdate(false);
       setConfirmLoading(false);
       setIsModalOpen(false);
+      message.success(`Member "${memberToDelete.name}" deleted successfully!`);
     }
   }, [loading]);
 
@@ -27,12 +28,11 @@ export const DeleteMember = ({ memberToDelete }: DeleteMemberProps) => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
     setConfirmLoading(true);
-    deleteMember(memberToDelete);
+    await deleteMember(memberToDelete);
     updateMembers();
     setWaitingForUpdate(true);
-    message.success(`Member "${memberToDelete.name}" deleted successfully!`);
   };
 
   const handleCancel = () => {
