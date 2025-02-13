@@ -48,7 +48,6 @@ export const DonutsCardGrid = () => {
   };
 
   const filteredDonuts = [...donuts].filter((donut) => {
-    console.log(donuts);
     const matchesSearch = donut.name
       .toLowerCase()
       .startsWith(searchQuery.toLowerCase());

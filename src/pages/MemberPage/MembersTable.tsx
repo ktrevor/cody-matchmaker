@@ -11,7 +11,6 @@ import { DeleteMember } from "./DeleteMember";
 import { SearchOutlined } from "@ant-design/icons";
 import { FilterDropdownProps } from "antd/es/table/interface";
 import UpdateGrades from "./ UpdateGrades";
-import { getMembers } from "../../members/firebaseMemberFunctions";
 
 export const MemberTable = () => {
   const { members } = useMembersContext();

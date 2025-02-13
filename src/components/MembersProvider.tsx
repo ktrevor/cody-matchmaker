@@ -42,8 +42,10 @@ export const MembersProvider = ({ children }: { children: ReactNode }) => {
   };
   const updateMembers = async () => {
     setLoading(true);
+    console.log("members before update", members);
     const data = await getMembers();
     setMembers(data);
+    console.log("members after update", members);
     localStorage.setItem("members", JSON.stringify(data));
     setLoading(false);
   };
