@@ -143,7 +143,7 @@ export const GroupPage = () => {
     const updatedFields: Partial<Donut> = {};
 
     if (donut.name !== name) updatedFields.name = name;
-    if (donut.date.getTime() !== date.getTime()) updatedFields.date = date;
+    if (donut.date !== date) updatedFields.date = date;
 
     if (JSON.stringify(donut.groups) !== JSON.stringify(groups)) {
       for (const [member, group] of addedMembers) {
