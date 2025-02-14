@@ -1,6 +1,9 @@
 import { WebClient } from "@slack/web-api";
 import dotenv from "dotenv";
 
+//to access donut  from firebase:
+import { getDonuts } from "../donuts/firebaseDonutFunctions";
+
 // Load environment variables from .env file
 dotenv.config();
 
@@ -75,3 +78,5 @@ sendMessageToChannel("general", "Hello, world! Kate says hiiiiiiiii");
 const mwahaha = "HELLOOOOOO TESTING DONUT BOT NEW CHAT LETS GOOOOOOOOOO!";
 
 createDMWithUsers(userList, mwahaha);
+
+
