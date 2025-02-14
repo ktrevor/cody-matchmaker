@@ -6,25 +6,8 @@ import { useMembersContext } from "../../components/MembersProvider";
 const { Title } = Typography;
 
 export const MemberPage = () => {
-  const [members, setMembers] = useState<Member[]>([]);
+  const { members } = useMembersContext();
 
-  //hey when the page first renders, please get me a list of all members
-  //empty brackets can also hold variables, if there is a variable it would say hey 
-  //[] = do it when it first mounts, change reload
-  //[stuff] = do 
-  useEffect(() => {
-    const fetchMembers = async () => {
-      const data = await getMembers();
-      setMembers(data);
-    };
-    fetchMembers();
-  }, []);
-
-  const updateMembers = async () => {
-    const data = await getMembers();
-    setMembers(data);
-  };
-  
   return (
     <>
       <Row>
