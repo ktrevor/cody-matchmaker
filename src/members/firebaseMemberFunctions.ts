@@ -10,7 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { Member } from "./Member";
+import { getNextGrade, Member } from "./Member";
 import { MemberFormFields } from "../pages/MemberPage/MemberForm";
 
 export const addMember = async (memberData: MemberFormFields) => {
@@ -26,6 +26,8 @@ export const editMember = async (
   const updatedFields: Partial<MemberFormFields> = {};
 
   if (oldData.name !== newData.name) updatedFields.name = newData.name;
+  if (oldData.slackId !== newData.slackId)
+    updatedFields.slackId = newData.slackId;
   if (oldData.grade !== newData.grade) updatedFields.grade = newData.grade;
   if (oldData.gender !== newData.gender) updatedFields.gender = newData.gender;
   if (oldData.joined !== newData.joined) updatedFields.joined = newData.joined;
@@ -39,7 +41,7 @@ export const editMember = async (
   }
 };
 
-export const deleteMember = async (member: Member) => {
+export const deleteMember = async (member: Member): Promise<void> => {
   //delete from groups
   const groupsCollection = collection(db, "groups");
   const groupSnapshot = await getDocs(groupsCollection);
@@ -87,6 +89,7 @@ export const getMembers = async (): Promise<Member[]> => {
       return {
         id: doc.id,
         name: memberData.name,
+        slackId: memberData.slackId,
         joined: memberData.joined,
         gender: memberData.gender,
         grade: memberData.grade,
@@ -113,10 +116,34 @@ export const getMemberById = async (memberId: string): Promise<Member> => {
   return {
     id: memberId,
     name: memberData.name,
+    slackId: memberData.slackId,
     joined: memberData.joined,
     gender: memberData.gender,
     grade: memberData.grade,
     forest: memberData.forest,
     treeId: memberData.treeId,
   } as Member;
+};
+
+export const promoteMembersGrades = async (
+  members: Member[]
+): Promise<void> => {
+  for (const member of members) {
+    const memberRef = doc(db, "members", member.id);
+    const memberSnap = await getDoc(memberRef);
+
+    if (!memberSnap.exists()) {
+      throw new Error(`Member with ID ${member.id} not found`);
+    }
+
+    const currentGrade = memberSnap.data().grade;
+    const nextGrade = getNextGrade(currentGrade);
+
+    if (!nextGrade) {
+      await deleteMember(member);
+      continue;
+    }
+
+    await updateDoc(memberRef, { grade: nextGrade });
+  }
 };

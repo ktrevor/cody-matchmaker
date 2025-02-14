@@ -1,12 +1,10 @@
-import { useState, useEffect } from "react";
+import { useDirtyContext } from "./DirtyProvider";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Menu } from "antd";
 import { CoffeeOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Menu } from "antd";
 
-type MenuItem = Required<MenuProps>["items"][number];
-
-const pages: MenuItem[] = [
+const pages = [
   {
     label: "Donuts",
     key: "/donuts",
@@ -20,25 +18,22 @@ const pages: MenuItem[] = [
 ];
 
 export const Navbar = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const [current, setCurrent] = useState(location.pathname);
-
-  useEffect(() => {
-    setCurrent(location.pathname);
-  }, [location]);
+  const location = useLocation();
+  const { isDirty, confirmLeave } = useDirtyContext();
 
   const onClick: MenuProps["onClick"] = (e) => {
-    setCurrent(e.key);
-    navigate(e.key);
+    if (!isDirty || confirmLeave()) {
+      navigate(e.key);
+    }
   };
 
   return (
     <Menu
       onClick={onClick}
-      selectedKeys={[current]}
-      mode="horizontal"
+      selectedKeys={[location.pathname]}
       items={pages}
+      mode="horizontal"
     />
   );
 };

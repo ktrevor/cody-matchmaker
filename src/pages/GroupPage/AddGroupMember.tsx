@@ -8,7 +8,7 @@ import { PlusOutlined } from "@ant-design/icons";
 interface AddGroupMemberProps {
   group: Group;
   groups: Group[];
-  updateGroup: (targetGroup: Group, newMemberId: string) => void;
+  updateGroup: (targetGroup: Group, newMember: Member) => void;
 }
 
 export const AddGroupMember = ({
@@ -17,7 +17,7 @@ export const AddGroupMember = ({
   updateGroup,
 }: AddGroupMemberProps) => {
   const [members, setMembers] = useState<Member[]>([]);
-  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -44,8 +44,11 @@ export const AddGroupMember = ({
         style={{ flex: 1 }}
         showSearch
         filterOption={true}
-        value={selectedMemberId}
-        onChange={setSelectedMemberId}
+        value={selectedMember ? selectedMember.id : null}
+        onChange={(value) => {
+          const member = members.find((m) => m.id === value);
+          setSelectedMember(member || null);
+        }}
         options={filteredMembers.map((member) => ({
           label: `${member.name} ${getGroupNameForMember(member)}`,
           value: member.id,
@@ -57,9 +60,9 @@ export const AddGroupMember = ({
         type="primary"
         icon={<PlusOutlined />}
         onClick={() => {
-          if (selectedMemberId) {
-            updateGroup(group, selectedMemberId);
-            setSelectedMemberId(null);
+          if (selectedMember) {
+            updateGroup(group, selectedMember);
+            setSelectedMember(null);
           }
         }}
       />

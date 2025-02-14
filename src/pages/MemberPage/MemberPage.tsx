@@ -1,9 +1,7 @@
-import { Typography } from "antd";
+import { Typography, Row, Col } from "antd";
 import { AddMember } from "./AddMember";
 import { MemberTable } from "./MembersTable";
-import { getMembers } from "../../members/firebaseMemberFunctions";
-import { useEffect, useState } from "react";
-import { Member } from "../../members/Member";
+import { useMembersContext } from "../../components/MembersProvider";
 
 const { Title } = Typography;
 
@@ -29,10 +27,23 @@ export const MemberPage = () => {
   
   return (
     <>
-      <Title>Member Management</Title>
-      <AddMember updateMembers={updateMembers} members={members} />
-      <Title>Members</Title>
-      <MemberTable updateMembers={updateMembers} members={members} />
+      <Row>
+        <Col span={24}>
+          <Title level={1}>{`Members (${members.length})`}</Title>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={24}>
+          <AddMember />
+        </Col>
+      </Row>
+
+      <Row style={{ flex: 1 }}>
+        <Col span={24}>
+          <MemberTable />
+        </Col>
+      </Row>
     </>
   );
 };

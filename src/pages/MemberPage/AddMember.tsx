@@ -1,24 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Modal, Form, FormProps, message } from "antd";
-import { UserAddOutlined } from "@ant-design/icons";
 import { addMember } from "../../members/firebaseMemberFunctions";
-import { Member } from "../../members/Member";
 import { MemberForm, MemberFormFields } from "./MemberForm";
+import { useMembersContext } from "../../components/MembersProvider";
+import { PlusOutlined } from "@ant-design/icons";
 
-interface AddMemberProps {
-  updateMembers: () => void;
-  members: Member[];
-}
-
-export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
+export const AddMember = () => {
+  const { members, updateMembers, loading } = useMembersContext();
+  const [addMemberForm] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
+
+  useEffect(() => {
+    if (waitingForUpdate && !loading) {
+      setWaitingForUpdate(false);
+      setConfirmLoading(false);
+      setIsModalOpen(false);
+    }
+  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
-
-  const [addMemberForm] = Form.useForm();
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -30,31 +34,30 @@ export const AddMember = ({ updateMembers, members }: AddMemberProps) => {
   ) => {
     setConfirmLoading(true);
     await addMember(newMember);
-    setIsModalOpen(false);
-    setConfirmLoading(false);
     updateMembers();
-    message.success(`Member ${newMember.name} added successfully!`);
+    setWaitingForUpdate(true);
+    message.success(`Member "${newMember.name}" added successfully!`);
     addMemberForm.resetFields();
   };
 
   return (
     <>
-      <Button type="primary" onClick={showModal} icon={<UserAddOutlined />}>
+      <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
         Add member
       </Button>
       <Modal
-        title="Add member"
+        title={"Add member"}
         open={isModalOpen}
-        onCancel={confirmLoading ? undefined : handleCancel}
         footer={null}
-        closable={!confirmLoading}
+        closable={false}
       >
         <MemberForm
           form={addMemberForm}
           members={members}
+          loading={confirmLoading}
+          okText={"Add"}
           onFinish={onFinish}
           onCancel={handleCancel}
-          loading={confirmLoading}
         />
       </Modal>
     </>

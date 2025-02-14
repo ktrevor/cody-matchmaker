@@ -1,20 +1,24 @@
 import { useNavigate } from "react-router-dom";
-import { Card } from "antd";
+import { Card, Tag } from "antd";
 import { Donut, formatDate } from "../../donuts/Donut";
 import { CalendarOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import styles from "./DonutCard.module.css";
-import { EditDonut } from "./EditDonut";
+import { DonutMenu } from "./DonutMenu";
 
 interface DonutCardProps {
   donut: Donut;
-  updateDonuts: () => void;
 }
 
-export const DonutCard = ({ donut, updateDonuts }: DonutCardProps) => {
+export const DonutCard = ({ donut }: DonutCardProps) => {
   const navigate = useNavigate();
   return (
-    <Card onClick={() => navigate(`/groups`, { state: { donut } })} hoverable>
+    <Card
+      onClick={() => {
+        navigate(`/groups/${donut.id}`);
+      }}
+      hoverable
+    >
       <Meta
         title={donut.name}
         description={
@@ -25,8 +29,11 @@ export const DonutCard = ({ donut, updateDonuts }: DonutCardProps) => {
               </div>
               {formatDate(donut.date)}
             </div>
+            <Tag color={donut.sent ? "green" : "red"}>
+              {donut.sent ? "Sent" : "Not sent"}
+            </Tag>
             <div className={styles.edit} onClick={(e) => e.stopPropagation()}>
-              <EditDonut donut={donut} updateDonuts={updateDonuts} />
+              <DonutMenu donut={donut} />
             </div>
           </>
         }

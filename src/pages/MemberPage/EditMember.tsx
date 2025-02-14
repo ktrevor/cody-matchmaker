@@ -1,22 +1,28 @@
-import { useState } from "react";
-import { Modal, Form, FormProps, message } from "antd";
+import { useEffect, useState } from "react";
+import { Modal, Form, FormProps, message, Button } from "antd";
 import { Member } from "../../members/Member";
 import { MemberForm, MemberFormFields } from "./MemberForm";
 import { editMember } from "../../members/firebaseMemberFunctions";
+import { useMembersContext } from "../../components/MembersProvider";
+import { EditOutlined } from "@ant-design/icons";
 
 interface EditMemberProps {
   memberToEdit: Member;
-  members: Member[];
-  updateMembers: () => void;
 }
 
-export const EditMember = ({
-  memberToEdit,
-  members,
-  updateMembers,
-}: EditMemberProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export const EditMember = ({ memberToEdit }: EditMemberProps) => {
+  const { members, updateMembers, loading } = useMembersContext();
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
+
+  useEffect(() => {
+    if (waitingForUpdate && !loading) {
+      setWaitingForUpdate(false);
+      setConfirmLoading(false);
+      setIsModalOpen(false);
+    }
+  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -32,10 +38,9 @@ export const EditMember = ({
   const onFinish: FormProps<MemberFormFields>["onFinish"] = async (newData) => {
     setConfirmLoading(true);
     await editMember(memberToEdit, newData);
-    setIsModalOpen(false);
-    setConfirmLoading(false);
     updateMembers();
-    message.success(`Member ${newData.name} updated successfully!`);
+    setWaitingForUpdate(true);
+    message.success(`Member "${newData.name}" updated successfully!`);
     editMemberForm.resetFields();
   };
 
@@ -49,13 +54,15 @@ export const EditMember = ({
 
   return (
     <>
-      <a onClick={showModal}>Edit</a>
+      <Button type="link" onClick={showModal}>
+        <EditOutlined />
+      </Button>
       <Modal
         title="Edit member"
         open={isModalOpen}
-        onCancel={confirmLoading ? undefined : handleCancel}
+        onClose={handleCancel}
         footer={null}
-        closable={!confirmLoading}
+        closable={false}
       >
         <MemberForm
           form={editMemberForm}
