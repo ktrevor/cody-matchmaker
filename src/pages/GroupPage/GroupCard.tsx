@@ -1,4 +1,4 @@
-import { Button, Card, List, Tag } from "antd";
+import { Button, Card, List, Space, Tag } from "antd";
 import { Group } from "../../groups/Group";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import styles from "./GroupCard.module.css";
@@ -23,10 +23,10 @@ export const GroupCard = ({
   return (
     <Card
       title={
-        <div className={styles.header}>
-          <div>{group.name}</div>
-          <div>{numMembers}</div>
-        </div>
+        <Space>
+          {group.name}
+          {numMembers}
+        </Space>
       }
     >
       <List
@@ -38,6 +38,7 @@ export const GroupCard = ({
             className={`${styles.listItem} ${
               selectedMembers.includes(member.id) ? styles.selected : ""
             }`}
+            style={{ borderBottom: "none" }}
             actions={[
               <Button
                 type="text"

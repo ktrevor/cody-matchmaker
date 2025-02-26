@@ -16,7 +16,6 @@ import {
 import { Group } from "../../groups/Group";
 import { Member } from "../../members/Member";
 import { useDonutsContext } from "../../components/DonutsProvider";
-import { SendToSlack } from "./SendToSlack";
 
 export const GroupPage = () => {
   const { donuts } = useDonutsContext();
@@ -171,7 +170,6 @@ export const GroupPage = () => {
       <DonutName name={name} updateName={handleNameChange} />
       <DonutDate date={date} updateDate={handleDateChange} />
       <Title level={1}>Groups</Title>
-      <SendToSlack />
       <GroupsCardGrid
         groups={groups}
         onAdd={handleAddMemberToGroup}

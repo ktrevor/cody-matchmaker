@@ -23,9 +23,20 @@ export const GroupsCardGrid = ({
 
   const handleSelectMember = (member: Member, group: Group) => {
     setSelectedMembers((prev) => {
-      if (prev.some((m) => m.member.id === member.id)) {
+      const isAlreadySelected = prev.some((m) => m.member.id === member.id);
+
+      //deselect when selected
+      if (isAlreadySelected) {
         return prev.filter((m) => m.member.id !== member.id);
-      } else if (prev.length < 2) {
+      }
+
+      //disable selection in same group
+      if (prev.length === 1 && prev[0].group.id === group.id) {
+        return prev;
+      }
+
+      //max selection at two members, deselect oldest selection if more selected
+      if (prev.length < 2) {
         return [...prev, { member, group }];
       } else {
         return [prev[1], { member, group }];
