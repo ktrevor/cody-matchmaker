@@ -165,11 +165,14 @@ export const GroupPage = () => {
     message.success(`Donut ${donut.name} saved successfully!`);
   };
 
+  //alicia button at send message to slack button
+
   return (
     <>
       <DonutName name={name} updateName={handleNameChange} />
       <DonutDate date={date} updateDate={handleDateChange} />
       <Title level={1}>Groups</Title>
+      <button id="sendMessageButton">Send to Slack</button>
       <GroupsCardGrid
         groups={groups}
         onAdd={handleAddMemberToGroup}

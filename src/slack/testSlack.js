@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Read the token from the environment variables or replace with your token FOUND IN MESSENGER
-const token = process.env.SLACK_TOKEN || "";
+const token = process.env.SLACK_TOKEN || process.env.SLACK_BOT_TOKEN;
 
 // Initialize the Slack client
 const web = new WebClient(token);
