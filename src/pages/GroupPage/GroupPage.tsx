@@ -72,41 +72,52 @@ export const GroupPage = () => {
     setIsDirty(true);
   };
 
-  const handleAddMemberToGroup = (targetGroup: Group, newMember: Member) => {
+  const handleAddMemberToGroup = (
+    targetGroup: Group,
+    newMember: Member,
+    index?: number
+  ) => {
     setAddedMembers((prev) => {
       const updated = new Map(prev);
       updated.set(newMember, targetGroup);
       return updated;
     });
 
-    // FIND and remove the member from the old group
-    setGroups((prevGroups) =>
-      prevGroups.map((group) => {
+    setGroups((prevGroups) => {
+      let oldGroup: Group;
+
+      const updatedGroups = prevGroups.map((group) => {
         if (group.members.some((member) => member.id === newMember.id)) {
-          const updatedMembers = group.members.filter(
-            (member) => member.id !== newMember.id
-          );
-
-          setDeletedMembers((prev) => {
-            const updated = new Map(prev);
-            updated.set(newMember, group);
-            return updated;
-          });
-
-          return { ...group, members: updatedMembers };
+          oldGroup = group;
+          return {
+            ...group,
+            members: group.members.filter(
+              (member) => member.id !== newMember.id
+            ),
+          };
         }
         return group;
-      })
-    );
+      });
 
-    setGroups((prevGroups) =>
-      prevGroups.map((group) => {
+      setDeletedMembers((prev) => {
+        const updated = new Map(prev);
+        updated.set(newMember, oldGroup);
+        return updated;
+      });
+
+      return updatedGroups.map((group) => {
         if (group.id === targetGroup.id) {
-          return { ...group, members: [...group.members, newMember] };
+          const newMembers = [...group.members];
+          if (index !== undefined && index >= 0 && index <= newMembers.length) {
+            newMembers.splice(index, 0, newMember);
+          } else {
+            newMembers.push(newMember);
+          }
+          return { ...group, members: newMembers };
         }
         return group;
-      })
-    );
+      });
+    });
 
     setIsDirty(true);
   };
