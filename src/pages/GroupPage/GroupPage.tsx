@@ -11,6 +11,7 @@ import { db } from "../../firebase/firebase";
 import { SaveOutlined } from "@ant-design/icons";
 import {
   addMemberToGroup,
+  deleteGroup,
   deleteMemberFromGroup,
 } from "../../groups/firebaseGroupFunctions";
 import { Group } from "../../groups/Group";
@@ -18,7 +19,7 @@ import { Member } from "../../members/Member";
 import { useDonutsContext } from "../../components/DonutsProvider";
 
 export const GroupPage = () => {
-  const { donuts } = useDonutsContext();
+  const { donuts, updateDonuts } = useDonutsContext();
   const { donutId } = useParams();
   const { Title } = Typography;
   const { isDirty, setIsDirty } = useDirtyContext();
@@ -27,6 +28,7 @@ export const GroupPage = () => {
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<Date>(new Date());
   const [groups, setGroups] = useState<Group[]>([]);
+  const [deletedGroups, setDeletedGroups] = useState<Group[]>([]);
   const [addedMembers, setAddedMembers] = useState<Map<Member, Group>>(
     new Map()
   );
@@ -148,6 +150,19 @@ export const GroupPage = () => {
     setIsDirty(true);
   };
 
+  const handleDeleteGroup = (groupToDelete: Group) => {
+    setDeletedGroups((prevDeletedGroups) => [
+      ...prevDeletedGroups,
+      groupToDelete,
+    ]);
+
+    setGroups((prevGroups) =>
+      prevGroups.filter((g) => g.id !== groupToDelete.id)
+    );
+
+    setIsDirty(true);
+  };
+
   const handleSave = async () => {
     if (!donut) return;
 
@@ -163,6 +178,11 @@ export const GroupPage = () => {
 
       for (const [member, group] of deletedMembers) {
         await deleteMemberFromGroup(group, member);
+      }
+
+      for (const group of deletedGroups) {
+        await deleteGroup(group);
+        await updateDonuts();
       }
     }
 
@@ -183,8 +203,9 @@ export const GroupPage = () => {
       <Title level={1}>Groups</Title>
       <GroupsCardGrid
         groups={groups}
-        onAdd={handleAddMemberToGroup}
-        onDelete={handleDeleteMemberFromGroup}
+        onGroupDelete={handleDeleteGroup}
+        onMemberAdd={handleAddMemberToGroup}
+        onMemberDelete={handleDeleteMemberFromGroup}
       />
       <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
         Save

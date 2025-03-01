@@ -22,10 +22,14 @@ export const addDonut = async (donut: DonutFormFields): Promise<void> => {
   const newDonut = {
     ...donut,
     date: Timestamp.fromDate(donut.date.toDate()),
-    groupIds: await makeGroups(),
     sent: false,
   };
-  await addDoc(collection(db, "donuts"), newDonut);
+
+  const donutRef = await addDoc(collection(db, "donuts"), newDonut);
+  const donutId = donutRef.id;
+  const groupIds = await makeGroups(donutId);
+
+  await updateDoc(donutRef, { groupIds });
 };
 
 export const editDonut = async (

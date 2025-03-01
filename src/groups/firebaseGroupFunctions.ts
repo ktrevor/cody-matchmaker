@@ -1,6 +1,7 @@
 import {
   arrayRemove,
   arrayUnion,
+  deleteDoc,
   doc,
   getDoc,
   updateDoc,
@@ -26,9 +27,19 @@ export const getGroupById = async (groupId: string): Promise<Group> => {
 
   return {
     id: groupId,
-    name: groupData.name,
+    donutId: groupData.donutId,
     members: members,
   } as Group;
+};
+
+export const deleteGroup = async (group: Group): Promise<void> => {
+  const donutRef = doc(db, "donuts", group.donutId);
+  await updateDoc(donutRef, {
+    groupIds: arrayRemove(group.id),
+  });
+
+  const groupRef = doc(db, "groups", group.id);
+  await deleteDoc(groupRef);
 };
 
 export const deleteMemberFromGroup = async (
