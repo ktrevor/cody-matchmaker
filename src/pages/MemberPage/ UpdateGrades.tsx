@@ -69,7 +69,10 @@ export const UpdateGrades = () => {
             <ExclamationCircleFilled
               style={{ color: "orange", marginRight: 8 }}
             />
-            Delete these seniors and move other members up a grade?
+            {`Delete ${seniors.length} ${
+              seniors.length === 1 ? "senior" : "seniors"
+            } and move other members up a
+            grade?`}
           </Text>
         </div>
         <List
