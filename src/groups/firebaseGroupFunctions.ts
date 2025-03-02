@@ -1,6 +1,8 @@
 import {
+  addDoc,
   arrayRemove,
   arrayUnion,
+  collection,
   deleteDoc,
   doc,
   getDoc,
@@ -30,6 +32,22 @@ export const getGroupById = async (groupId: string): Promise<Group> => {
     donutId: groupData.donutId,
     members: members,
   } as Group;
+};
+
+export const addGroup = async (group: Group): Promise<string> => {
+  const groupRef = await addDoc(collection(db, "groups"), {
+    donutId: group.donutId,
+    memberIds: [],
+  });
+
+  const firebaseGroupId = groupRef.id;
+
+  const donutRef = doc(db, "donuts", group.donutId);
+  await updateDoc(donutRef, {
+    groupIds: arrayUnion(firebaseGroupId),
+  });
+
+  return firebaseGroupId;
 };
 
 export const deleteGroup = async (group: Group): Promise<void> => {

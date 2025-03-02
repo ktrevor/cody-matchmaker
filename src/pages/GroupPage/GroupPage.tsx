@@ -10,6 +10,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { SaveOutlined } from "@ant-design/icons";
 import {
+  addGroup,
   addMemberToGroup,
   deleteGroup,
   deleteMemberFromGroup,
@@ -28,7 +29,7 @@ export const GroupPage = () => {
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<Date>(new Date());
   const [groups, setGroups] = useState<Group[]>([]);
-  const [addedGroup, setAddedGroups] = useState<Group[]>([]);
+  const [addedGroups, setAddedGroups] = useState<Group[]>([]);
   const [deletedGroups, setDeletedGroups] = useState<Group[]>([]);
   const [addedMembers, setAddedMembers] = useState<Map<Member, Group>>(
     new Map()
@@ -185,28 +186,61 @@ export const GroupPage = () => {
     if (donut.name !== name) updatedFields.name = name;
     if (donut.date !== date) updatedFields.date = date;
 
-    if (JSON.stringify(donut.groups) !== JSON.stringify(groups)) {
-      for (const [member, group] of addedMembers) {
-        await addMemberToGroup(group, member);
-      }
-
-      for (const [member, group] of deletedMembers) {
-        await deleteMemberFromGroup(group, member);
-      }
-
-      for (const group of deletedGroups) {
-        await deleteGroup(group);
-        await updateDonuts();
-      }
-    }
-
     if (Object.keys(updatedFields).length > 0) {
       const donutRef = doc(db, "donuts", donut.id);
       await updateDoc(donutRef, updatedFields);
       setDonut({ ...donut, ...updatedFields });
-      setIsDirty(false);
     }
 
+    if (JSON.stringify(donut.groups) !== JSON.stringify(groups)) {
+      const firebaseGroupIdMapping = new Map();
+      for (const group of addedGroups) {
+        const firebaseGroupId = await addGroup(group);
+        firebaseGroupIdMapping.set(group.id, firebaseGroupId);
+      }
+
+      for (const [member, group] of addedMembers) {
+        const firebaseGroupId = firebaseGroupIdMapping.get(group.id);
+        if (firebaseGroupId) {
+          const updatedGroup = { ...group, id: firebaseGroupId };
+          await addMemberToGroup(updatedGroup, member);
+        } else {
+          await addMemberToGroup(group, member);
+        }
+      }
+
+      for (const [member, group] of deletedMembers) {
+        const firebaseGroupId = firebaseGroupIdMapping.get(group.id);
+        if (firebaseGroupId) {
+          const updatedGroup = { ...group, id: firebaseGroupId };
+          await deleteMemberFromGroup(updatedGroup, member);
+        } else {
+          await deleteMemberFromGroup(group, member);
+        }
+      }
+
+      for (const group of deletedGroups) {
+        const firebaseGroupId = firebaseGroupIdMapping.get(group.id);
+        if (firebaseGroupId) {
+          const updatedGroup = { ...group, id: firebaseGroupId };
+          await deleteGroup(updatedGroup);
+        } else {
+          await deleteGroup(group);
+        }
+      }
+
+      if (addedGroups.length > 0 || deletedGroups.length > 0) {
+        await updateDonuts();
+      }
+
+      //reset
+      setAddedGroups([]);
+      setAddedMembers(new Map());
+      setDeletedMembers(new Map());
+      setDeletedGroups([]);
+    }
+
+    setIsDirty(false);
     message.success(`Donut ${donut.name} saved successfully!`);
   };
 
