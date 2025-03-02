@@ -107,6 +107,7 @@ export const GroupsCardGrid = ({
                 <AddGroupMember
                   key={group.id}
                   group={group}
+                  index={index + 1}
                   groups={groups}
                   updateGroup={(targetGroup, newMember) => {
                     onMemberAdd(targetGroup, newMember);
