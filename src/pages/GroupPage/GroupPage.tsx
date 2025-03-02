@@ -18,12 +18,15 @@ import {
 import { Group } from "../../groups/Group";
 import { Member } from "../../members/Member";
 import { useDonutsContext } from "../../components/DonutsProvider";
+import { UngroupedMembers } from "./UngroupedMembers";
+import { useMembersContext } from "../../components/MembersProvider";
 
 export const GroupPage = () => {
   const { donuts, updateDonuts } = useDonutsContext();
   const { donutId } = useParams();
   const { Title } = Typography;
   const { isDirty, setIsDirty } = useDirtyContext();
+  const { members } = useMembersContext();
 
   const [donut, setDonut] = useState<Donut | null>(null);
   const [name, setName] = useState<string>("");
@@ -37,6 +40,7 @@ export const GroupPage = () => {
   const [deletedMembers, setDeletedMembers] = useState<Map<Member, Group>>(
     new Map()
   );
+  const [ungroupedMembers, setUngroupedMembers] = useState<Member[]>([]);
 
   useEffect(() => {
     if (donutId) {
@@ -50,6 +54,16 @@ export const GroupPage = () => {
       }
     }
   }, [donutId, donuts]);
+
+  useEffect(() => {
+    const allGroupedMembers = new Set(
+      groups.flatMap((group) => group.members.map((member) => member.id))
+    );
+    const ungroupedMembers = members.filter(
+      (member) => !allGroupedMembers.has(member.id)
+    );
+    setUngroupedMembers(ungroupedMembers);
+  }, [groups, members]);
 
   useEffect(() => {
     // browswer refresh, tab close
@@ -249,6 +263,7 @@ export const GroupPage = () => {
       <DonutName name={name} updateName={handleNameChange} />
       <DonutDate date={date} updateDate={handleDateChange} />
       <Title level={1}>Groups</Title>
+      <UngroupedMembers members={ungroupedMembers} />
       <GroupsCardGrid
         groups={groups}
         onGroupAdd={handleAddGroup}
