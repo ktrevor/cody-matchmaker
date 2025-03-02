@@ -8,6 +8,7 @@ import { PlusOutlined, SwapOutlined } from "@ant-design/icons";
 
 interface GroupsCardGridProps {
   groups: Group[];
+  onGroupAdd: () => void;
   onGroupDelete: (targetGroup: Group) => void;
   onMemberAdd: (targetGroup: Group, newMember: Member, index?: number) => void;
   onMemberDelete: (targetGroup: Group, deleteMember: Member) => void;
@@ -15,6 +16,7 @@ interface GroupsCardGridProps {
 
 export const GroupsCardGrid = ({
   groups,
+  onGroupAdd,
   onGroupDelete,
   onMemberAdd,
   onMemberDelete,
@@ -86,7 +88,7 @@ export const GroupsCardGrid = ({
         disabled={selectedMembers.length !== 2}
         icon={<SwapOutlined />}
       />
-      <Button type={"primary"} onClick={() => null} icon={<PlusOutlined />}>
+      <Button type={"primary"} onClick={onGroupAdd} icon={<PlusOutlined />}>
         Add group
       </Button>
       <Row gutter={16} style={{ backgroundColor: "#f0f2f5" }}>

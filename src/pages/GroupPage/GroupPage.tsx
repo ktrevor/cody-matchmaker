@@ -28,6 +28,7 @@ export const GroupPage = () => {
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<Date>(new Date());
   const [groups, setGroups] = useState<Group[]>([]);
+  const [addedGroup, setAddedGroups] = useState<Group[]>([]);
   const [deletedGroups, setDeletedGroups] = useState<Group[]>([]);
   const [addedMembers, setAddedMembers] = useState<Map<Member, Group>>(
     new Map()
@@ -163,6 +164,19 @@ export const GroupPage = () => {
     setIsDirty(true);
   };
 
+  const handleAddGroup = () => {
+    const newGroup: Group = {
+      id: `temp-${crypto.randomUUID()}`,
+      donutId: donutId ? donutId : "",
+      members: [],
+    };
+
+    setAddedGroups((prev) => [...prev, newGroup]);
+    setGroups((prevGroups) => [...prevGroups, newGroup]);
+
+    setIsDirty(true);
+  };
+
   const handleSave = async () => {
     if (!donut) return;
 
@@ -203,6 +217,7 @@ export const GroupPage = () => {
       <Title level={1}>Groups</Title>
       <GroupsCardGrid
         groups={groups}
+        onGroupAdd={handleAddGroup}
         onGroupDelete={handleDeleteGroup}
         onMemberAdd={handleAddMemberToGroup}
         onMemberDelete={handleDeleteMemberFromGroup}
