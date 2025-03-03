@@ -1,5 +1,13 @@
 import { useState, useEffect, Key, useRef } from "react";
-import { Table, Space, Input, Button, InputRef, TableColumnsType } from "antd";
+import {
+  Table,
+  Space,
+  Input,
+  Button,
+  InputRef,
+  TableColumnsType,
+  Checkbox,
+} from "antd";
 import { Member } from "../../members/Member";
 import { EditMember } from "./EditMember";
 import { useMembersContext } from "../../components/MembersProvider";
@@ -94,18 +102,43 @@ export const MemberTable = () => {
 
       return (
         <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-          <Input
-            ref={searchInput}
-            placeholder={placeholderText}
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
-            style={{ marginBottom: 8, display: "block" }}
-          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+              marginBottom: 8,
+              gap: "8px",
+            }}
+          >
+            <Input
+              ref={searchInput}
+              placeholder={placeholderText}
+              value={selectedKeys[0] === "None" ? "" : selectedKeys[0]}
+              onChange={(e) =>
+                setSelectedKeys(e.target.value ? [e.target.value] : [])
+              }
+              onPressEnter={() =>
+                handleSearch(selectedKeys as string[], confirm, dataIndex)
+              }
+              style={{ flexGrow: 1 }}
+              disabled={selectedKeys.includes("None")}
+            />
+            {dataIndex === "treeId" && (
+              <Checkbox
+                checked={selectedKeys.includes("None")}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedKeys(["None"]);
+                  } else {
+                    setSelectedKeys([]);
+                  }
+                }}
+              >
+                None
+              </Checkbox>
+            )}
+          </div>
           <Space>
             <Button
               type="primary"
@@ -154,6 +187,9 @@ export const MemberTable = () => {
     ),
     onFilter: (value, record) => {
       if (dataIndex === "treeId") {
+        if (value === "None") {
+          return !record.treeId;
+        }
         return record.treeId
           ? treeNames[record.treeId]
               ?.toLowerCase()
