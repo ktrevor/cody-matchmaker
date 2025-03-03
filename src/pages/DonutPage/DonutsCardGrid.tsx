@@ -67,28 +67,19 @@ export const DonutsCardGrid = () => {
     return sentStatus && matchesSearch && inDateRange;
   });
 
-  const autoCompleteOptions = donuts.map((donut) => ({
-    value: donut.name,
-  }));
-
   return (
     <>
       <Row style={{ marginBottom: 12, alignItems: "center", width: "100%" }}>
         <Col flex="auto">
           <Space>
-            <AutoComplete
+            <Input
               style={{ width: 500 }}
-              options={autoCompleteOptions}
-              onSelect={(value) => setSearchQuery(value)}
-            >
-              <Input
-                prefix={<SearchOutlined />}
-                placeholder="Search with name"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                allowClear
-              />
-            </AutoComplete>
+              prefix={<SearchOutlined />}
+              placeholder="Search with name"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              allowClear
+            />
             <RangePicker
               value={dateRange}
               onChange={handleDateChange}
