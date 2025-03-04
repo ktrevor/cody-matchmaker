@@ -12,7 +12,7 @@ import { dateFormat } from "../../donuts/Donut";
 dayjs.extend(isBetween);
 
 const { RangePicker } = DatePicker;
-const { Link } = Typography;
+const { Text, Link } = Typography;
 
 export const DonutsCardGrid = () => {
   const { donuts } = useDonutsContext();
@@ -69,7 +69,14 @@ export const DonutsCardGrid = () => {
 
   return (
     <>
-      <Row style={{ marginBottom: 12, alignItems: "center", width: "100%" }}>
+      <Row
+        style={{
+          marginTop: 12,
+          marginBottom: 8,
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
         <Col flex="auto">
           <Space wrap>
             <Input
@@ -115,21 +122,33 @@ export const DonutsCardGrid = () => {
         </Col>
       </Row>
 
-      <Row
-        gutter={[8, 8]}
+      <div
         style={{
           backgroundColor: "#f0f2f5",
           padding: "8px",
+          borderRadius: "8px",
+          height: "475px",
+          overflowY: "auto",
         }}
       >
-        {filteredDonuts
-          .sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
-          .map((donut) => (
-            <Col span={6} key={donut.id}>
-              <DonutCard donut={donut} />
+        <Row gutter={[8, 8]}>
+          {filteredDonuts.length === 0 ? (
+            <Col span={24}>
+              <div style={{ textAlign: "center" }}>
+                <Text>No donuts found</Text>
+              </div>
             </Col>
-          ))}
-      </Row>
+          ) : (
+            filteredDonuts
+              .sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
+              .map((donut) => (
+                <Col span={6} key={donut.id}>
+                  <DonutCard donut={donut} />
+                </Col>
+              ))
+          )}
+        </Row>
+      </div>
     </>
   );
 };
