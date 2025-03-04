@@ -12,7 +12,7 @@ import { dateFormat } from "../../donuts/Donut";
 dayjs.extend(isBetween);
 
 const { RangePicker } = DatePicker;
-const { Text, Link } = Typography;
+const { Title, Link } = Typography;
 
 export const DonutsCardGrid = () => {
   const { donuts } = useDonutsContext();
@@ -133,10 +133,14 @@ export const DonutsCardGrid = () => {
       >
         <Row gutter={[8, 8]}>
           {filteredDonuts.length === 0 ? (
-            <Col span={24}>
-              <div style={{ textAlign: "center" }}>
-                <Text>No donuts found</Text>
-              </div>
+            <Col
+              span={24}
+              style={{
+                textAlign: "center",
+                marginTop: "25vh",
+              }}
+            >
+              <Title level={5}>No donuts found</Title>
             </Col>
           ) : (
             filteredDonuts
