@@ -1,4 +1,4 @@
-import { AutoComplete, Button, Input, Select, Space } from "antd";
+import { AutoComplete, Button, Input, Space } from "antd";
 import { Member } from "../../members/Member";
 import { Group } from "../../groups/Group";
 import { PlusOutlined } from "@ant-design/icons";
@@ -52,7 +52,7 @@ export const AddGroupMember = ({
         style={{ flex: 1 }}
         options={autoCompleteOptions}
         value={searchQuery}
-        onSelect={(value, option) => {
+        onSelect={(_, option) => {
           const member = members.find((m) => m.id === option.memberId);
           setSelectedMember(member || null);
         }}

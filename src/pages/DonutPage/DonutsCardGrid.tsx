@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Col, Row, Input, Button, Typography, AutoComplete, Space } from "antd";
+import { Col, Row, Input, Button, Typography, Space } from "antd";
 import { DonutCard } from "./DonutCard";
 import { useDonutsContext } from "../../components/DonutsProvider";
 import { DeleteAllDonuts } from "./DeleteAllDonuts";
@@ -71,10 +71,12 @@ export const DonutsCardGrid = () => {
     <>
       <Row style={{ marginBottom: 12, alignItems: "center", width: "100%" }}>
         <Col flex="auto">
-          <Space>
+          <Space wrap>
             <Input
-              style={{ width: 500 }}
-              prefix={<SearchOutlined />}
+              style={{ width: "450px" }}
+              prefix={
+                <SearchOutlined style={{ color: "rgba(0, 0, 0, 0.45)" }} />
+              }
               placeholder="Search with name"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -85,6 +87,7 @@ export const DonutsCardGrid = () => {
               onChange={handleDateChange}
               allowClear
               format={dateFormat}
+              style={{ width: "300px" }}
             />
             <Button.Group>
               <Button
@@ -106,7 +109,7 @@ export const DonutsCardGrid = () => {
           </Space>
         </Col>
         <Col>
-          <Space>
+          <Space style={{ marginTop: 8 }}>
             <DeleteAllDonuts />
           </Space>
         </Col>

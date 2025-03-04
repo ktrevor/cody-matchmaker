@@ -26,8 +26,8 @@ export const MemberTable = () => {
   const { forests } = useForestsContext();
   const [treeNames, setTreeNames] = useState<{ [key: string]: string }>({});
 
-  const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState("");
+  const [_searchText, setSearchText] = useState("");
+  const [_searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
 
   const [pagination, setPagination] = useState({

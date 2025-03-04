@@ -1,4 +1,4 @@
-import { Button, List, message, Modal, Space, Typography } from "antd";
+import { Button, List, message, Modal, Typography } from "antd";
 import { promoteMembersGrades } from "../../members/firebaseMemberFunctions";
 import { useMembersContext } from "../../components/MembersProvider";
 import {

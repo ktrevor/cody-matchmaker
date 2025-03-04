@@ -2,11 +2,10 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { getMembers } from "../members/firebaseMemberFunctions";
 
-const members = await getMembers();
-
 export const makeGroups = async (donutId: string): Promise<String[]> => {
   const groupIds: String[] = [];
   const groupSize = 3;
+  const members = await getMembers();
 
   const groupCollection = collection(db, "groups");
 
