@@ -263,7 +263,7 @@ export const GroupPage = () => {
       <DonutName name={name} updateName={handleNameChange} />
       <DonutDate date={date} updateDate={handleDateChange} />
       <Title level={1}>Groups</Title>
-      <UngroupedMembers members={ungroupedMembers} />
+      <UngroupedMembers ungroupedMembers={ungroupedMembers} />
       <GroupsCardGrid
         groups={groups}
         onGroupAdd={handleAddGroup}

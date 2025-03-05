@@ -1,33 +1,39 @@
-import { Collapse, Row, Col, Card, Typography } from "antd";
+import { Collapse, Row, Col, Card, Typography, Tag } from "antd";
 import { Member } from "../../members/Member";
-import { useState, useEffect } from "react";
-
-const { Text } = Typography;
+import { useMembersContext } from "../../components/MembersProvider";
 
 interface UngroupedMembersProps {
-  members: Member[];
+  ungroupedMembers: Member[];
 }
 
-export const UngroupedMembers = ({ members }: UngroupedMembersProps) => {
-  const [activeKey, setActiveKey] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (members.length > 0) {
-      setActiveKey(["1"]);
-    } else {
-      setActiveKey([]);
-    }
-  }, [members.length]);
+export const UngroupedMembers = ({
+  ungroupedMembers,
+}: UngroupedMembersProps) => {
+  const { members } = useMembersContext();
+  const getTreeName = (id: string | null): string | undefined => {
+    const member = members.find((m) => m.id === id);
+    return member ? member.name : undefined;
+  };
 
   return (
-    <Collapse activeKey={activeKey} onChange={setActiveKey}>
+    <Collapse>
       <Collapse.Panel header="Ungrouped Members" key="1">
-        {members.length > 0 ? (
+        {ungroupedMembers.length > 0 ? (
           <Row gutter={[16, 16]}>
-            {members.map((member) => (
+            {ungroupedMembers.map((member) => (
               <Col span={8} key={member.id}>
                 <Card bordered>
-                  <Text>{member.name}</Text>
+                  <div>
+                    {member.name}
+                    <br />
+                    <Tag> {member.grade} </Tag>
+                    <Tag> {member.gender} </Tag>
+                    <Tag> {member.joined} </Tag>
+                    <Tag> {member.forest} </Tag>
+                    {member.treeId ? (
+                      <Tag>{getTreeName(member.treeId)}</Tag>
+                    ) : null}
+                  </div>
                 </Card>
               </Col>
             ))}
