@@ -86,6 +86,7 @@ export const EditJoined = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         onClose={handleCancel}
+        closable={false}
         footer={[
           <Button key="cancel" onClick={handleCancel}>
             Cancel
