@@ -5,7 +5,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Read the token from the environment variables or replace with your token FOUND IN MESSENGER
-const token = process.env.SLACK_TOKEN || "";
+const token = process.env.SLACK_BOT_TOKEN;
+
+console.log("Bot Token:", process.env.SLACK_BOT_TOKEN);  // This will print the bot token, make sure it is correct
 
 // Initialize the Slack client
 const web = new WebClient(token);
@@ -71,7 +73,7 @@ getUserIds();
 sendMessageToChannel("general", "Hello, world! Kate says hiiiiiiiii");
 
 //Kate and alicia user IDS
-const userList = [];
+const userList = ['U08A7LSRTK7', 'U089W09QZMM'];
 
 const mwahaha = "HELLOOOOOO TESTING DONUT BOT NEW CHAT LETS GOOOOOOOOOO!";
 
