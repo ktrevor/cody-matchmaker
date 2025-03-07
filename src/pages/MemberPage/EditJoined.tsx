@@ -71,6 +71,10 @@ export const EditJoined = () => {
     setCurrentSemesters(updatedSemesters);
   };
 
+  const itemHeight = 50;
+  const maxItems = 8;
+  const listHeight = maxItems * itemHeight;
+
   return (
     <>
       <Button type="primary" onClick={showModal}>
@@ -124,14 +128,15 @@ export const EditJoined = () => {
                 />,
               ]}
               style={{
-                maxHeight: 50,
+                maxHeight: itemHeight,
               }}
             >
               {semester}
             </List.Item>
           )}
           style={{
-            maxHeight: 410,
+            maxHeight: `min(${listHeight + 4}px, 60vh)`,
+            minHeight: `${listHeight}px`,
             overflowY: "auto",
           }}
         />

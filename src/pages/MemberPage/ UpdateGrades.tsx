@@ -44,6 +44,9 @@ export const UpdateGrades = () => {
     setSeniors((prev) => prev.filter((s) => s.id !== senior.id));
   };
 
+  const itemHeight = 50;
+  const maxItems = Math.floor((window.innerHeight * 0.5) / itemHeight);
+
   return (
     <>
       <Button danger type={"primary"} onClick={showModal}>
@@ -89,14 +92,15 @@ export const UpdateGrades = () => {
                 />,
               ]}
               style={{
-                maxHeight: 50,
+                maxHeight: itemHeight,
               }}
             >
               {senior.name}
             </List.Item>
           )}
           style={{
-            maxHeight: 410,
+            maxHeight: `${maxItems * itemHeight}px`,
+            minHeight: "200px",
             overflowY: "auto",
           }}
         />
