@@ -108,6 +108,10 @@ export const EditForests = () => {
     }));
   };
 
+  const itemHeight = 50;
+  const maxItems = 8;
+  const listHeight = maxItems * itemHeight;
+
   return (
     <>
       <Button type="primary" onClick={showModal}>
@@ -181,34 +185,42 @@ export const EditForests = () => {
                   ),
                 ]}
                 style={{
-                  maxHeight: 50,
+                  display: "flex",
+                  alignItems: "center",
+                  maxHeight: listHeight,
                 }}
               >
-                <Input
-                  value={forestInputs[forest]}
-                  onChange={(e) =>
-                    setForestInputs((prev) => ({
-                      ...prev,
-                      [forest]: e.target.value,
-                    }))
-                  }
-                  onBlur={(e) => {
-                    const updatedValue = e.target.value.trim();
-                    if (updatedValue === "") {
+                <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+                  <Input
+                    value={forestInputs[forest]}
+                    onChange={(e) =>
                       setForestInputs((prev) => ({
                         ...prev,
-                        [forest]: forest,
-                      }));
-                    } else {
-                      handleRenameForest(forest, updatedValue);
+                        [forest]: e.target.value,
+                      }))
                     }
-                  }}
-                />
+                    onBlur={(e) => {
+                      const updatedValue = e.target.value.trim();
+                      if (updatedValue === "") {
+                        setForestInputs((prev) => ({
+                          ...prev,
+                          [forest]: forest,
+                        }));
+                      } else {
+                        handleRenameForest(forest, updatedValue);
+                      }
+                    }}
+                  />
+                </div>
               </List.Item>
             );
           }}
           style={{
-            maxHeight: 410,
+            maxHeight: `min(${listHeight + 4}px, 60vh)`,
+            minHeight: `${Math.min(
+              listHeight,
+              currentForests.length * itemHeight
+            )}px`,
             overflowY: "auto",
           }}
         />

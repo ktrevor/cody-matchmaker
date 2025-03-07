@@ -45,7 +45,8 @@ export const UpdateGrades = () => {
   };
 
   const itemHeight = 50;
-  const maxItems = Math.floor((window.innerHeight * 0.5) / itemHeight);
+  const maxItems = 8;
+  const listHeight = maxItems * itemHeight;
 
   return (
     <>
@@ -67,17 +68,23 @@ export const UpdateGrades = () => {
           </Button>,
         ]}
       >
-        <div style={{ marginBottom: 12 }}>
-          <Text style={{ fontWeight: 600, marginBottom: 12 }}>
-            <ExclamationCircleFilled
-              style={{ color: "orange", marginRight: 8 }}
-            />
+        <div style={{ marginBottom: 12, display: "flex" }}>
+          <ExclamationCircleFilled
+            style={{
+              color: "orange",
+              marginRight: 8,
+              display: "inline-block",
+              verticalAlign: "top",
+              paddingTop: "4px",
+            }}
+          />
+          <Text style={{ fontWeight: 600, display: "inline" }}>
             {`Delete ${seniors.length} ${
               seniors.length === 1 ? "senior" : "seniors"
-            } and move other members up a
-            grade?`}
+            } and move other members up a grade?`}
           </Text>
         </div>
+
         <List
           bordered
           dataSource={seniors}
@@ -99,8 +106,8 @@ export const UpdateGrades = () => {
             </List.Item>
           )}
           style={{
-            maxHeight: `${maxItems * itemHeight}px`,
-            minHeight: "200px",
+            maxHeight: `min(${listHeight + 4}px, 60vh)`,
+            minHeight: `${Math.min(listHeight, seniors.length * itemHeight)}px`,
             overflowY: "auto",
           }}
         />

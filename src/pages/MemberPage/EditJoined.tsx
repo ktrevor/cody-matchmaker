@@ -136,7 +136,10 @@ export const EditJoined = () => {
           )}
           style={{
             maxHeight: `min(${listHeight + 4}px, 60vh)`,
-            minHeight: `${listHeight}px`,
+            minHeight: `${Math.min(
+              listHeight,
+              currentSemesters.length * itemHeight
+            )}px`,
             overflowY: "auto",
           }}
         />
