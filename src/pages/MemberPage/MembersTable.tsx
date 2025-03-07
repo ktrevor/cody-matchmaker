@@ -1,4 +1,4 @@
-import { useState, useEffect, Key, useRef } from "react";
+import { useState, useEffect, useRef, Key } from "react";
 import {
   Table,
   Space,
@@ -32,7 +32,7 @@ export const MemberTable = () => {
 
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 6,
+    pageSize: 10,
   });
 
   const updatePageMembers = () => {
@@ -320,8 +320,14 @@ export const MemberTable = () => {
           key: member.id,
         }))}
         columns={columns}
-        pagination={pagination}
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          onChange: (page) => setPagination({ ...pagination, current: page }),
+          responsive: true,
+        }}
         onChange={handleTableChange}
+        scroll={{ x: true }}
       />
     </>
   );
