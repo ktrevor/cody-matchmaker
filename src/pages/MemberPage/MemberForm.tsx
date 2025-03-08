@@ -21,6 +21,7 @@ const normalizeName = (name: string) => {
     .join(" ");
 };
 
+//hi world
 export type MemberFormFields = {
   name: string;
   slackId: string;
