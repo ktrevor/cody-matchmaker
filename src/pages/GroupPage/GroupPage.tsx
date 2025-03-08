@@ -20,6 +20,7 @@ import { Member } from "../../members/Member";
 import { useDonutsContext } from "../../components/DonutsProvider";
 import { UngroupedMembers } from "./UngroupedMembers";
 import { useMembersContext } from "../../components/MembersProvider";
+import { DemoButton } from "./DemoButton";
 
 export const GroupPage = () => {
   const { donuts, updateDonuts } = useDonutsContext();
@@ -274,6 +275,7 @@ export const GroupPage = () => {
       <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
         Save
       </Button>
+      <DemoButton count={5} />
     </>
   );
 };
