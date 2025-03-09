@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Col, Row, Input, Button, Typography, Space } from "antd";
+import { Input, Button, Typography } from "antd";
 import { DonutCard } from "./DonutCard";
 import { useDonutsContext } from "../../components/DonutsProvider";
 import { DeleteAllDonuts } from "./DeleteAllDonuts";
@@ -12,7 +12,7 @@ import { dateFormat } from "../../donuts/Donut";
 dayjs.extend(isBetween);
 
 const { RangePicker } = DatePicker;
-const { Title, Link } = Typography;
+const { Title } = Typography;
 
 export const DonutsCardGrid = () => {
   const { donuts } = useDonutsContext();
@@ -69,89 +69,119 @@ export const DonutsCardGrid = () => {
 
   return (
     <>
-      <Row
+      <div
         style={{
           marginTop: 12,
           marginBottom: 8,
-          alignItems: "center",
           width: "100%",
+          display: "flex",
+          gap: 8,
+          flexWrap: "wrap",
         }}
       >
-        <Col flex="auto">
-          <Space wrap>
-            <Input
-              style={{ width: "450px" }}
-              prefix={
-                <SearchOutlined style={{ color: "rgba(0, 0, 0, 0.45)" }} />
-              }
-              placeholder="Search with name"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              allowClear
-            />
-            <RangePicker
-              value={dateRange}
-              onChange={handleDateChange}
-              allowClear
-              format={dateFormat}
-              style={{ width: "300px" }}
-            />
-            <Button.Group>
-              <Button
-                type={statusFilter === "sent" ? "primary" : "default"}
-                onClick={() => setStatusFilter("sent")}
-              >
-                Sent
-              </Button>
-              <Button
-                type={statusFilter === "unsent" ? "primary" : "default"}
-                onClick={() => setStatusFilter("unsent")}
-              >
-                Unsent
-              </Button>
-            </Button.Group>
-            {statusFilter !== "all" && (
-              <Link onClick={() => setStatusFilter("all")}>Clear</Link>
-            )}
-          </Space>
-        </Col>
-        <Col>
-          <Space style={{ marginTop: 8 }}>
-            <DeleteAllDonuts />
-          </Space>
-        </Col>
-      </Row>
+        <div
+          style={{
+            flex: "1 1 100%",
+            maxWidth: 500,
+          }}
+        >
+          <Input
+            prefix={<SearchOutlined style={{ color: "rgba(0, 0, 0, 0.45)" }} />}
+            placeholder="Search with name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            allowClear
+          />
+        </div>
+        <div
+          style={{
+            width: "300px",
+          }}
+        >
+          <RangePicker
+            value={dateRange}
+            onChange={handleDateChange}
+            allowClear
+            format={dateFormat}
+            style={{
+              width: "100%",
+            }}
+          />
+        </div>
+        <div>
+          <Button.Group>
+            <Button
+              type={statusFilter === "all" ? "primary" : "default"}
+              onClick={() => setStatusFilter("all")}
+              style={{ width: "75px" }}
+            >
+              All
+            </Button>
+            <Button
+              type={statusFilter === "sent" ? "primary" : "default"}
+              onClick={() => setStatusFilter("sent")}
+              style={{ width: "75px" }}
+            >
+              Sent
+            </Button>
+            <Button
+              type={statusFilter === "unsent" ? "primary" : "default"}
+              onClick={() => setStatusFilter("unsent")}
+              style={{ width: "75px" }}
+            >
+              Unsent
+            </Button>
+          </Button.Group>
+        </div>
+
+        <div
+          style={{
+            marginLeft: "auto",
+            marginRight: 0,
+          }}
+        >
+          <DeleteAllDonuts />
+        </div>
+      </div>
 
       <div
         style={{
           backgroundColor: "#f0f2f5",
-          padding: "8px",
+          padding: "6px",
           borderRadius: "8px",
-          height: "475px",
-          overflowY: "auto",
+          height: "100vh",
         }}
       >
-        <Row gutter={[8, 8]}>
+        <div
+          style={{
+            overflowY: "auto",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+            gap: "12px",
+            padding: "6px",
+          }}
+        >
           {filteredDonuts.length === 0 ? (
-            <Col
-              span={24}
+            <div
               style={{
-                textAlign: "center",
-                marginTop: "25vh",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
               }}
             >
               <Title level={5}>No donuts found</Title>
-            </Col>
+            </div>
           ) : (
             filteredDonuts
               .sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
               .map((donut) => (
-                <Col span={6} key={donut.id}>
+                <div key={donut.id}>
                   <DonutCard donut={donut} />
-                </Col>
+                </div>
               ))
           )}
-        </Row>
+        </div>
       </div>
     </>
   );

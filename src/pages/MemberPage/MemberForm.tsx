@@ -169,7 +169,7 @@ export const MemberForm = ({
       </Form.Item>
 
       <Row justify="center" style={{ marginBottom: 0 }}>
-        <Col xs={24} sm={12} md={8}>
+        <Col>
           <Space style={{ width: "100%", justifyContent: "center" }}>
             <Button htmlType="button" onClick={onCancel}>
               Cancel

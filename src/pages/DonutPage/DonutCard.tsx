@@ -18,7 +18,6 @@ export const DonutCard = ({ donut }: DonutCardProps) => {
         navigate(`/groups/${donut.id}`);
       }}
       hoverable
-      style={{ width: "300px" }}
     >
       <Meta
         title={donut.name}

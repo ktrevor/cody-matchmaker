@@ -307,13 +307,18 @@ export const MemberTable = () => {
 
   return (
     <>
-      <Space
-        style={{ width: "100%", justifyContent: "flex-end", marginBottom: 12 }}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 8,
+          marginBottom: 12,
+        }}
       >
         <EditJoined />
         <UpdateGrades />
         <EditForests />
-      </Space>
+      </div>
       <Table
         dataSource={[...members].map((member) => ({
           ...member,
