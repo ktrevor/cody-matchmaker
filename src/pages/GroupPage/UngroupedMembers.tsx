@@ -43,11 +43,11 @@ export const UngroupedMembers = ({
                     className={`${styles.listItem} ${
                       selectedMembers.includes(member.id) ? styles.selected : ""
                     }`}
-                    bordered
                     onClick={() => onSelectMember(member)}
                     style={{
                       padding: 0,
                     }}
+                    bordered={false}
                   >
                     <div style={{ fontSize: "14px" }}>
                       {member.name}
@@ -62,18 +62,9 @@ export const UngroupedMembers = ({
                         }}
                       >
                         <Tag style={{ fontSize: "12px" }}> {member.grade} </Tag>
-                        <Tag style={{ fontSize: "12px" }}>
-                          {" "}
-                          {member.gender}{" "}
-                        </Tag>
-                        <Tag style={{ fontSize: "12px" }}>
-                          {" "}
-                          {member.joined}{" "}
-                        </Tag>
-                        <Tag style={{ fontSize: "12px" }}>
-                          {" "}
-                          {member.forest}{" "}
-                        </Tag>
+                        <Tag style={{ fontSize: "12px" }}>{member.gender}</Tag>
+                        <Tag style={{ fontSize: "12px" }}>{member.joined}</Tag>
+                        <Tag style={{ fontSize: "12px" }}>{member.forest}</Tag>
                         {member.treeId ? (
                           <Tag style={{ fontSize: "12px" }}>
                             {getTreeName(member.treeId)}

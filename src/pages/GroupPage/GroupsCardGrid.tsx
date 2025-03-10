@@ -119,6 +119,7 @@ export const GroupsCardGrid = ({
           padding: "6px",
           borderRadius: "8px",
           height: "100vh",
+          overflowX: "auto",
         }}
       >
         <Row>

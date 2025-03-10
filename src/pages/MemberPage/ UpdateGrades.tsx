@@ -104,7 +104,7 @@ export const UpdateGrades = () => {
             </List.Item>
           )}
           style={{
-            maxHeight: `calc(10 * ${itemHeight}px)`,
+            maxHeight: `calc(8 * ${itemHeight}px)`,
             overflowY: "auto",
           }}
         />

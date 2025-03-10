@@ -172,7 +172,14 @@ export const DonutsCardGrid = () => {
             }}
           >
             {filteredDonuts
-              .sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
+              .sort((a, b) => {
+                const dateCompare =
+                  dayjs(b.date).valueOf() - dayjs(a.date).valueOf();
+                if (dateCompare === 0) {
+                  return a.name.localeCompare(b.name);
+                }
+                return dateCompare;
+              })
               .map((donut) => (
                 <div key={donut.id}>
                   <DonutCard donut={donut} />
