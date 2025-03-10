@@ -30,6 +30,7 @@ export const GroupCard = ({
     const member = members.find((m) => m.id === id);
     return member ? member.name : undefined;
   };
+
   return (
     <Card
       title={

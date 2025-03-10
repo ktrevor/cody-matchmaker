@@ -22,7 +22,7 @@ export const UngroupedMembers = ({
 
   return (
     <Collapse>
-      <Collapse.Panel header="Ungrouped Members" key="1">
+      <Collapse.Panel header="Ungrouped" key="1">
         {ungroupedMembers.length > 0 ? (
           <Row>
             {ungroupedMembers.map((member) => (

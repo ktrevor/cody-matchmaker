@@ -1,4 +1,4 @@
-import { Button, message, Typography } from "antd";
+import { Button, Col, message, Row, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { DonutName } from "./DonutName";
 import { DonutDate } from "./DonutDate";
@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { Donut } from "../../donuts/Donut";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
-import { SaveOutlined } from "@ant-design/icons";
+import { CoffeeOutlined, SaveOutlined } from "@ant-design/icons";
 import {
   addGroup,
   addMemberToGroup,
@@ -270,20 +270,46 @@ export const GroupPage = () => {
 
   return (
     <>
-      <DonutName name={name} updateName={handleNameChange} />
-      <DonutDate date={date} updateDate={handleDateChange} />
-      <Title level={1}>Groups</Title>
-      <GroupsCardGrid
-        groups={groups}
-        ungroupedGroup={ungroupedGroup}
-        onGroupAdd={handleAddGroup}
-        onGroupDelete={handleDeleteGroup}
-        onMemberAdd={handleAddMemberToGroup}
-        onMemberDelete={handleDeleteMemberFromGroup}
-      />
-      <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
-        Save
-      </Button>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <CoffeeOutlined style={{ fontSize: "24px", marginRight: 4 }} />
+        <DonutName name={name} updateName={handleNameChange} />
+        <DonutDate date={date} updateDate={handleDateChange} />
+        <div
+          style={{
+            marginLeft: "auto",
+            marginRight: 0,
+          }}
+        >
+          <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
+            Save
+          </Button>
+        </div>
+      </div>
+
+      <Row>
+        <Col span={24}>
+          <Title level={1}>Groups</Title>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={24}>
+          <GroupsCardGrid
+            groups={groups}
+            ungroupedGroup={ungroupedGroup}
+            onGroupAdd={handleAddGroup}
+            onGroupDelete={handleDeleteGroup}
+            onMemberAdd={handleAddMemberToGroup}
+            onMemberDelete={handleDeleteMemberFromGroup}
+          />
+        </Col>
+      </Row>
     </>
   );
 };

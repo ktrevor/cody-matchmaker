@@ -291,10 +291,10 @@ export const MemberTable = () => {
       title: "Action",
       key: "action",
       render: (_: any, record: Member) => (
-        <Space size="middle">
+        <div style={{ display: "flex", alignItems: "space-between" }}>
           <EditMember memberToEdit={record} />
           <DeleteMember memberToDelete={record} />
-        </Space>
+        </div>
       ),
     },
   ];

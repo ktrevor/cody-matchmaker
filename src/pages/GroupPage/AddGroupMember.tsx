@@ -7,14 +7,12 @@ import { useRef, useState } from "react";
 
 interface AddGroupMemberProps {
   group: Group;
-  index: number;
   groups: Group[];
   updateGroup: (targetGroup: Group, newMember: Member) => void;
 }
 
 export const AddGroupMember = ({
   group,
-  index,
   groups,
   updateGroup,
 }: AddGroupMemberProps) => {
@@ -32,7 +30,12 @@ export const AddGroupMember = ({
     const groupFound = groups.find((g) =>
       g.members.some((m) => m.id === member.id)
     );
-    return groupFound ? `(Group ${index})` : "";
+    if (groupFound) {
+      const groupIndex = groups.indexOf(groupFound);
+      return `Group ${groupIndex + 1}`;
+    }
+
+    return "Ungrouped";
   };
 
   const autoCompleteOptions = filteredMembers
@@ -41,7 +44,14 @@ export const AddGroupMember = ({
     )
     .map((member) => ({
       value: member.name,
-      label: `${member.name} ${getGroupNameForMember(member)}`,
+      label: (
+        <div>
+          <div>{member.name}</div>
+          <div style={{ fontSize: "12px", color: "#8c8c8c" }}>
+            {getGroupNameForMember(member)}
+          </div>
+        </div>
+      ),
       memberId: member.id,
     }));
 

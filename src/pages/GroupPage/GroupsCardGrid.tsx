@@ -85,47 +85,69 @@ export const GroupsCardGrid = ({
 
   return (
     <>
-      <Button
-        type={"primary"}
-        onClick={handleSwap}
-        disabled={selectedMembers.length !== 2}
-        icon={<SwapOutlined />}
-      />
-      <Button type={"primary"} onClick={onGroupAdd} icon={<PlusOutlined />}>
-        Add group
-      </Button>
-      <UngroupedMembers
-        ungroupedMembers={ungroupedGroup.members}
-        onSelectMember={(member) => handleSelectMember(member, ungroupedGroup)}
-        selectedMembers={selectedMembers.map((m) => m.member.id)}
-      />
-      <Row style={{ backgroundColor: "#f0f2f5" }}>
-        {groups.map((group, index) => (
-          <Col span={8} key={group.id}>
-            <GroupCard
-              group={group}
-              index={index + 1}
-              deleteGroup={onGroupDelete}
-              deleteFromGroup={(targetGroup, deleteMember) => {
-                onMemberDelete(targetGroup, deleteMember);
-              }}
-              onSelectMember={(member) => handleSelectMember(member, group)}
-              selectedMembers={selectedMembers.map((m) => m.member.id)}
-              children={
-                <AddGroupMember
-                  key={group.id}
-                  group={group}
-                  index={index + 1}
-                  groups={groups}
-                  updateGroup={(targetGroup, newMember) => {
-                    onMemberAdd(targetGroup, newMember);
-                  }}
-                />
-              }
-            />
-          </Col>
-        ))}
-      </Row>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "centfer",
+          justifyContent: "flex-end",
+          gap: 8,
+        }}
+      >
+        <Button
+          type={"primary"}
+          onClick={handleSwap}
+          disabled={selectedMembers.length !== 2}
+          icon={<SwapOutlined />}
+        />
+        <Button type={"primary"} onClick={onGroupAdd} icon={<PlusOutlined />}>
+          Add group
+        </Button>
+      </div>
+      <div style={{ margin: "8px 0" }}>
+        <UngroupedMembers
+          ungroupedMembers={ungroupedGroup.members}
+          onSelectMember={(member) =>
+            handleSelectMember(member, ungroupedGroup)
+          }
+          selectedMembers={selectedMembers.map((m) => m.member.id)}
+        />
+      </div>
+
+      <div
+        style={{
+          backgroundColor: "#f5f5f5",
+          padding: "6px",
+          borderRadius: "8px",
+          height: "100vh",
+        }}
+      >
+        <Row>
+          {groups.map((group, index) => (
+            <Col span={8} key={group.id}>
+              <GroupCard
+                group={group}
+                index={index + 1}
+                deleteGroup={onGroupDelete}
+                deleteFromGroup={(targetGroup, deleteMember) => {
+                  onMemberDelete(targetGroup, deleteMember);
+                }}
+                onSelectMember={(member) => handleSelectMember(member, group)}
+                selectedMembers={selectedMembers.map((m) => m.member.id)}
+                children={
+                  <AddGroupMember
+                    key={group.id}
+                    group={group}
+                    groups={groups}
+                    updateGroup={(targetGroup, newMember) => {
+                      onMemberAdd(targetGroup, newMember);
+                    }}
+                  />
+                }
+              />
+            </Col>
+          ))}
+        </Row>
+      </div>
     </>
   );
 };
