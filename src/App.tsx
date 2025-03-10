@@ -13,7 +13,7 @@ import { MembersProvider } from "./components/MembersProvider";
 import { DonutsProvider } from "./components/DonutsProvider";
 import { JoinedProvider } from "./components/JoinedProvider";
 import { ForestProvider } from "./components/ForestsProvider";
-import { Layout, theme } from "antd";
+import { Breadcrumb, Layout, theme } from "antd";
 
 const { Header, Content, Footer } = Layout;
 
@@ -39,6 +39,7 @@ const App = () => {
                     <Navbar />
                   </Header>
                   <Content style={{ padding: "0 48px" }}>
+                    <div style={{ margin: "16px 0" }} />
                     <div
                       style={{
                         background: colorBgContainer,

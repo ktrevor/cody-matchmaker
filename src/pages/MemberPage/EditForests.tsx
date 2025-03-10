@@ -109,8 +109,6 @@ export const EditForests = () => {
   };
 
   const itemHeight = 50;
-  const maxItems = 8;
-  const listHeight = maxItems * itemHeight;
 
   return (
     <>
@@ -187,7 +185,7 @@ export const EditForests = () => {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  maxHeight: listHeight,
+                  maxHeight: itemHeight,
                 }}
               >
                 <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
@@ -216,11 +214,7 @@ export const EditForests = () => {
             );
           }}
           style={{
-            maxHeight: `min(${listHeight + 4}px, 60vh)`,
-            minHeight: `${Math.min(
-              listHeight,
-              currentForests.length * itemHeight
-            )}px`,
+            maxHeight: `calc(5 * ${itemHeight}px)`,
             overflowY: "auto",
           }}
         />

@@ -312,7 +312,8 @@ export const MemberTable = () => {
           display: "flex",
           justifyContent: "flex-end",
           gap: 8,
-          marginBottom: 12,
+          margin: "8px 0",
+          flexWrap: "wrap",
         }}
       >
         <EditJoined />

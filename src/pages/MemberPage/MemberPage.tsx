@@ -23,7 +23,7 @@ export const MemberPage = () => {
         </Col>
       </Row>
 
-      <Row style={{ marginTop: 24 }}>
+      <Row>
         <Col span={24}>
           <MemberTable />
         </Col>

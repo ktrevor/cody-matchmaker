@@ -45,8 +45,6 @@ export const UpdateGrades = () => {
   };
 
   const itemHeight = 50;
-  const maxItems = 8;
-  const listHeight = maxItems * itemHeight;
 
   return (
     <>
@@ -106,8 +104,7 @@ export const UpdateGrades = () => {
             </List.Item>
           )}
           style={{
-            maxHeight: `min(${listHeight + 4}px, 60vh)`,
-            minHeight: `${Math.min(listHeight, seniors.length * itemHeight)}px`,
+            maxHeight: `calc(10 * ${itemHeight}px)`,
             overflowY: "auto",
           }}
         />

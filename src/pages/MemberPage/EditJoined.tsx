@@ -72,8 +72,6 @@ export const EditJoined = () => {
   };
 
   const itemHeight = 50;
-  const maxItems = 8;
-  const listHeight = maxItems * itemHeight;
 
   return (
     <>
@@ -136,11 +134,7 @@ export const EditJoined = () => {
             </List.Item>
           )}
           style={{
-            maxHeight: `min(${listHeight + 4}px, 60vh)`,
-            minHeight: `${Math.min(
-              listHeight,
-              currentSemesters.length * itemHeight
-            )}px`,
+            maxHeight: `calc(8 * ${itemHeight}px)`,
             overflowY: "auto",
           }}
         />
