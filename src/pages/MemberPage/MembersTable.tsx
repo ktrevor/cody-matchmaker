@@ -310,7 +310,7 @@ export const MemberTable = () => {
           display: "flex",
           justifyContent: "flex-end",
           gap: 8,
-          margin: "8px 0",
+          margin: "12px 0",
           flexWrap: "wrap",
         }}
       >
