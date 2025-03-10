@@ -13,7 +13,7 @@ import { MembersProvider } from "./components/MembersProvider";
 import { DonutsProvider } from "./components/DonutsProvider";
 import { JoinedProvider } from "./components/JoinedProvider";
 import { ForestProvider } from "./components/ForestsProvider";
-import { Breadcrumb, Layout, theme } from "antd";
+import { Layout, theme } from "antd";
 
 const { Header, Content, Footer } = Layout;
 

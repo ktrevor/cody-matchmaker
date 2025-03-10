@@ -21,7 +21,7 @@ export const DonutMenu = ({ donut }: DonutMenuProps) => {
   const items: MenuProps["items"] = [
     {
       key: "edit",
-      label: "Edit details",
+      label: "Edit",
       icon: <EditOutlined />,
       onClick: () => {
         setIsEditModalOpen(true);

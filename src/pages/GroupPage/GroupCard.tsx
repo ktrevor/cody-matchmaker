@@ -32,14 +32,7 @@ export const GroupCard = ({
   };
 
   return (
-    <Card
-      title={
-        <Space>
-          {`Group ${index}`}
-          {numMembers}
-        </Space>
-      }
-    >
+    <Card title={<Space>{`Group ${index} (${numMembers})`}</Space>}>
       <Button
         type="text"
         danger
