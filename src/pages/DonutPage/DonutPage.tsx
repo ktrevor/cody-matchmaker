@@ -14,7 +14,7 @@ export const DonutPage = () => {
       </Row>
 
       <Row>
-        <Col span={24} style={{ marginBottom: 12 }}>
+        <Col span={24}>
           <AddDonut />
         </Col>
       </Row>

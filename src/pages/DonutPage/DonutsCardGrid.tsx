@@ -71,9 +71,8 @@ export const DonutsCardGrid = () => {
     <>
       <div
         style={{
-          marginTop: 12,
-          marginBottom: 8,
-          width: "100%",
+          marginTop: 24,
+          marginBottom: 12,
           display: "flex",
           gap: 8,
           flexWrap: "wrap",
@@ -81,8 +80,8 @@ export const DonutsCardGrid = () => {
       >
         <div
           style={{
-            flex: "1 1 100%",
-            maxWidth: 500,
+            flex: 1,
+            maxWidth: "450px",
           }}
         >
           <Input
@@ -146,42 +145,42 @@ export const DonutsCardGrid = () => {
 
       <div
         style={{
-          backgroundColor: "#f0f2f5",
+          backgroundColor: "#f5f5f5",
           padding: "6px",
           borderRadius: "8px",
           height: "100vh",
         }}
       >
-        <div
-          style={{
-            overflowY: "auto",
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-            gap: "12px",
-            padding: "6px",
-          }}
-        >
-          {filteredDonuts.length === 0 ? (
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              <Title level={5}>No donuts found</Title>
-            </div>
-          ) : (
-            filteredDonuts
+        {filteredDonuts.length === 0 ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              top: "50%",
+            }}
+          >
+            <Title level={5}>No donuts found</Title>
+          </div>
+        ) : (
+          <div
+            style={{
+              overflowY: "auto",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+              gap: "12px",
+              padding: "6px",
+            }}
+          >
+            {filteredDonuts
               .sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
               .map((donut) => (
                 <div key={donut.id}>
                   <DonutCard donut={donut} />
                 </div>
-              ))
-          )}
-        </div>
+              ))}
+          </div>
+        )}
       </div>
     </>
   );
