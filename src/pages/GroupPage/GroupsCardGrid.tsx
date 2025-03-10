@@ -5,9 +5,11 @@ import { GroupCard } from "./GroupCard";
 import { AddGroupMember } from "./AddGroupMember";
 import { Member } from "../../members/Member";
 import { PlusOutlined, SwapOutlined } from "@ant-design/icons";
+import { UngroupedMembers } from "./UngroupedMembers";
 
 interface GroupsCardGridProps {
   groups: Group[];
+  ungroupedGroup: Group;
   onGroupAdd: () => void;
   onGroupDelete: (targetGroup: Group) => void;
   onMemberAdd: (targetGroup: Group, newMember: Member, index?: number) => void;
@@ -16,6 +18,7 @@ interface GroupsCardGridProps {
 
 export const GroupsCardGrid = ({
   groups,
+  ungroupedGroup,
   onGroupAdd,
   onGroupDelete,
   onMemberAdd,
@@ -91,7 +94,12 @@ export const GroupsCardGrid = ({
       <Button type={"primary"} onClick={onGroupAdd} icon={<PlusOutlined />}>
         Add group
       </Button>
-      <Row gutter={16} style={{ backgroundColor: "#f0f2f5" }}>
+      <UngroupedMembers
+        ungroupedMembers={ungroupedGroup.members}
+        onSelectMember={(member) => handleSelectMember(member, ungroupedGroup)}
+        selectedMembers={selectedMembers.map((m) => m.member.id)}
+      />
+      <Row style={{ backgroundColor: "#f0f2f5" }}>
         {groups.map((group, index) => (
           <Col span={8} key={group.id}>
             <GroupCard

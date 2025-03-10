@@ -154,10 +154,9 @@ export const DonutsCardGrid = () => {
         {filteredDonuts.length === 0 ? (
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              top: "50%",
+              display: "grid",
+              placeItems: "center",
+              height: "100%",
             }}
           >
             <Title level={5}>No donuts found</Title>

@@ -1,13 +1,18 @@
 import { Collapse, Row, Col, Card, Typography, Tag } from "antd";
 import { Member } from "../../members/Member";
 import { useMembersContext } from "../../components/MembersProvider";
+import styles from "./UngroupedMembers.module.css";
 
 interface UngroupedMembersProps {
   ungroupedMembers: Member[];
+  onSelectMember: (member: Member) => void;
+  selectedMembers: string[];
 }
 
 export const UngroupedMembers = ({
   ungroupedMembers,
+  onSelectMember,
+  selectedMembers,
 }: UngroupedMembersProps) => {
   const { members } = useMembersContext();
   const getTreeName = (id: string | null): string | undefined => {
@@ -19,10 +24,16 @@ export const UngroupedMembers = ({
     <Collapse>
       <Collapse.Panel header="Ungrouped Members" key="1">
         {ungroupedMembers.length > 0 ? (
-          <Row gutter={[16, 16]}>
+          <Row>
             {ungroupedMembers.map((member) => (
               <Col span={8} key={member.id}>
-                <Card bordered>
+                <Card
+                  className={`${styles.listItem} ${
+                    selectedMembers.includes(member.id) ? styles.selected : ""
+                  }`}
+                  bordered
+                  onClick={() => onSelectMember(member)}
+                >
                   <div>
                     {member.name}
                     <br />

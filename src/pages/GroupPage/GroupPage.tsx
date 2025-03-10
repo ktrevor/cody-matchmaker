@@ -18,7 +18,6 @@ import {
 import { Group } from "../../groups/Group";
 import { Member } from "../../members/Member";
 import { useDonutsContext } from "../../components/DonutsProvider";
-import { UngroupedMembers } from "./UngroupedMembers";
 import { useMembersContext } from "../../components/MembersProvider";
 
 export const GroupPage = () => {
@@ -40,7 +39,11 @@ export const GroupPage = () => {
   const [deletedMembers, setDeletedMembers] = useState<Map<Member, Group>>(
     new Map()
   );
-  const [ungroupedMembers, setUngroupedMembers] = useState<Member[]>([]);
+  const [ungroupedGroup, setUngroupedGroup] = useState<Group>({
+    id: "ungrouped",
+    donutId: donut ? donut.id : "",
+    members: [],
+  });
 
   useEffect(() => {
     if (donutId) {
@@ -59,10 +62,13 @@ export const GroupPage = () => {
     const allGroupedMembers = new Set(
       groups.flatMap((group) => group.members.map((member) => member.id))
     );
-    const ungroupedMembers = members.filter(
-      (member) => !allGroupedMembers.has(member.id)
-    );
-    setUngroupedMembers(ungroupedMembers);
+
+    setUngroupedGroup((prev) => ({
+      ...prev,
+      members: members.filter((member) => !allGroupedMembers.has(member.id)),
+    }));
+    console.log("add", addedMembers);
+    console.log("Delete", deletedMembers);
   }, [groups, members]);
 
   useEffect(() => {
@@ -95,6 +101,11 @@ export const GroupPage = () => {
     newMember: Member,
     index?: number
   ) => {
+    //don't add if adding to ungrouped
+    if (targetGroup.id === "ungrouped") {
+      return;
+    }
+
     setAddedMembers((prev) => {
       const updated = new Map(prev);
       updated.set(newMember, targetGroup);
@@ -102,11 +113,15 @@ export const GroupPage = () => {
     });
 
     setGroups((prevGroups) => {
-      let oldGroup: Group;
-
       const updatedGroups = prevGroups.map((group) => {
+        //don't do anything if old group is ungrouped
         if (group.members.some((member) => member.id === newMember.id)) {
-          oldGroup = group;
+          setDeletedMembers((prev) => {
+            const updated = new Map(prev);
+            updated.set(newMember, group);
+            return updated;
+          });
+
           return {
             ...group,
             members: group.members.filter(
@@ -115,12 +130,6 @@ export const GroupPage = () => {
           };
         }
         return group;
-      });
-
-      setDeletedMembers((prev) => {
-        const updated = new Map(prev);
-        updated.set(newMember, oldGroup);
-        return updated;
       });
 
       return updatedGroups.map((group) => {
@@ -163,6 +172,7 @@ export const GroupPage = () => {
         return currentGroup;
       })
     );
+
     setIsDirty(true);
   };
 
@@ -263,9 +273,9 @@ export const GroupPage = () => {
       <DonutName name={name} updateName={handleNameChange} />
       <DonutDate date={date} updateDate={handleDateChange} />
       <Title level={1}>Groups</Title>
-      <UngroupedMembers ungroupedMembers={ungroupedMembers} />
       <GroupsCardGrid
         groups={groups}
+        ungroupedGroup={ungroupedGroup}
         onGroupAdd={handleAddGroup}
         onGroupDelete={handleDeleteGroup}
         onMemberAdd={handleAddMemberToGroup}
