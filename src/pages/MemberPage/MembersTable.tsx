@@ -218,7 +218,6 @@ export const MemberTable = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      fixed: "left",
       ...getColumnSearchProps("name"),
     },
     {
@@ -291,7 +290,6 @@ export const MemberTable = () => {
     {
       title: "Action",
       key: "action",
-      fixed: "right",
       render: (_: any, record: Member) => (
         <Space size="middle">
           <EditMember memberToEdit={record} />
