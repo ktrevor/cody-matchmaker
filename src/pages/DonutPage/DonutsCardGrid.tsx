@@ -148,7 +148,7 @@ export const DonutsCardGrid = () => {
           backgroundColor: "#f5f5f5",
           padding: "6px",
           borderRadius: "8px",
-          height: "100vh",
+          height: "90vh",
         }}
       >
         {filteredDonuts.length === 0 ? (
