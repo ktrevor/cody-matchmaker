@@ -13,8 +13,15 @@ import { MembersProvider } from "./components/MembersProvider";
 import { DonutsProvider } from "./components/DonutsProvider";
 import { JoinedProvider } from "./components/JoinedProvider";
 import { ForestProvider } from "./components/ForestsProvider";
+import { Layout, theme } from "antd";
+
+const { Header, Content, Footer } = Layout;
 
 const App = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
   return (
     <Router>
       <DonutsProvider>
@@ -22,13 +29,40 @@ const App = () => {
           <JoinedProvider>
             <ForestProvider>
               <DirtyProvider>
-                <Navbar />
-                <Routes>
-                  <Route path="/" element={<Navigate to="/donuts" />} />
-                  <Route path="/donuts" element={<DonutPage />} />
-                  <Route path="/members" element={<MemberPage />} />
-                  <Route path="/groups/:donutId" element={<GroupPage />} />
-                </Routes>
+                <Layout>
+                  <Header
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Navbar />
+                  </Header>
+                  <Content style={{ padding: "0 48px" }}>
+                    <div
+                      style={{
+                        background: colorBgContainer,
+                        minHeight: 280,
+                        padding: 24,
+                        borderRadius: borderRadiusLG,
+                      }}
+                    >
+                      <Routes>
+                        <Route path="/" element={<Navigate to="/donuts" />} />
+                        <Route path="/donuts" element={<DonutPage />} />
+                        <Route path="/members" element={<MemberPage />} />
+                        <Route
+                          path="/groups/:donutId"
+                          element={<GroupPage />}
+                        />
+                      </Routes>
+                    </div>
+                  </Content>
+                  <Footer style={{ textAlign: "center" }}>
+                    Matchacado ©{new Date().getFullYear()} Created by Kate
+                    Trevor & Alicia Gullon
+                  </Footer>
+                </Layout>
               </DirtyProvider>
             </ForestProvider>
           </JoinedProvider>

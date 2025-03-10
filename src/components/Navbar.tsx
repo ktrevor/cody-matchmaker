@@ -30,10 +30,12 @@ export const Navbar = () => {
 
   return (
     <Menu
+      theme="dark"
+      mode="horizontal"
       onClick={onClick}
       selectedKeys={[location.pathname]}
       items={pages}
-      mode="horizontal"
+      style={{ flex: "1", minWidth: 0 }}
     />
   );
 };
