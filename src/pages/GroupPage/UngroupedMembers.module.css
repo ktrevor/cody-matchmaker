@@ -7,3 +7,7 @@
   outline: 2px solid #1890ff;
   border-radius: 8px;
 }
+
+:global .ant-collapse-content-box {
+  padding: 0 !important;
+}

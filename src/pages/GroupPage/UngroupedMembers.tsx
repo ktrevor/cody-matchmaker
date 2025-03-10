@@ -21,7 +21,7 @@ export const UngroupedMembers = ({
   };
 
   return (
-    <Collapse>
+    <Collapse style={{ backgroundColor: "#ffffff" }}>
       <Collapse.Panel
         header={`Ungrouped members (${ungroupedMembers.length})`}
         key="1"
@@ -29,13 +29,14 @@ export const UngroupedMembers = ({
         <div
           style={{
             backgroundColor: "#f5f5f5",
-            padding: 8,
-            borderRadius: "8px",
             overflowY: "auto",
+            borderBottomLeftRadius: 7,
+            borderBottomRightRadius: 7,
+            maxHeight: "200px",
           }}
         >
           {ungroupedMembers.length > 0 ? (
-            <Row gutter={[4, 4]}>
+            <Row gutter={[8, 8]} style={{ padding: 8 }}>
               {ungroupedMembers.map((member) => (
                 <Col span={6} key={member.id}>
                   <Card
@@ -77,7 +78,16 @@ export const UngroupedMembers = ({
               ))}
             </Row>
           ) : (
-            <Typography.Text>No ungrouped members</Typography.Text>
+            <div
+              style={{
+                display: "grid",
+                placeItems: "center",
+                height: "100%",
+                padding: 12,
+              }}
+            >
+              <Typography.Text>No ungrouped members</Typography.Text>
+            </div>
           )}
         </div>
       </Collapse.Panel>
