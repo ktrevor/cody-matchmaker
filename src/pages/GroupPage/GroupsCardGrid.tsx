@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Col, Row, Button } from "antd";
+import { Button, Typography } from "antd";
 import { Group } from "../../groups/Group";
 import { GroupCard } from "./GroupCard";
-import { AddGroupMember } from "./AddGroupMember";
 import { Member } from "../../members/Member";
 import { PlusOutlined, SwapOutlined } from "@ant-design/icons";
 import { UngroupedMembers } from "./UngroupedMembers";
+import { addMember } from "../../members/firebaseMemberFunctions";
 
 interface GroupsCardGridProps {
   groups: Group[];
@@ -98,7 +98,9 @@ export const GroupsCardGrid = ({
           onClick={handleSwap}
           disabled={selectedMembers.length !== 2}
           icon={<SwapOutlined />}
-        />
+        >
+          Swap
+        </Button>
         <Button type={"primary"} onClick={onGroupAdd} icon={<PlusOutlined />}>
           Add group
         </Button>
@@ -122,32 +124,47 @@ export const GroupsCardGrid = ({
           overflowX: "auto",
         }}
       >
-        <Row>
-          {groups.map((group, index) => (
-            <Col span={8} key={group.id}>
-              <GroupCard
-                group={group}
-                index={index + 1}
-                deleteGroup={onGroupDelete}
-                deleteFromGroup={(targetGroup, deleteMember) => {
-                  onMemberDelete(targetGroup, deleteMember);
-                }}
-                onSelectMember={(member) => handleSelectMember(member, group)}
-                selectedMembers={selectedMembers.map((m) => m.member.id)}
-                children={
-                  <AddGroupMember
-                    key={group.id}
-                    group={group}
-                    groups={groups}
-                    updateGroup={(targetGroup, newMember) => {
-                      onMemberAdd(targetGroup, newMember);
-                    }}
-                  />
-                }
-              />
-            </Col>
-          ))}
-        </Row>
+        {groups.length > 0 ? (
+          <div
+            style={{
+              overflowY: "auto",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
+              gap: "8px",
+              padding: "8px",
+            }}
+          >
+            {groups.map((group, index) => (
+              <div key={group.id}>
+                <GroupCard
+                  group={group}
+                  groups={groups}
+                  index={index + 1}
+                  addToGroup={onMemberAdd}
+                  deleteGroup={onGroupDelete}
+                  deleteFromGroup={(targetGroup, deleteMember) => {
+                    onMemberDelete(targetGroup, deleteMember);
+                  }}
+                  onSelectMember={(member) => handleSelectMember(member, group)}
+                  selectedMembers={selectedMembers.map((m) => m.member.id)}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              placeItems: "center",
+              height: "100%",
+              padding: 16,
+            }}
+          >
+            <Typography.Text style={{ fontWeight: 600 }}>
+              No groups
+            </Typography.Text>
+          </div>
+        )}
       </div>
     </>
   );

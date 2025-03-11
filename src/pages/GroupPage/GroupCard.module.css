@@ -1,16 +1,20 @@
-.listItem {
-  padding: 12px;
-  cursor: pointer;
-}
-
 .selected {
-  outline: 2px solid #1890ff;
+  outline: solid #1890ff;
   border-radius: 8px;
+  position: relative;
 }
 
-.deleteGroupButton {
+.swapIcon {
+  color: #1890ff;
   position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 18px;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  display: none;
+  padding: 2px;
+}
+
+.selected .swapIcon {
+  display: block;
 }

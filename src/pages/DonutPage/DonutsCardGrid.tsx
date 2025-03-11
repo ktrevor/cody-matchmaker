@@ -94,7 +94,7 @@ export const DonutsCardGrid = () => {
         </div>
         <div
           style={{
-            width: "300px",
+            width: "310px",
           }}
         >
           <RangePicker

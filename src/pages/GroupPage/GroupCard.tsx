@@ -1,77 +1,116 @@
-import { Button, Card, List, Space, Tag } from "antd";
-import { Group } from "../../groups/Group";
-import { CloseCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
+import { Button, Card, List } from "antd";
+import {
+  CloseCircleOutlined,
+  MinusCircleOutlined,
+  SwapOutlined,
+} from "@ant-design/icons";
 import styles from "./GroupCard.module.css";
+import { Group } from "../../groups/Group";
 import { Member } from "../../members/Member";
-import { useMembersContext } from "../../components/MembersProvider";
+import { MemberDisplay } from "./MemberDisplay";
+import { AddGroupMember } from "./AddGroupMember";
 
 interface GroupCardProps {
   group: Group;
+  groups: Group[];
   index: number;
+  addToGroup: (targetGroup: Group, newMember: Member) => void;
   deleteGroup: (targetGroup: Group) => void;
   deleteFromGroup: (targetGroup: Group, deleteMember: Member) => void;
   onSelectMember: (member: Member) => void;
   selectedMembers: string[];
-  children: React.ReactNode;
 }
 
 export const GroupCard = ({
   group,
+  groups,
   index,
+  addToGroup,
   deleteGroup,
   deleteFromGroup,
   onSelectMember,
   selectedMembers,
-  children,
 }: GroupCardProps) => {
   const numMembers = group.members.length;
-  const { members } = useMembersContext();
-  const getTreeName = (id: string | null): string | undefined => {
-    const member = members.find((m) => m.id === id);
-    return member ? member.name : undefined;
-  };
+  const itemHeight = 100;
 
   return (
-    <Card title={<Space>{`Group ${index} (${numMembers})`}</Space>}>
-      <Button
-        type="text"
-        danger
-        icon={<CloseCircleOutlined />}
-        onClick={() => deleteGroup(group)}
-        className={styles.deleteGroupButton}
-      />
-      <List
-        footer={children}
-        dataSource={group.members}
-        renderItem={(member) => (
-          <List.Item
-            key={member.id}
-            className={`${styles.listItem} ${
-              selectedMembers.includes(member.id) ? styles.selected : ""
-            }`}
-            style={{ borderBottom: "none" }}
-            actions={[
+    <Card
+      title={
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            padding: "6px",
+          }}
+        >
+          <span>{`Group ${index} (${numMembers})`}</span>
+          <Button
+            type="link"
+            danger
+            icon={<CloseCircleOutlined />}
+            onClick={() => deleteGroup(group)}
+          />
+        </div>
+      }
+    >
+      <div
+        style={{
+          height: `calc(3 * ${itemHeight + 6}px)`,
+          overflowY: "auto",
+        }}
+      >
+        <List
+          style={{ padding: "6px" }}
+          dataSource={group.members}
+          renderItem={(member) => (
+            <List.Item
+              className={`${
+                selectedMembers.includes(member.id) ? styles.selected : ""
+              }`}
+              key={member.id}
+              style={{
+                borderBottom: "none",
+                display: "flex",
+                alignItems: "center",
+                height: itemHeight,
+              }}
+              onClick={() => onSelectMember(member)}
+            >
+              <SwapOutlined className={styles.swapIcon} />
+              <div style={{ padding: 8 }}>
+                <MemberDisplay member={member} />
+              </div>
               <Button
-                type="text"
+                type="link"
                 danger
                 icon={<MinusCircleOutlined />}
-                onClick={() => deleteFromGroup(group, member)}
-              ></Button>,
-            ]}
-            onClick={() => onSelectMember(member)}
-          >
-            <div>
-              {member.name}
-              <br />
-              <Tag> {member.grade} </Tag>
-              <Tag> {member.gender} </Tag>
-              <Tag> {member.joined} </Tag>
-              <Tag> {member.forest} </Tag>
-              {member.treeId ? <Tag>{getTreeName(member.treeId)}</Tag> : null}
-            </div>
-          </List.Item>
-        )}
-      />
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteFromGroup(group, member);
+                }}
+              />
+            </List.Item>
+          )}
+        />
+      </div>
+      <div
+        style={{
+          marginTop: "18px",
+          padding: "6px",
+        }}
+      >
+        <AddGroupMember
+          key={group.id}
+          group={group}
+          groups={groups}
+          updateGroup={(targetGroup, newMember) => {
+            addToGroup(targetGroup, newMember);
+          }}
+        />
+      </div>
     </Card>
   );
 };

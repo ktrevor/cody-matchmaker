@@ -277,7 +277,7 @@ export const GroupPage = () => {
           gap: 8,
         }}
       >
-        <CoffeeOutlined style={{ fontSize: "24px", marginRight: 4 }} />
+        <CoffeeOutlined style={{ fontSize: "24px", color: "#8c8c8c" }} />
         <DonutName name={name} updateName={handleNameChange} />
         <DonutDate date={date} updateDate={handleDateChange} />
         <div
