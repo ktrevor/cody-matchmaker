@@ -98,7 +98,7 @@ export const GroupCard = ({
       </div>
       <div
         style={{
-          marginTop: "18px",
+          marginTop: "12px",
           padding: "6px",
         }}
       >

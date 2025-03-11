@@ -5,7 +5,6 @@ import { GroupCard } from "./GroupCard";
 import { Member } from "../../members/Member";
 import { PlusOutlined, SwapOutlined } from "@ant-design/icons";
 import { UngroupedMembers } from "./UngroupedMembers";
-import { addMember } from "../../members/firebaseMemberFunctions";
 
 interface GroupsCardGridProps {
   groups: Group[];
