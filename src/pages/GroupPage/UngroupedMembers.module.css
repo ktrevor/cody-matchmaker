@@ -34,3 +34,7 @@
   color: #1890ff;
   display: block;
 }
+
+:global .ant-collapse-content-box {
+  padding: 0 !important;
+}
