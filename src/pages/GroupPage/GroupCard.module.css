@@ -17,7 +17,6 @@
   border-bottom: none;
   padding: 8px 0;
   position: relative;
-  cursor: pointer;
 }
 
 .listItem.selected {
@@ -26,8 +25,14 @@
 }
 
 .hoverable:hover {
+  cursor: pointer;
   outline: solid 2px #69c0ff;
   border-radius: 8px;
+}
+
+.hoverable:hover .swapIcon {
+  color: #69c0ff;
+  display: block;
 }
 
 .swapIcon {
@@ -40,10 +45,9 @@
   display: none;
 }
 
-.listItem:hover .swapIcon,
 .listItem.selected .swapIcon {
   display: block;
-  color: #69c0ff;
+  color: #1890ff;
 }
 
 .memberDisplay {
