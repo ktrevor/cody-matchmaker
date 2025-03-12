@@ -1,10 +1,17 @@
-import { useEffect, useState } from "react";
+import {
+  JSXElementConstructor,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 import { Button, Col, Row, Typography } from "antd";
 import { Group } from "../../groups/Group";
 import { GroupCard } from "./GroupCard";
 import { Member } from "../../members/Member";
 import { PlusOutlined, SwapOutlined } from "@ant-design/icons";
 import { UngroupedMembers } from "./UngroupedMembers";
+import { JSX } from "react/jsx-runtime";
 
 interface GroupsCardGridProps {
   groups: Group[];
@@ -82,12 +89,30 @@ export const GroupsCardGrid = ({
     setSelectedMembers([]);
   };
 
+  //group height
+  const listItemHeight = 100;
+
+  const getCardHeightForRow = (rowGroups: Group[]) => {
+    const maxMembersInRow = Math.max(...rowGroups.map((g) => g.members.length));
+    return maxMembersInRow >= 4
+      ? `calc(4 * ${listItemHeight + 4}px)`
+      : `calc(3 * ${listItemHeight + 4}px)`;
+  };
+
+  const getColumnsPerRow = () => {
+    const width = window.innerWidth;
+    if (width >= 1600) return 4;
+    if (width >= 1200) return 3;
+    if (width >= 768) return 2;
+    return 1;
+  };
+
   return (
     <>
       <div
         style={{
           display: "flex",
-          alignItems: "centfer",
+          alignItems: "center",
           justifyContent: "flex-end",
           gap: 8,
         }}
@@ -117,39 +142,50 @@ export const GroupsCardGrid = ({
       <div
         style={{
           backgroundColor: "#f5f5f5",
-          padding: "6px",
+          padding: "16px",
           borderRadius: "8px",
           height: "100vh",
           overflowX: "auto",
         }}
       >
         {groups.length > 0 ? (
-          <div
-            style={{
-              overflowY: "auto",
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
-              gap: "8px",
-              padding: "8px",
-            }}
-          >
-            {groups.map((group, index) => (
-              <div key={group.id}>
-                <GroupCard
-                  group={group}
-                  groups={groups}
-                  index={index + 1}
-                  addToGroup={onMemberAdd}
-                  deleteGroup={onGroupDelete}
-                  deleteFromGroup={(targetGroup, deleteMember) => {
-                    onMemberDelete(targetGroup, deleteMember);
-                  }}
-                  onSelectMember={(member) => handleSelectMember(member, group)}
-                  selectedMembers={selectedMembers.map((m) => m.member.id)}
-                />
-              </div>
-            ))}
-          </div>
+          <Row gutter={[16, 16]}>
+            {(() => {
+              const columnsPerRow = getColumnsPerRow();
+              const renderedGroups: JSX.Element[] = [];
+
+              for (let i = 0; i < groups.length; i += columnsPerRow) {
+                const rowGroups = groups.slice(i, i + columnsPerRow);
+                const cardHeight = getCardHeightForRow(rowGroups);
+
+                rowGroups.forEach((group, index) => {
+                  renderedGroups.push(
+                    <Col key={group.id} xs={24} sm={12} md={8} lg={6} xl={6}>
+                      <GroupCard
+                        group={group}
+                        groups={groups}
+                        index={i + index + 1}
+                        addToGroup={onMemberAdd}
+                        deleteGroup={onGroupDelete}
+                        deleteFromGroup={(targetGroup, deleteMember) => {
+                          onMemberDelete(targetGroup, deleteMember);
+                        }}
+                        onSelectMember={(member) =>
+                          handleSelectMember(member, group)
+                        }
+                        selectedMembers={selectedMembers.map(
+                          (m) => m.member.id
+                        )}
+                        cardHeight={cardHeight}
+                        listItemHeight={listItemHeight}
+                      />
+                    </Col>
+                  );
+                });
+              }
+              return renderedGroups;
+            })()}
+          </Row>
         ) : (
           <div
             style={{

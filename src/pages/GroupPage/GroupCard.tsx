@@ -19,6 +19,8 @@ interface GroupCardProps {
   deleteFromGroup: (targetGroup: Group, deleteMember: Member) => void;
   onSelectMember: (member: Member) => void;
   selectedMembers: string[];
+  cardHeight: string;
+  listItemHeight: number;
 }
 
 export const GroupCard = ({
@@ -30,13 +32,13 @@ export const GroupCard = ({
   deleteFromGroup,
   onSelectMember,
   selectedMembers,
+  cardHeight,
+  listItemHeight,
 }: GroupCardProps) => {
   const numMembers = group.members.length;
   const groupHasSelectedMember = group.members.find((member) =>
     selectedMembers.includes(member.id)
   );
-
-  const itemHeight = 100;
 
   return (
     <Card
@@ -62,7 +64,7 @@ export const GroupCard = ({
     >
       <div
         style={{
-          height: `calc(3 * ${itemHeight + 6}px)`,
+          height: cardHeight,
           overflowY: "auto",
         }}
       >
@@ -79,7 +81,7 @@ export const GroupCard = ({
                 borderBottom: "none",
                 display: "flex",
                 alignItems: "center",
-                height: itemHeight,
+                height: `${listItemHeight}px`,
               }}
               onClick={() => onSelectMember(member)}
             >
