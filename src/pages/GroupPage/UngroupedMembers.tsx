@@ -15,6 +15,9 @@ export const UngroupedMembers = ({
   onSelectMember,
   selectedMembers,
 }: UngroupedMembersProps) => {
+  const groupHasSelectedMember = ungroupedMembers.find((member) =>
+    selectedMembers.includes(member.id)
+  );
   return (
     <Collapse style={{ backgroundColor: "#ffffff" }}>
       <Collapse.Panel
@@ -45,7 +48,7 @@ export const UngroupedMembers = ({
                   size="small"
                   className={`${styles.listItem} ${
                     selectedMembers.includes(member.id) ? styles.selected : ""
-                  }`}
+                  } ${!groupHasSelectedMember ? styles.hoverable : ""}`}
                   onClick={() => onSelectMember(member)}
                   style={{
                     padding: 0,

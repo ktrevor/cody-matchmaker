@@ -1,11 +1,26 @@
-.selected {
+.listItem {
+  cursor: relative;
+}
+
+.hoverable:hover {
+  cursor: pointer;
+  outline: solid #69c0ff;
+  border-radius: 8px;
+  position: relative;
+}
+
+.hoverable:hover .swapIcon {
+  color: #69c0ff;
+  display: block;
+}
+
+.listItem.selected {
   outline: solid #1890ff;
   border-radius: 8px;
   position: relative;
 }
 
 .swapIcon {
-  color: #1890ff;
   position: absolute;
   top: -10px;
   left: 50%;
@@ -15,6 +30,7 @@
   padding: 2px;
 }
 
-.selected .swapIcon {
+.listItem.selected .swapIcon {
+  color: #1890ff;
   display: block;
 }
