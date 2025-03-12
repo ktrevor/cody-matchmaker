@@ -19,13 +19,13 @@ export const MemberDisplay = ({ member }: MemberDisplayProps) => {
         style={{
           display: "flex",
           flexDirection: "column",
+          flexWrap: "nowrap",
           gap: "6px",
         }}
       >
         <div
           style={{
             display: "flex",
-            flexWrap: "wrap",
             fontSize: "12px",
           }}
         >
@@ -36,7 +36,6 @@ export const MemberDisplay = ({ member }: MemberDisplayProps) => {
         <div
           style={{
             display: "flex",
-            flexWrap: "wrap",
           }}
         >
           <Tag style={{ fontSize: "12px" }}>{member.forest}</Tag>

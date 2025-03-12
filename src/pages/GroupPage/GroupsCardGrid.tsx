@@ -1,17 +1,10 @@
-import {
-  JSXElementConstructor,
-  ReactElement,
-  ReactNode,
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 import { Button, Col, Row, Typography } from "antd";
 import { Group } from "../../groups/Group";
 import { GroupCard } from "./GroupCard";
 import { Member } from "../../members/Member";
 import { PlusOutlined, SwapOutlined } from "@ant-design/icons";
 import { UngroupedMembers } from "./UngroupedMembers";
-import { JSX } from "react/jsx-runtime";
 
 interface GroupsCardGridProps {
   groups: Group[];
@@ -92,27 +85,27 @@ export const GroupsCardGrid = ({
   //group height
   const listItemHeight = 100;
 
-  const getCardHeightForRow = (rowGroups: Group[]) => {
-    const maxMembersInRow = Math.max(...rowGroups.map((g) => g.members.length));
-    return maxMembersInRow >= 4
-      ? `calc(4 * ${listItemHeight + 4}px)`
-      : `calc(3 * ${listItemHeight + 4}px)`;
-  };
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  const getColumnsPerRow = () => {
-    const width = window.innerWidth;
-    if (width >= 1600) return 4;
-    if (width >= 1200) return 3;
-    if (width >= 768) return 2;
-    return 1;
-  };
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const cardsPerRow = Math.max(1, Math.floor(windowWidth / 300));
+
+  const rows = [];
+  for (let i = 0; i < groups.length; i += cardsPerRow) {
+    rows.push(groups.slice(i, i + cardsPerRow));
+  }
 
   return (
     <>
       <div
         style={{
           display: "flex",
-          alignItems: "center",
+          alignItems: "centfer",
           justifyContent: "flex-end",
           gap: 8,
         }}
@@ -145,59 +138,58 @@ export const GroupsCardGrid = ({
           padding: "16px",
           borderRadius: "8px",
           height: "100vh",
+          overflowY: "auto",
           overflowX: "auto",
         }}
       >
         {groups.length > 0 ? (
-          <Row gutter={[16, 16]}>
-            {(() => {
-              const columnsPerRow = getColumnsPerRow();
-              const renderedGroups: JSX.Element[] = [];
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
+            {rows.map((rowGroups, rowIndex) => {
+              const maxMembersInRow = Math.max(
+                ...rowGroups.map((g) => g.members.length)
+              );
+              const rowHeight =
+                maxMembersInRow >= 4
+                  ? `calc(4 * ${listItemHeight + 4}px)`
+                  : `calc(3 * ${listItemHeight + 4}px)`;
 
-              for (let i = 0; i < groups.length; i += columnsPerRow) {
-                const rowGroups = groups.slice(i, i + columnsPerRow);
-                const cardHeight = getCardHeightForRow(rowGroups);
-
-                rowGroups.forEach((group, index) => {
-                  renderedGroups.push(
-                    <Col key={group.id} xs={24} sm={12} md={8} lg={6} xl={6}>
-                      <GroupCard
-                        group={group}
-                        groups={groups}
-                        index={i + index + 1}
-                        addToGroup={onMemberAdd}
-                        deleteGroup={onGroupDelete}
-                        deleteFromGroup={(targetGroup, deleteMember) => {
-                          onMemberDelete(targetGroup, deleteMember);
-                        }}
-                        onSelectMember={(member) =>
-                          handleSelectMember(member, group)
-                        }
-                        selectedMembers={selectedMembers.map(
-                          (m) => m.member.id
-                        )}
-                        cardHeight={cardHeight}
-                        listItemHeight={listItemHeight}
-                      />
-                    </Col>
-                  );
-                });
-              }
-              return renderedGroups;
-            })()}
-          </Row>
+              return (
+                <div
+                  key={rowIndex}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                    gap: "16px",
+                  }}
+                >
+                  {rowGroups.map((group, index) => (
+                    <GroupCard
+                      key={group.id}
+                      group={group}
+                      groups={groups}
+                      index={rowIndex * cardsPerRow + index + 1}
+                      addToGroup={onMemberAdd}
+                      deleteGroup={onGroupDelete}
+                      deleteFromGroup={onMemberDelete}
+                      onSelectMember={(member) =>
+                        handleSelectMember(member, group)
+                      }
+                      selectedMembers={selectedMembers.map((m) => m.member.id)}
+                      cardHeight={rowHeight}
+                      listItemHeight={listItemHeight}
+                    />
+                  ))}
+                </div>
+              );
+            })}
+          </div>
         ) : (
           <div
-            style={{
-              display: "grid",
-              placeItems: "center",
-              height: "100%",
-              padding: 16,
-            }}
+            style={{ display: "grid", placeItems: "center", height: "100%" }}
           >
-            <Typography.Text style={{ fontWeight: 600 }}>
-              No groups
-            </Typography.Text>
+            No groups
           </div>
         )}
       </div>
