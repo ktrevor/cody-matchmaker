@@ -82,14 +82,6 @@ export const GroupsCardGrid = ({
     setSelectedMembers([]);
   };
 
-  //card height calculations
-  const itemHeight = 100;
-  const columns = Math.floor(window.innerWidth / 350);
-  const rows = [];
-  for (let i = 0; i < groups.length; i += columns) {
-    rows.push(groups.slice(i, i + columns));
-  }
-
   return (
     <>
       <div
@@ -141,18 +133,9 @@ export const GroupsCardGrid = ({
               padding: "8px",
             }}
           >
-            {rows.map((rowGroups) => {
-              const maxMembersInRow = Math.max(
-                ...rowGroups.map((g) => g.members.length)
-              );
-              const rowHeight =
-                maxMembersInRow >= 4
-                  ? `calc(4 * ${itemHeight + 4}px)`
-                  : `calc(3 * ${itemHeight + 4}px)`;
-
-              return rowGroups.map((group, index) => (
+            {groups.map((group, index) => (
+              <div key={group.id}>
                 <GroupCard
-                  key={group.id}
                   group={group}
                   groups={groups}
                   index={index + 1}
@@ -163,11 +146,9 @@ export const GroupsCardGrid = ({
                   }}
                   onSelectMember={(member) => handleSelectMember(member, group)}
                   selectedMembers={selectedMembers.map((m) => m.member.id)}
-                  cardHeight={rowHeight}
-                  listItemHeight={`${itemHeight}px`}
                 />
-              ));
-            })}
+              </div>
+            ))}
           </div>
         ) : (
           <div
