@@ -59,7 +59,7 @@ export const GroupCard = ({
         }
       }
 
-      setContainerHeight(totalHeight + 8);
+      setContainerHeight(totalHeight + 24);
     }
   };
 

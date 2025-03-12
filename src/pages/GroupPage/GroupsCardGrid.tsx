@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Row, Typography } from "antd";
+import { Button } from "antd";
 import { Group } from "../../groups/Group";
 import { GroupCard } from "./GroupCard";
 import { Member } from "../../members/Member";
