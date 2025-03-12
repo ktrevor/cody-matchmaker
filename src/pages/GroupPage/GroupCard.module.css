@@ -1,23 +1,33 @@
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px;
+}
+
+.listContainer {
+  overflow-y: auto;
+  padding: 6px;
+}
+
 .listItem {
-  cursor: relative;
-}
-
-.hoverable:hover {
-  cursor: pointer;
-  outline: solid #69c0ff;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: none;
+  padding: 8px 0;
   position: relative;
-}
-
-.hoverable:hover .swapIcon {
-  color: #69c0ff;
-  display: block;
+  cursor: pointer;
 }
 
 .listItem.selected {
-  outline: solid #1890ff;
+  outline: solid 2px #1890ff;
   border-radius: 8px;
-  position: relative;
+}
+
+.hoverable:hover {
+  outline: solid 2px #69c0ff;
+  border-radius: 8px;
 }
 
 .swapIcon {
@@ -26,11 +36,21 @@
   left: 50%;
   transform: translateX(-50%);
   background: white;
-  display: none;
   padding: 2px;
+  display: none;
 }
 
+.listItem:hover .swapIcon,
 .listItem.selected .swapIcon {
-  color: #1890ff;
   display: block;
+  color: #69c0ff;
+}
+
+.memberDisplay {
+  padding: 8px;
+}
+
+.addMemberContainer {
+  margin-top: "12px";
+  padding: 6px;
 }

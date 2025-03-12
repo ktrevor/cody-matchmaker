@@ -45,6 +45,7 @@ export const UngroupedMembers = ({
             >
               {ungroupedMembers.map((member) => (
                 <Card
+                  key={member.id}
                   size="small"
                   className={`${styles.listItem} ${
                     selectedMembers.includes(member.id) ? styles.selected : ""

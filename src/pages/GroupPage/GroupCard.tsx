@@ -1,3 +1,4 @@
+import { useRef, useEffect, useState } from "react";
 import { Button, Card, List } from "antd";
 import {
   CloseCircleOutlined,
@@ -19,8 +20,7 @@ interface GroupCardProps {
   deleteFromGroup: (targetGroup: Group, deleteMember: Member) => void;
   onSelectMember: (member: Member) => void;
   selectedMembers: string[];
-  cardHeight: string;
-  listItemHeight: number;
+  numMembersToFit: number;
 }
 
 export const GroupCard = ({
@@ -32,26 +32,62 @@ export const GroupCard = ({
   deleteFromGroup,
   onSelectMember,
   selectedMembers,
-  cardHeight,
-  listItemHeight,
+  numMembersToFit,
 }: GroupCardProps) => {
   const numMembers = group.members.length;
   const groupHasSelectedMember = group.members.find((member) =>
     selectedMembers.includes(member.id)
   );
 
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const [containerHeight, setContainerHeight] = useState(0);
+
+  const updateHeight = () => {
+    if (listRef.current) {
+      const listItems = Array.from(
+        listRef.current.querySelectorAll(".ant-list-item")
+      );
+      if (listItems.length === 0) return;
+
+      let totalHeight = 0;
+      const itemsToMeasure = Math.min(numMembersToFit, listItems.length);
+
+      for (let i = 0; i < itemsToMeasure; i++) {
+        const listItem = listItems[i] as HTMLElement;
+        if (listItem) {
+          totalHeight += listItem.offsetHeight;
+        }
+      }
+
+      setContainerHeight(totalHeight + 8);
+    }
+  };
+
+  useEffect(() => {
+    updateHeight();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateHeight();
+    });
+
+    if (listRef.current) {
+      resizeObserver.observe(listRef.current);
+    }
+
+    window.addEventListener("resize", updateHeight);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateHeight);
+    };
+  }, [numMembersToFit, group.members]);
+
+  const isOverflowing = numMembers > numMembersToFit;
+
   return (
     <Card
       title={
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-            padding: "6px",
-          }}
-        >
+        <div className={styles.cardHeader}>
           <span>{`Group ${index} (${numMembers})`}</span>
           <Button
             type="link"
@@ -61,15 +97,23 @@ export const GroupCard = ({
           />
         </div>
       }
+      style={{ display: "flex", flexDirection: "column", height: "100%" }}
+      bodyStyle={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        padding: "12px",
+      }}
     >
       <div
+        className={styles.listContainer}
         style={{
-          height: cardHeight,
-          overflowY: "auto",
+          height: `${containerHeight}px`,
+          overflowY: isOverflowing ? "auto" : "hidden",
         }}
+        ref={listRef}
       >
         <List
-          style={{ padding: "6px" }}
           dataSource={group.members}
           renderItem={(member) => (
             <List.Item
@@ -79,14 +123,11 @@ export const GroupCard = ({
               key={member.id}
               style={{
                 borderBottom: "none",
-                display: "flex",
-                alignItems: "center",
-                height: `${listItemHeight}px`,
               }}
               onClick={() => onSelectMember(member)}
             >
               <SwapOutlined className={styles.swapIcon} />
-              <div style={{ padding: 8 }}>
+              <div className={styles.memberDisplay}>
                 <MemberDisplay member={member} />
               </div>
               <Button
@@ -103,9 +144,10 @@ export const GroupCard = ({
         />
       </div>
       <div
+        className={styles.addMemberContainer}
         style={{
-          marginTop: "12px",
-          padding: "6px",
+          marginTop: "auto",
+          paddingTop: "12px",
         }}
       >
         <AddGroupMember

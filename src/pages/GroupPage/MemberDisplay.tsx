@@ -23,21 +23,12 @@ export const MemberDisplay = ({ member }: MemberDisplayProps) => {
           gap: "6px",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            fontSize: "12px",
-          }}
-        >
+        <div>
           <Tag style={{ fontSize: "12px" }}>{member.grade}</Tag>
           <Tag style={{ fontSize: "12px" }}>{member.gender}</Tag>
           <Tag style={{ fontSize: "12px" }}>{member.joined}</Tag>
         </div>
-        <div
-          style={{
-            display: "flex",
-          }}
-        >
+        <div>
           <Tag style={{ fontSize: "12px" }}>{member.forest}</Tag>
           {member.treeId ? (
             <Tag style={{ fontSize: "12px" }}>{getTreeName(member.treeId)}</Tag>

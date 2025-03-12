@@ -83,7 +83,6 @@ export const GroupsCardGrid = ({
   };
 
   //group height
-  const listItemHeight = 100;
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -150,10 +149,7 @@ export const GroupsCardGrid = ({
               const maxMembersInRow = Math.max(
                 ...rowGroups.map((g) => g.members.length)
               );
-              const rowHeight =
-                maxMembersInRow >= 4
-                  ? `calc(4 * ${listItemHeight + 4}px)`
-                  : `calc(3 * ${listItemHeight + 4}px)`;
+              const rowHeight = maxMembersInRow >= 4 ? 4 : 3;
 
               return (
                 <div
@@ -177,8 +173,7 @@ export const GroupsCardGrid = ({
                         handleSelectMember(member, group)
                       }
                       selectedMembers={selectedMembers.map((m) => m.member.id)}
-                      cardHeight={rowHeight}
-                      listItemHeight={listItemHeight}
+                      numMembersToFit={rowHeight}
                     />
                   ))}
                 </div>

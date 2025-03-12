@@ -67,8 +67,6 @@ export const GroupPage = () => {
       ...prev,
       members: members.filter((member) => !allGroupedMembers.has(member.id)),
     }));
-    console.log("add", addedMembers);
-    console.log("Delete", deletedMembers);
   }, [groups, members]);
 
   useEffect(() => {
