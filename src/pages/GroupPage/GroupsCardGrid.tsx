@@ -93,7 +93,7 @@ export const GroupsCardGrid = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const cardsPerRow = Math.max(1, Math.floor(windowWidth / 300));
+  const cardsPerRow = Math.max(1, Math.floor(windowWidth / 400));
 
   const rows = [];
   for (let i = 0; i < groups.length; i += cardsPerRow) {
