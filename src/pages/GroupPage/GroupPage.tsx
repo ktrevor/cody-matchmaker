@@ -67,6 +67,7 @@ export const GroupPage = () => {
       ...prev,
       members: members.filter((member) => !allGroupedMembers.has(member.id)),
     }));
+    console.log("deleted", deletedMembers);
   }, [groups, members]);
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export const GroupPage = () => {
     newMember: Member,
     index?: number
   ) => {
-    //don't add if adding to ungrouped
+    //don't do any tracking if adding to ungrouped
     if (targetGroup.id === "ungrouped") {
       return;
     }
@@ -112,12 +113,14 @@ export const GroupPage = () => {
 
     setGroups((prevGroups) => {
       const updatedGroups = prevGroups.map((group) => {
-        //don't do anything if old group is ungrouped
         if (group.members.some((member) => member.id === newMember.id)) {
           setDeletedMembers((prev) => {
-            const updated = new Map(prev);
-            updated.set(newMember, group);
-            return updated;
+            if (!prev.has(newMember)) {
+              const updated = new Map(prev);
+              updated.set(newMember, group);
+              return updated;
+            }
+            return prev;
           });
 
           return {
