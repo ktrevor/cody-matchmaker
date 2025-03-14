@@ -64,6 +64,7 @@ export const GroupPage = () => {
       (member) => !allGroupedMembers.has(member.id)
     );
     setUngroupedMembers(ungroupedMembers);
+    console.log("our use effect ran");
   }, [groups, members]);
 
   useEffect(() => {
@@ -275,7 +276,7 @@ export const GroupPage = () => {
       <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
         Save
       </Button>
-      <DemoButton count={5} />
+      <DemoButton initialCount={5} />
     </>
   );
 };
