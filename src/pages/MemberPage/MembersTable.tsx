@@ -18,7 +18,7 @@ import { EditForests } from "./EditForests";
 import { DeleteMember } from "./DeleteMember";
 import { SearchOutlined } from "@ant-design/icons";
 import { FilterDropdownProps } from "antd/es/table/interface";
-import UpdateGrades from "./ UpdateGrades";
+import UpdateGrades from "./UpdateGrades";
 
 export const MemberTable = () => {
   const { members } = useMembersContext();

@@ -21,6 +21,10 @@ import { useDonutsContext } from "../../components/DonutsProvider";
 import { UngroupedMembers } from "./UngroupedMembers";
 import { useMembersContext } from "../../components/MembersProvider";
 
+import SlackButton from "../../components/SlackButton";
+
+//createDMsAndSendMessages()
+
 export const GroupPage = () => {
   const { donuts, updateDonuts } = useDonutsContext();
   const { donutId } = useParams();
@@ -266,6 +270,7 @@ export const GroupPage = () => {
       <DonutDate date={date} updateDate={handleDateChange} />
       <Title level={1}>Groups</Title>
       <button id="sendMessageButton">Send to Slack</button>
+      <SlackButton> SLACK BUTTON!!!! </SlackButton>
       <GroupsCardGrid
         groups={groups}
         onGroupAdd={handleAddGroup}
