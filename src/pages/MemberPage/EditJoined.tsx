@@ -6,6 +6,7 @@ import {
   useJoinedContext,
 } from "../../components/JoinedProvider";
 import { useState, useEffect } from "react";
+import { getMembers } from "../../members/firebaseMemberFunctions";
 
 const semesterRegex = /^(fall|spring) \d{4}$/i;
 
@@ -135,7 +136,8 @@ export const EditJoined = () => {
           )}
           style={{
             maxHeight: `calc(8 * ${itemHeight}px)`,
-            overflowY: "auto",
+            //overflowY: "auto",
+            overflowY: currentSemesters.length > 8 ? 'auto' : 'hidden'
           }}
         />
       </Modal>

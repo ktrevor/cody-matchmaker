@@ -1,5 +1,5 @@
 import { Button, List, message, Modal, Typography } from "antd";
-import { promoteMembersGrades } from "../../members/firebaseMemberFunctions";
+import { getMembers, promoteMembersGrades } from "../../members/firebaseMemberFunctions";
 import { useMembersContext } from "../../components/MembersProvider";
 import {
   ExclamationCircleFilled,
@@ -105,7 +105,8 @@ export const UpdateGrades = () => {
           )}
           style={{
             maxHeight: `calc(8 * ${itemHeight}px)`,
-            overflowY: "auto",
+            //overflowY: "auto",
+            overflowY: seniors.length > 8 ? 'auto' : 'hidden'
           }}
         />
       </Modal>

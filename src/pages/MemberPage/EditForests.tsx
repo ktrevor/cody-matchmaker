@@ -215,7 +215,8 @@ export const EditForests = () => {
           }}
           style={{
             maxHeight: `calc(5 * ${itemHeight}px)`,
-            overflowY: "auto",
+            //overflowY: "auto",
+            overflowY: currentForests.length > 5 ? 'auto' : 'hidden'
           }}
         />
       </Modal>
