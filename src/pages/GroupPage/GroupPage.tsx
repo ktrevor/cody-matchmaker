@@ -282,13 +282,16 @@ export const GroupPage = () => {
         <DonutDate date={date} updateDate={handleDateChange} />
         <div
           style={{
+            display: "flex",
             marginLeft: "auto",
             marginRight: 0,
+            gap: 8,
           }}
         >
           <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
             Save
           </Button>
+          <Button type="primary">Create groups in Slack</Button>
         </div>
       </div>
 
