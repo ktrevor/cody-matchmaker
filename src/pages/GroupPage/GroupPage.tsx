@@ -290,7 +290,7 @@ export const GroupPage = () => {
             gap: 8,
           }}
         >
-          <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
+          <Button type="primary" onClick={handleSave}>
             Save
           </Button>
           <Button type="primary">Save/Create in Slack</Button>
