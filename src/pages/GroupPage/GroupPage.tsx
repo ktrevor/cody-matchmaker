@@ -274,6 +274,7 @@ export const GroupPage = () => {
         style={{
           display: "flex",
           alignItems: "center",
+          flexWrap: "wrap",
           gap: 8,
         }}
       >
@@ -283,6 +284,7 @@ export const GroupPage = () => {
         <div
           style={{
             display: "flex",
+            flexWrap: "wrap",
             marginLeft: "auto",
             marginRight: 0,
             gap: 8,
@@ -291,7 +293,7 @@ export const GroupPage = () => {
           <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
             Save
           </Button>
-          <Button type="primary">Create groups in Slack</Button>
+          <Button type="primary">Save/Create in Slack</Button>
         </div>
       </div>
 
