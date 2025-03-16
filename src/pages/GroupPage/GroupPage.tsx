@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { Donut } from "../../donuts/Donut";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
-import { CoffeeOutlined, SaveOutlined } from "@ant-design/icons";
+import { CoffeeOutlined, SaveOutlined, SlackOutlined } from "@ant-design/icons";
 import {
   addGroup,
   addMemberToGroup,
@@ -290,10 +290,12 @@ export const GroupPage = () => {
             gap: 8,
           }}
         >
-          <Button type="primary" onClick={handleSave}>
+          <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
             Save
           </Button>
-          <Button type="primary">Save/Create in Slack</Button>
+          <Button type="primary" icon={<SlackOutlined />}>
+            Save/Create in Slack
+          </Button>
         </div>
       </div>
 
