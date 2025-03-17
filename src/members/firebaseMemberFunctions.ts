@@ -93,6 +93,7 @@ export const getMembers = async (): Promise<Member[]> => {
         grade: memberData.grade,
         forest: memberData.forest,
         treeId: memberData.treeId,
+        groupIds: memberData.groupIds,
       } as Member;
     })
   );
@@ -119,6 +120,7 @@ export const getMemberById = async (memberId: string): Promise<Member> => {
     grade: memberData.grade,
     forest: memberData.forest,
     treeId: memberData.treeId,
+    groupIds: memberData.groupIds,
   } as Member;
 };
 
@@ -143,4 +145,22 @@ export const promoteMembersGrades = async (
 
     await updateDoc(memberRef, { grade: nextGrade });
   }
+};
+
+export const setMemberGroup = async (groupId: string, member: Member): Promise<void> => {
+  const memberRef = doc(db, "members", member.id);
+  const memberSnap = await getDoc(memberRef);
+
+  if (!memberSnap.exists()) {
+    throw new Error(`Member with ID ${member.id} not found`);
+  }
+  
+  let group_arr = memberSnap.data().groupIds;
+  if (group_arr == null) {
+    group_arr = [];
+  }
+
+  group_arr.append(groupId);
+  
+  updateDoc(memberRef, { groupIds: group_arr})
 };

@@ -1,5 +1,5 @@
 import { Button, Select, Space } from "antd";
-import { getMembers } from "../../members/firebaseMemberFunctions";
+import { getMembers, setMemberGroup } from "../../members/firebaseMemberFunctions";
 import { useEffect, useState } from "react";
 import { Member } from "../../members/Member";
 import { Group } from "../../groups/Group";
@@ -14,7 +14,7 @@ interface AddGroupMemberProps {
 export const AddGroupMember = ({
   group,
   groups,
-  updateGroup,
+  updateGroup, 
 }: AddGroupMemberProps) => {
   const [members, setMembers] = useState<Member[]>([]);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
@@ -37,6 +37,10 @@ export const AddGroupMember = ({
     );
     return groupFound ? `(${groupFound.name})` : "";
   };
+
+  const updateMemberGroup = (groupId: string, member: Member) => {
+    setMemberGroup(groupId, member);
+  }
 
   return (
     <Space.Compact style={{ width: "100%" }}>
@@ -62,6 +66,7 @@ export const AddGroupMember = ({
         onClick={() => {
           if (selectedMember) {
             updateGroup(group, selectedMember);
+            updateMemberGroup(group.id, selectedMember);
             setSelectedMember(null);
           }
         }}

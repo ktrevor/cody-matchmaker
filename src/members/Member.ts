@@ -9,6 +9,7 @@ export interface Member {
   grade: "Freshman" | "Sophomore" | "Junior" | "Senior";
   forest: string;
   treeId: string | null;
+  groupIds: string[] | null;
 }
 
 export const getNextGrade = (
