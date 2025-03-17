@@ -4,12 +4,14 @@ import { PlusOutlined } from "@ant-design/icons";
 import { DonutForm, DonutFormFields } from "./DonutForm";
 import { addDonut } from "../../donuts/firebaseDonutFunctions";
 import { useDonutsContext } from "../../components/DonutsProvider";
+import styles from "./DonutPage.module.css";
 
 export const AddDonut = () => {
   const { updateDonuts, loading } = useDonutsContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [waitingForUpdate, setWaitingForUpdate] = useState(false);
+
 
   useEffect(() => {
     if (waitingForUpdate && !loading) {
@@ -42,7 +44,7 @@ export const AddDonut = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
+      <Button type="primary" onClick={showModal} icon={<PlusOutlined />} className= {styles.green}>
         Create new donut
       </Button>
       <Modal
