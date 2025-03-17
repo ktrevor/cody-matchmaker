@@ -34,18 +34,21 @@ const App = () => {
                     style={{
                       display: "flex",
                       alignItems: "center",
+                      padding: "0px 48px", 
+                      backgroundColor: '#44624a'
                     }}
                   >
-                    <Navbar />
+                    <Navbar/>
                   </Header>
-                  <Content style={{ padding: "0 48px" }}>
+                  <Content style={{ padding: "0 48px", backgroundColor: '#8ba888'}}>
                     <div style={{ margin: "16px 0" }} />
                     <div
                       style={{
                         background: colorBgContainer,
                         minHeight: 280,
-                        padding: 24,
+                        padding: 24, 
                         borderRadius: borderRadiusLG,
+                        backgroundColor: '#c0cfb3'
                       }}
                     >
                       <Routes>
@@ -55,11 +58,12 @@ const App = () => {
                         <Route
                           path="/groups/:donutId"
                           element={<GroupPage />}
+                      
                         />
                       </Routes>
                     </div>
                   </Content>
-                  <Footer style={{ textAlign: "center" }}>
+                  <Footer style={{ textAlign: "center", backgroundColor: '#8ba888' }}>
                     Matchacado ©{new Date().getFullYear()} Created by Kate
                     Trevor & Alicia Gullon
                   </Footer>
@@ -67,7 +71,7 @@ const App = () => {
               </DirtyProvider>
             </ForestProvider>
           </JoinedProvider>
-        </MembersProvider>
+        </MembersProvider>  
       </DonutsProvider>
     </Router>
   );

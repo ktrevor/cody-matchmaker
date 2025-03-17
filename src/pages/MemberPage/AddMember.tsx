@@ -4,6 +4,8 @@ import { addMember } from "../../members/firebaseMemberFunctions";
 import { MemberForm, MemberFormFields } from "./MemberForm";
 import { useMembersContext } from "../../components/MembersProvider";
 import { PlusOutlined } from "@ant-design/icons";
+import styles from "addmemberpage.module.css"
+
 
 export const AddMember = () => {
   const { members, updateMembers, loading } = useMembersContext();
@@ -42,7 +44,7 @@ export const AddMember = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
+      <Button type="primary" onClick={showModal} icon={<PlusOutlined />} className={styles.green}>
         Add member
       </Button>
       <Modal
@@ -50,6 +52,7 @@ export const AddMember = () => {
         open={isModalOpen}
         footer={null}
         closable={false}
+        style = {{}}
       >
         <MemberForm
           form={addMemberForm}
@@ -58,6 +61,7 @@ export const AddMember = () => {
           okText={"Add"}
           onFinish={onFinish}
           onCancel={handleCancel}
+      
         />
       </Modal>
     </>

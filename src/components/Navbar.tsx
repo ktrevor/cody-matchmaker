@@ -35,7 +35,7 @@ export const Navbar = () => {
       onClick={onClick}
       selectedKeys={[location.pathname]}
       items={pages}
-      style={{ flex: "1", minWidth: 0 }}
+      style={{ flex: "1", minWidth: 0, backgroundColor: "#44624a", padding: '0px 0px', margin: "0px 0px" }}
     />
   );
 };
