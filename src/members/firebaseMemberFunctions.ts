@@ -43,21 +43,26 @@ export const editMember = async (
 
 export const deleteMember = async (member: Member): Promise<void> => {
   //delete from groups
-  const groupsCollection = collection(db, "groups");
-  const groupSnapshot = await getDocs(groupsCollection);
+  const memberRef = doc(db, "members", member.id);
+  const memberSnap = await getDoc(memberRef);
 
-  const updateGroups = groupSnapshot.docs
-    .filter((groupDoc) => groupDoc.data().memberIds.includes(member.id))
-    .map(async (groupDoc) => {
-      const groupRef = doc(db, "groups", groupDoc.id);
-      const updatedMemberIds = groupDoc
+  if (!memberSnap.exists()) {
+    throw new Error(`Member with ID ${member.id} not found`);
+  }
+
+  for (let group_id in memberSnap.data().groupIds) {
+      const groupRef = doc(db, "groups", group_id);  
+      const groupSnap = await getDoc(memberRef);
+      
+      if (!groupSnap.exists()) {
+        throw new Error(`Member with ID ${member.id} not found`);
+      }
+
+      const updatedMemberIds = groupSnap
         .data()
         .memberIds.filter((id: string) => id !== member.id);
-
       return updateDoc(groupRef, { memberIds: updatedMemberIds });
-    });
-
-  await Promise.all(updateGroups);
+  }
 
   //if tree update leaves
   const membersCollection = collection(db, "members");
@@ -65,14 +70,12 @@ export const deleteMember = async (member: Member): Promise<void> => {
   const treeSnapshot = await getDocs(treeQuery);
 
   const updateTress = treeSnapshot.docs.map(async (docSnap) => {
-    const memberRef = doc(db, "members", docSnap.id);
     await updateDoc(memberRef, { treeId: null });
   });
 
   await Promise.all(updateTress);
 
   //delete member from members collection
-  const memberRef = doc(db, "members", member.id);
   await deleteDoc(memberRef);
 };
 
