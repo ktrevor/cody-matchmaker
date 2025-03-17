@@ -1,5 +1,5 @@
 import { Button, Select, Space } from "antd";
-import { getMembers, setMemberGroup } from "../../members/firebaseMemberFunctions";
+import { getMembers } from "../../members/firebaseMemberFunctions";
 import { useEffect, useState } from "react";
 import { Member } from "../../members/Member";
 import { Group } from "../../groups/Group";
@@ -38,10 +38,6 @@ export const AddGroupMember = ({
     return groupFound ? `(${groupFound.name})` : "";
   };
 
-  const updateMemberGroup = (groupId: string, member: Member) => {
-    setMemberGroup(groupId, member);
-  }
-
   return (
     <Space.Compact style={{ width: "100%" }}>
       <Select
@@ -66,7 +62,6 @@ export const AddGroupMember = ({
         onClick={() => {
           if (selectedMember) {
             updateGroup(group, selectedMember);
-            updateMemberGroup(group.id, selectedMember);
             setSelectedMember(null);
           }
         }}
