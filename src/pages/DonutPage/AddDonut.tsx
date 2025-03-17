@@ -42,7 +42,11 @@ export const AddDonut = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
+      <Button type="primary" onClick={showModal} icon={<PlusOutlined />} style={{
+          backgroundColor: '#4CAF50', // Green background added for matcha vibes  
+          color: '#fff', // White text
+          borderColor: '#4CAF50', // Green border
+        }}>
         Create new donut
       </Button>
       <Modal
