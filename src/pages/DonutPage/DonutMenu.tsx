@@ -17,6 +17,7 @@ interface DonutMenuProps {
 export const DonutMenu = ({ donut }: DonutMenuProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const items: MenuProps["items"] = [
     {
@@ -40,8 +41,15 @@ export const DonutMenu = ({ donut }: DonutMenuProps) => {
 
   return (
     <>
-      <Dropdown menu={{ items }} trigger={["click"]}>
-        <div onClick={(e) => e.preventDefault()} className={styles.ellipsis}>
+      <Dropdown
+        menu={{ items }}
+        trigger={["click"]}
+        onOpenChange={(open) => setIsMenuOpen(open)}
+      >
+        <div
+          onClick={(e) => e.preventDefault()}
+          className={`${styles.ellipsis} ${isMenuOpen ? styles.menuOpen : ""}`}
+        >
           <EllipsisOutlined />
         </div>
       </Dropdown>

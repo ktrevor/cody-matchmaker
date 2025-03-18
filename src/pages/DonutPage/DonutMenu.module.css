@@ -1,4 +1,12 @@
-.ellipsis:hover {
+.ellipsis {
   cursor: pointer;
-  color: #000;
+  color: #8c8c8c;
+}
+
+.ellipsis:hover {
+  color: black;
+}
+
+.menuOpen {
+  color: #8c8c8c !important;
 }
