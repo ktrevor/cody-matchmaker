@@ -9,8 +9,8 @@ interface MemberDisplayProps {
 export const MemberDisplay = ({ member }: MemberDisplayProps) => {
   const { members } = useMembersContext();
   const getTreeName = (id: string | null): string | undefined => {
-    const member = members.find((m) => m.id === id);
-    return member ? member.name : undefined;
+    const tree = members.find((t) => t.id === id);
+    return tree ? tree.name : undefined;
   };
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
