@@ -55,7 +55,7 @@ export const DeleteMember = ({ memberToDelete }: DeleteMemberProps) => {
         onCancel={handleCancel}
         closable={false}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
           <Button

@@ -1,4 +1,4 @@
-import { Button, Col, message, Row, Spin, Typography } from "antd";
+import { Button, Col, message, Row, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { DonutName } from "./DonutName";
 import { DonutDate } from "./DonutDate";
@@ -45,13 +45,8 @@ export const GroupPage = () => {
     members: [],
   });
   const [isSaveLoading, setIsSaveLoading] = useState(false);
-  const [isPageLoading, setIsPageLoading] = useState(false);
 
   useEffect(() => {
-    if (performance.navigation.type === 1) {
-      setIsPageLoading(true);
-    }
-
     if (donutId) {
       const donutData = donuts.find((donut) => donut.id === donutId);
 
@@ -60,7 +55,6 @@ export const GroupPage = () => {
         setName(donutData.name);
         setDate(donutData.date);
         setGroups(donutData.groups);
-        setIsPageLoading(false);
       }
     }
   }, [donutId, donuts]);
@@ -273,22 +267,6 @@ export const GroupPage = () => {
     setIsSaveLoading(false);
     message.success(`Donut ${donut.name} saved successfully!`);
   };
-
-  if (isPageLoading) {
-    return (
-      <div style={{ height: "100vh" }}>
-        <div
-          style={{
-            display: "grid",
-            placeItems: "center",
-            height: "100%",
-          }}
-        >
-          <Spin size="large" />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <>
