@@ -1,5 +1,5 @@
 .listItem {
-  cursor: pointer;
+  cursor: not-allowed;
 }
 
 .hoverable:hover {
@@ -15,6 +15,7 @@
 }
 
 .listItem.selected {
+  cursor: pointer;
   outline: solid #1890ff;
   border-radius: 8px;
   position: relative;
