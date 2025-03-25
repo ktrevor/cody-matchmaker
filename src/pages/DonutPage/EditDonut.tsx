@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal, Form, FormProps, message } from "antd";
 import { Donut } from "../../donuts/Donut";
 import { useDonutsContext } from "../../components/DonutsProvider";
@@ -12,17 +12,8 @@ interface EditDonutProps {
 }
 
 export const EditDonut = ({ donutToEdit, onClose }: EditDonutProps) => {
-  const { updateDonuts, loading } = useDonutsContext();
+  const { updateDonuts } = useDonutsContext();
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
-
-  useEffect(() => {
-    if (waitingForUpdate && !loading) {
-      setWaitingForUpdate(false);
-      setConfirmLoading(false);
-      onClose();
-    }
-  }, [loading]);
 
   const [editDonutForm] = Form.useForm();
 
@@ -34,8 +25,9 @@ export const EditDonut = ({ donutToEdit, onClose }: EditDonutProps) => {
   const onFinish: FormProps<DonutFormFields>["onFinish"] = async (newData) => {
     setConfirmLoading(true);
     await editDonut(donutToEdit, newData);
-    setWaitingForUpdate(true);
     await updateDonuts();
+    setConfirmLoading(false);
+    onClose();
     message.success(`Donut "${newData.name}" updated successfully!`);
     editDonutForm.resetFields();
   };

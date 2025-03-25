@@ -1,4 +1,4 @@
-import { Button, Col, message, Row, Typography } from "antd";
+import { Button, Col, message, Row, Spin, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { DonutName } from "./DonutName";
 import { DonutDate } from "./DonutDate";
@@ -45,8 +45,13 @@ export const GroupPage = () => {
     members: [],
   });
   const [isSaveLoading, setIsSaveLoading] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
   useEffect(() => {
+    if (performance.navigation.type === 1) {
+      setIsPageLoading(true);
+    }
+
     if (donutId) {
       const donutData = donuts.find((donut) => donut.id === donutId);
 
@@ -55,6 +60,7 @@ export const GroupPage = () => {
         setName(donutData.name);
         setDate(donutData.date);
         setGroups(donutData.groups);
+        setIsPageLoading(false);
       }
     }
   }, [donutId, donuts]);
@@ -69,6 +75,14 @@ export const GroupPage = () => {
       members: members.filter((member) => !allGroupedMembers.has(member.id)),
     }));
   }, [groups, members]);
+
+  useEffect(() => {
+    if (JSON.stringify(groups) !== JSON.stringify(donut?.groups)) {
+      setIsDirty(true);
+    } else {
+      setIsDirty(false);
+    }
+  }, [groups, donut?.groups, setIsDirty]);
 
   useEffect(() => {
     // browswer refresh, tab close
@@ -87,12 +101,10 @@ export const GroupPage = () => {
 
   const handleNameChange = (newName: string) => {
     setName(newName);
-    setIsDirty(true);
   };
 
   const handleDateChange = (newDate: Date) => {
     setDate(newDate);
-    setIsDirty(true);
   };
 
   const handleAddMemberToGroup = (
@@ -146,8 +158,6 @@ export const GroupPage = () => {
         return group;
       });
     });
-
-    setIsDirty(true);
   };
 
   const handleDeleteMemberFromGroup = (
@@ -173,8 +183,6 @@ export const GroupPage = () => {
         return currentGroup;
       })
     );
-
-    setIsDirty(true);
   };
 
   const handleDeleteGroup = (groupToDelete: Group) => {
@@ -186,8 +194,6 @@ export const GroupPage = () => {
     setGroups((prevGroups) =>
       prevGroups.filter((g) => g.id !== groupToDelete.id)
     );
-
-    setIsDirty(true);
   };
 
   const handleAddGroup = () => {
@@ -199,8 +205,6 @@ export const GroupPage = () => {
 
     setAddedGroups((prev) => [...prev, newGroup]);
     setGroups((prevGroups) => [...prevGroups, newGroup]);
-
-    setIsDirty(true);
   };
 
   const handleSave = async () => {
@@ -267,9 +271,24 @@ export const GroupPage = () => {
     }
 
     setIsSaveLoading(false);
-    setIsDirty(false);
     message.success(`Donut ${donut.name} saved successfully!`);
   };
+
+  if (isPageLoading) {
+    return (
+      <div style={{ height: "100vh" }}>
+        <div
+          style={{
+            display: "grid",
+            placeItems: "center",
+            height: "100%",
+          }}
+        >
+          <Spin size="large" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

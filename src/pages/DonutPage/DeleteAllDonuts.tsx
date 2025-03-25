@@ -1,22 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal, message, Button, Space } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useDonutsContext } from "../../components/DonutsProvider";
 import { deleteCollection } from "../../donuts/firebaseDonutFunctions";
 
 export const DeleteAllDonuts = () => {
-  const { updateDonuts, loading } = useDonutsContext();
+  const { updateDonuts } = useDonutsContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
-
-  useEffect(() => {
-    if (waitingForUpdate && !loading) {
-      setWaitingForUpdate(false);
-      setConfirmLoading(false);
-      setIsModalOpen(false);
-    }
-  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -27,7 +18,8 @@ export const DeleteAllDonuts = () => {
     await deleteCollection("donuts");
     await deleteCollection("groups");
     await updateDonuts();
-    setWaitingForUpdate(true);
+    setConfirmLoading(false);
+    setIsModalOpen(false);
     message.success(`All donuts deleted successfully!`);
   };
 
@@ -51,7 +43,7 @@ export const DeleteAllDonuts = () => {
         onCancel={handleCancel}
         closable={false}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
           <Button

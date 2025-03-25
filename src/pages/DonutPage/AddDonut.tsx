@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Form, FormProps, message, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { DonutForm, DonutFormFields } from "./DonutForm";
@@ -6,18 +6,9 @@ import { addDonut } from "../../donuts/firebaseDonutFunctions";
 import { useDonutsContext } from "../../components/DonutsProvider";
 
 export const AddDonut = () => {
-  const { updateDonuts, loading } = useDonutsContext();
+  const { updateDonuts } = useDonutsContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
-
-  useEffect(() => {
-    if (waitingForUpdate && !loading) {
-      setWaitingForUpdate(false);
-      setConfirmLoading(false);
-      setIsModalOpen(false);
-    }
-  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -33,9 +24,9 @@ export const AddDonut = () => {
   const onFinish: FormProps<DonutFormFields>["onFinish"] = async (newDonut) => {
     setConfirmLoading(true);
     await addDonut(newDonut);
-    setIsModalOpen(false);
-    setWaitingForUpdate(true);
     await updateDonuts();
+    setConfirmLoading(false);
+    setIsModalOpen(false);
     message.success(`Donut "${newDonut.name}" added successfully!`);
     createDonutForm.resetFields();
   };

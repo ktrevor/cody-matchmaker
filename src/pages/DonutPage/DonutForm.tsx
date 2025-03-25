@@ -67,7 +67,7 @@ export const DonutForm = ({
       <Row justify="center" style={{ marginBottom: 0 }}>
         <Col>
           <Space style={{ width: "100%", justifyContent: "center" }}>
-            <Button htmlType="button" onClick={onCancel}>
+            <Button htmlType="button" onClick={onCancel} disabled={loading}>
               Cancel
             </Button>
             <Button type="primary" htmlType="submit" loading={loading}>
