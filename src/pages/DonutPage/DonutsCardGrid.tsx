@@ -89,7 +89,7 @@ export const DonutsCardGrid = () => {
             allowClear
           />
         </div>
-        <div style={{ flex: 1, minWidth: "250px", maxWidth: "310px" }}>
+        <div style={{ flex: 1, minWidth: "320px", maxWidth: "320px" }}>
           <RangePicker
             value={dateRange}
             onChange={handleDateChange}

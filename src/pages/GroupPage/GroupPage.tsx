@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { Donut } from "../../donuts/Donut";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
-import { CoffeeOutlined, SaveOutlined, SlackOutlined } from "@ant-design/icons";
+import { CoffeeOutlined, SaveOutlined } from "@ant-design/icons";
 import {
   addGroup,
   addMemberToGroup,
@@ -44,6 +44,7 @@ export const GroupPage = () => {
     donutId: donut ? donut.id : "",
     members: [],
   });
+  const [isSaveLoading, setIsSaveLoading] = useState(false);
 
   useEffect(() => {
     if (donutId) {
@@ -204,6 +205,7 @@ export const GroupPage = () => {
 
   const handleSave = async () => {
     if (!donut) return;
+    setIsSaveLoading(true);
 
     const updatedFields: Partial<Donut> = {};
 
@@ -264,6 +266,7 @@ export const GroupPage = () => {
       setDeletedGroups([]);
     }
 
+    setIsSaveLoading(false);
     setIsDirty(false);
     message.success(`Donut ${donut.name} saved successfully!`);
   };
@@ -290,12 +293,15 @@ export const GroupPage = () => {
             gap: 8,
           }}
         >
-          <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
+          <Button
+            type="primary"
+            icon={<SaveOutlined />}
+            onClick={handleSave}
+            loading={isSaveLoading}
+          >
             Save
           </Button>
-          <Button type="primary" icon={<SlackOutlined />}>
-            Save/Create in Slack
-          </Button>
+          <Button type="primary">Save/Create in Slack</Button>
         </div>
       </div>
 

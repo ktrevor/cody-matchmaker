@@ -92,7 +92,7 @@ export const GroupCard = ({
           <Button
             type="link"
             danger
-            icon={<CloseCircleOutlined />}
+            icon={<CloseCircleOutlined style={{ marginLeft: 12 }} />}
             onClick={() => deleteGroup(group)}
           />
         </div>
