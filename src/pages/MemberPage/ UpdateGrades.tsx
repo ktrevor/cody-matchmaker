@@ -105,7 +105,7 @@ export const UpdateGrades = () => {
           )}
           style={{
             maxHeight: `calc(8 * ${itemHeight}px)`,
-            overflowY: "auto",
+            overflowY: seniors.length > 8 ? "auto" : "hidden",
           }}
         />
       </Modal>

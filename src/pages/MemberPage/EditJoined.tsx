@@ -135,7 +135,7 @@ export const EditJoined = () => {
           )}
           style={{
             maxHeight: `calc(8 * ${itemHeight}px)`,
-            overflowY: "auto",
+            overflowY: currentSemesters.length > 8 ? "auto" : "hidden",
           }}
         />
       </Modal>
