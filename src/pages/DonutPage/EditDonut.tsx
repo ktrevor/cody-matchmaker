@@ -34,8 +34,8 @@ export const EditDonut = ({ donutToEdit, onClose }: EditDonutProps) => {
   const onFinish: FormProps<DonutFormFields>["onFinish"] = async (newData) => {
     setConfirmLoading(true);
     await editDonut(donutToEdit, newData);
-    setConfirmLoading(false);
-    updateDonuts();
+    setWaitingForUpdate(true);
+    await updateDonuts();
     message.success(`Donut "${newData.name}" updated successfully!`);
     editDonutForm.resetFields();
   };

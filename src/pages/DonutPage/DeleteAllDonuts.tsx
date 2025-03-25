@@ -26,7 +26,7 @@ export const DeleteAllDonuts = () => {
     setConfirmLoading(true);
     await deleteCollection("donuts");
     await deleteCollection("groups");
-    updateDonuts();
+    await updateDonuts();
     setWaitingForUpdate(true);
     message.success(`All donuts deleted successfully!`);
   };

@@ -20,7 +20,6 @@ export const DeleteDonut = ({ donutToDelete, onClose }: DeleteDonutProps) => {
       setWaitingForUpdate(false);
       setConfirmLoading(false);
       onClose();
-      message.success(`Donut "${donutToDelete.name}" deleted successfully!`);
     }
   }, [loading]);
 
@@ -28,7 +27,8 @@ export const DeleteDonut = ({ donutToDelete, onClose }: DeleteDonutProps) => {
     setConfirmLoading(true);
     await deleteDonut(donutToDelete);
     setWaitingForUpdate(true);
-    updateDonuts();
+    await updateDonuts();
+    message.success(`Donut "${donutToDelete.name}" deleted successfully!`);
   };
 
   const handleCancel = () => {

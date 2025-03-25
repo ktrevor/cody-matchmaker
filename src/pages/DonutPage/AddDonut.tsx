@@ -35,7 +35,7 @@ export const AddDonut = () => {
     await addDonut(newDonut);
     setIsModalOpen(false);
     setWaitingForUpdate(true);
-    updateDonuts();
+    await updateDonuts();
     message.success(`Donut "${newDonut.name}" added successfully!`);
     createDonutForm.resetFields();
   };
