@@ -1,5 +1,5 @@
 .listItem {
-  cursor: relative;
+  cursor: pointer;
 }
 
 .hoverable:hover {
