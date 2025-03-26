@@ -1,18 +1,25 @@
 import { Button, message, Modal, Input, Form, Space } from "antd";
 import { Group } from "../../groups/Group";
 import { useState } from "react";
+import { Donut } from "../../donuts/Donut";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
+import { useDonutsContext } from "../../components/DonutsProvider";
 
 interface CreateSlackGroupsProps {
+  donut: Donut | null;
   groups: Group[];
   handleSave: () => void;
 }
 
 export const CreateSlackGroups = ({
+  donut,
   groups,
   handleSave,
 }: CreateSlackGroupsProps) => {
   const defaultMessage = "Hello, donut group!";
 
+  const { updateDonuts } = useDonutsContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [groupMessage, setGroupMessage] = useState(defaultMessage);
@@ -42,8 +49,14 @@ export const CreateSlackGroups = ({
 
       const data = await response.json();
       if (data.ok) {
-        message.success(`Slack groups created successfully!`);
+        if (donut) {
+          const donutRef = doc(db, "donuts", donut.id);
+          await updateDoc(donutRef, { sent: true });
+          await updateDonuts();
+        }
+        setConfirmLoading(false);
         setIsModalOpen(false);
+        message.success(`Slack groups created successfully!`);
         setGroupMessage(defaultMessage);
         form.resetFields();
       } else {
@@ -51,7 +64,7 @@ export const CreateSlackGroups = ({
       }
     } catch (error) {
       console.error("Error creating Slack groups:", error);
-      message.error("An error occurred.");
+      message.error("Error creating Slack groups.");
     } finally {
       setConfirmLoading(false);
     }

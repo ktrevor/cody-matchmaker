@@ -1,4 +1,4 @@
-import { Button, Col, message, Row, Typography } from "antd";
+import { Button, Col, message, Row, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { DonutName } from "./DonutName";
 import { DonutDate } from "./DonutDate";
@@ -282,6 +282,9 @@ export const GroupPage = () => {
         <CoffeeOutlined style={{ fontSize: "24px", color: "#8c8c8c" }} />
         <DonutName name={name} updateName={handleNameChange} />
         <DonutDate date={date} updateDate={handleDateChange} />
+        <Tag color={donut?.sent ? "green" : "red"}>
+          {donut?.sent ? "Sent" : "Not sent"}
+        </Tag>
         <div
           style={{
             display: "flex",
@@ -299,7 +302,11 @@ export const GroupPage = () => {
           >
             Save
           </Button>
-          <CreateSlackGroups groups={groups} handleSave={handleSave} />
+          <CreateSlackGroups
+            donut={donut}
+            groups={groups}
+            handleSave={handleSave}
+          />
         </div>
       </div>
 
