@@ -1,4 +1,10 @@
-import { addDoc, collection } from "firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { getMembers } from "../members/firebaseMemberFunctions";
 
@@ -17,7 +23,15 @@ export const makeGroups = async (donutId: string): Promise<String[]> => {
       memberIds: groupMembers.map((member) => member.id),
     });
 
-    groupIds.push(groupDoc.id);
+    const groupId = groupDoc.id;
+    groupIds.push(groupId);
+
+    for (const member of groupMembers) {
+      const memberRef = doc(db, "members", member.id);
+      await updateDoc(memberRef, {
+        groupIds: arrayUnion(groupId),
+      });
+    }
   }
 
   return groupIds;
