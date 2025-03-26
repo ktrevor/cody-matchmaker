@@ -23,6 +23,7 @@ export const EditForests = () => {
   const [renamedForests, setRenamedForests] = useState<Record<string, string>>(
     {}
   );
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   useEffect(() => {
     setCurrentForests([...forests]);
@@ -37,7 +38,8 @@ export const EditForests = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
+    setConfirmLoading(true);
     updateForests(currentForests);
     Object.keys(renamedForests).forEach((oldForest) => {
       const newForest = renamedForests[oldForest];
@@ -52,8 +54,9 @@ export const EditForests = () => {
         }
       });
     });
+    await updateMembers();
+    setConfirmLoading(false);
     setIsModalOpen(false);
-    updateMembers();
   };
 
   const handleCancel = () => {
@@ -121,10 +124,15 @@ export const EditForests = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            loading={confirmLoading}
+          >
             Save
           </Button>,
         ]}

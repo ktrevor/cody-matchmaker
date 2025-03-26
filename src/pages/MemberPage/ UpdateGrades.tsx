@@ -14,6 +14,7 @@ export const UpdateGrades = () => {
   const { members, updateMembers } = useMembersContext();
   const [seniors, setSeniors] = useState<Member[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   useEffect(() => {
     setSeniors(members.filter((member) => member.grade === "Senior"));
@@ -24,14 +25,16 @@ export const UpdateGrades = () => {
   };
 
   const handleOk = async () => {
+    setConfirmLoading(true);
     const seniorIds = new Set(seniors.map((senior) => senior.id));
     const membersToPromote = members.filter((member) =>
       seniorIds.has(member.id)
     );
 
     await promoteMembersGrades(membersToPromote);
+    await updateMembers();
+    setConfirmLoading(false);
     setIsModalOpen(false);
-    updateMembers();
     message.success("Members promoted successfully!");
   };
 
@@ -58,10 +61,16 @@ export const UpdateGrades = () => {
         onCancel={handleCancel}
         closable={false}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk} danger>
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            danger
+            loading={confirmLoading}
+          >
             Confirm
           </Button>,
         ]}

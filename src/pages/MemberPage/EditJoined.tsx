@@ -21,6 +21,7 @@ export const EditJoined = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentSemesters, setCurrentSemesters] = useState<Semester[]>([]);
   const [joinedForm] = Form.useForm();
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   useEffect(() => {
     setCurrentSemesters(semesters);
@@ -30,8 +31,10 @@ export const EditJoined = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    updateSemesters(currentSemesters);
+  const handleOk = async () => {
+    setConfirmLoading(true);
+    await updateSemesters(currentSemesters);
+    setConfirmLoading(false);
     setIsModalOpen(false);
   };
 
@@ -86,10 +89,15 @@ export const EditJoined = () => {
         onClose={handleCancel}
         closable={false}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            loading={confirmLoading}
+          >
             Save
           </Button>,
         ]}
