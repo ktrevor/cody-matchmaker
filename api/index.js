@@ -1,6 +1,4 @@
 import { WebClient } from "@slack/web-api";
-const t = "";
-const web = new WebClient(t);
 
 export default async function handler(req, res) {
   try {
