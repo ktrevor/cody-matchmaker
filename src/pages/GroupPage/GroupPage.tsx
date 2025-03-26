@@ -268,26 +268,25 @@ export const GroupPage = () => {
     message.success(`Donut ${donut.name} saved successfully!`);
   };
 
-  const sendMessage = async () => {
-    const message = "Hello, this is a message from Matchacado!"; // Or any dynamic message
-
+  const createSlackGroups = async (groups: Group[]) => {
     try {
-      const response = await fetch("/api/index", {
+      const response = await fetch("/api/slack-groups", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ groups }),
       });
 
       const data = await response.json();
       if (data.ok) {
-        alert("Message sent to Slack!");
+        alert("Slack groups created successfully!");
+        console.log("Created Slack Groups:", data.createdGroups);
       } else {
-        alert("Failed to send message.");
+        alert("Failed to create Slack groups.");
       }
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error("Error creating Slack groups:", error);
       alert("An error occurred.");
     }
   };
@@ -322,7 +321,7 @@ export const GroupPage = () => {
           >
             Save
           </Button>
-          <Button type="primary" onClick={sendMessage}>
+          <Button type="primary" onClick={() => createSlackGroups(groups)}>
             Save/Create in Slack
           </Button>
         </div>

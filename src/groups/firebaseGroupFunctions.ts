@@ -56,6 +56,13 @@ export const deleteGroup = async (group: Group): Promise<void> => {
     groupIds: arrayRemove(group.id),
   });
 
+  for (const member of group.members) {
+    const memberRef = doc(db, "members", member.id);
+    await updateDoc(memberRef, {
+      groupIds: arrayRemove(group.id),
+    });
+  }
+
   const groupRef = doc(db, "groups", group.id);
   await deleteDoc(groupRef);
 };
@@ -68,6 +75,11 @@ export const deleteMemberFromGroup = async (
   await updateDoc(groupRef, {
     memberIds: arrayRemove(member.id),
   });
+
+  const memberRef = doc(db, "members", member.id);
+  await updateDoc(memberRef, {
+    groupIds: arrayRemove(group.id),
+  });
 };
 export const addMemberToGroup = async (
   group: Group,
@@ -76,5 +88,10 @@ export const addMemberToGroup = async (
   const groupRef = doc(db, "groups", group.id);
   await updateDoc(groupRef, {
     memberIds: arrayUnion(member.id),
+  });
+
+  const memberRef = doc(db, "members", member.id);
+  await updateDoc(memberRef, {
+    groupIds: arrayUnion(group.id),
   });
 };
