@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Input, Button, Typography } from "antd";
 import { DonutCard } from "./DonutCard";
 import { useDonutsContext } from "../../components/DonutsProvider";
@@ -47,25 +47,27 @@ export const DonutsCardGrid = () => {
     }
   };
 
-  const filteredDonuts = donuts.filter((donut) => {
-    const matchesSearch = donut.name
-      .toLowerCase()
-      .startsWith(searchQuery.toLowerCase());
+  const filteredDonuts = useMemo(() => {
+    return donuts.filter((donut) => {
+      const matchesSearch = donut.name
+        .toLowerCase()
+        .startsWith(searchQuery.toLowerCase());
 
-    const donutDate = dayjs(donut.date);
-    const inDateRange =
-      !dateRange ||
-      !dateRange[0] ||
-      !dateRange[1] ||
-      donutDate.isBetween(dateRange[0], dateRange[1], "day", "[]");
+      const donutDate = dayjs(donut.date);
+      const inDateRange =
+        !dateRange ||
+        !dateRange[0] ||
+        !dateRange[1] ||
+        donutDate.isBetween(dateRange[0], dateRange[1], "day", "[]");
 
-    const sentStatus =
-      statusFilter === "all" ||
-      (statusFilter === "sent" && donut.sent) ||
-      (statusFilter === "unsent" && !donut.sent);
+      const sentStatus =
+        statusFilter === "all" ||
+        (statusFilter === "sent" && donut.sent) ||
+        (statusFilter === "unsent" && !donut.sent);
 
-    return sentStatus && matchesSearch && inDateRange;
-  });
+      return sentStatus && matchesSearch && inDateRange;
+    });
+  }, [donuts, searchQuery, dateRange, statusFilter]);
 
   return (
     <>
