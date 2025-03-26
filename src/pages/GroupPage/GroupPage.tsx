@@ -268,6 +268,30 @@ export const GroupPage = () => {
     message.success(`Donut ${donut.name} saved successfully!`);
   };
 
+  const sendMessage = async () => {
+    const message = "Hello, this is a message from Matchacado!"; // Or any dynamic message
+
+    try {
+      const response = await fetch("/api/index", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message }),
+      });
+
+      const data = await response.json();
+      if (data.ok) {
+        alert("Message sent to Slack!");
+      } else {
+        alert("Failed to send message.");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("An error occurred.");
+    }
+  };
+
   return (
     <>
       <div
@@ -298,7 +322,9 @@ export const GroupPage = () => {
           >
             Save
           </Button>
-          <Button type="primary">Save/Create in Slack</Button>
+          <Button type="primary" onClick={sendMessage}>
+            Save/Create in Slack
+          </Button>
         </div>
       </div>
 
