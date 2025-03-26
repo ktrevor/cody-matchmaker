@@ -77,7 +77,7 @@ export const CreateSlackGroups = ({
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button type="primary" onClick={showModal} disabled={donut?.sent}>
         Save/Create in Slack
       </Button>
       <Modal

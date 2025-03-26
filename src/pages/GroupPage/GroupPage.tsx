@@ -282,7 +282,16 @@ export const GroupPage = () => {
         <CoffeeOutlined style={{ fontSize: "24px", color: "#8c8c8c" }} />
         <DonutName name={name} updateName={handleNameChange} />
         <DonutDate date={date} updateDate={handleDateChange} />
-        <Tag color={donut?.sent ? "green" : "red"}>
+        <Tag
+          style={{
+            fontSize: "16px",
+            height: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          color={donut?.sent ? "green" : "red"}
+        >
           {donut?.sent ? "Sent" : "Not sent"}
         </Tag>
         <div
@@ -299,6 +308,7 @@ export const GroupPage = () => {
             icon={<SaveOutlined />}
             onClick={handleSave}
             loading={isSaveLoading}
+            disabled={donut?.sent}
           >
             Save
           </Button>
