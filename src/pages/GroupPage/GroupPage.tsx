@@ -270,7 +270,7 @@ export const GroupPage = () => {
 
   const createSlackGroups = async (groups: Group[]) => {
     try {
-      const response = await fetch("/api/slack-groups", {
+      const response = await fetch("/api/createSlackGroups", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

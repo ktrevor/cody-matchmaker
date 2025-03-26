@@ -16,20 +16,27 @@ export default async function handler(req, res) {
         .map((member) => member.slackId)
         .filter(Boolean);
 
+      const message = group.message || "Hello, World!";
+
       if (memberSlackIds.length < 2) {
-        console.warn(
-          `Skipping group due to insufficient members: ${JSON.stringify(group)}`
-        );
+        console.warn(`Group ${group.id} has too few members to create a chat.`);
         continue;
       }
 
-      // Create a new Slack conversation (group chat)
       const result = await web.conversations.open({
         users: memberSlackIds.join(","),
       });
 
       if (result.ok) {
-        createdGroups.push({ groupId: group.id, channelId: result.channel.id });
+        await web.chat.postMessage({
+          channel: result.channel.id,
+          text: message,
+        });
+
+        createdGroups.push({
+          groupId: group.id,
+          channelId: result.channel.id,
+        });
       } else {
         console.error(
           `Failed to create chat for group ${group.id}:`,
