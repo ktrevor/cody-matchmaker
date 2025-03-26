@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         .map((member) => member.slackId)
         .filter(Boolean);
 
-      const message = group.message || "Hello, World!";
+      const message = req.body.message;
 
       if (memberSlackIds.length < 2) {
         console.warn(`Group ${group.id} has too few members to create a chat.`);

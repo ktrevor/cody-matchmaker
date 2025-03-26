@@ -19,6 +19,7 @@ import { Group } from "../../groups/Group";
 import { Member } from "../../members/Member";
 import { useDonutsContext } from "../../components/DonutsProvider";
 import { useMembersContext } from "../../components/MembersProvider";
+import { CreateSlackGroups } from "./CreateSlackGroups";
 
 export const GroupPage = () => {
   const { donuts, updateDonuts } = useDonutsContext();
@@ -268,29 +269,6 @@ export const GroupPage = () => {
     message.success(`Donut ${donut.name} saved successfully!`);
   };
 
-  const createSlackGroups = async (groups: Group[]) => {
-    try {
-      const response = await fetch("/api/createSlackGroups", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ groups }),
-      });
-
-      const data = await response.json();
-      if (data.ok) {
-        alert("Slack groups created successfully!");
-        console.log("Created Slack Groups:", data.createdGroups);
-      } else {
-        alert("Failed to create Slack groups.");
-      }
-    } catch (error) {
-      console.error("Error creating Slack groups:", error);
-      alert("An error occurred.");
-    }
-  };
-
   return (
     <>
       <div
@@ -321,9 +299,7 @@ export const GroupPage = () => {
           >
             Save
           </Button>
-          <Button type="primary" onClick={() => createSlackGroups(groups)}>
-            Save/Create in Slack
-          </Button>
+          <CreateSlackGroups groups={groups} handleSave={handleSave} />
         </div>
       </div>
 
