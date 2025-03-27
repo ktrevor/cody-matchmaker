@@ -10,40 +10,61 @@ export default async function handler(req, res) {
 
   try {
     const createdGroups = [];
+    const batchSize = 10;
+    const groups = req.body.groups;
+    let currentBatch = 0;
 
-    for (const group of req.body.groups) {
-      const memberSlackIds = group.members
-        .map((member) => member.slackId)
-        .filter(Boolean);
+    const processBatch = async (batchStart, batchEnd) => {
+      const batchGroups = groups.slice(batchStart, batchEnd);
 
-      const message = req.body.message;
+      const batchCreatedGroups = [];
 
-      if (memberSlackIds.length < 2) {
-        console.warn(`Group ${group.id} has too few members to create a chat.`);
-        continue;
-      }
+      for (const group of batchGroups) {
+        const memberSlackIds = group.members
+          .map((member) => member.slackId)
+          .filter(Boolean);
 
-      const result = await web.conversations.open({
-        users: memberSlackIds.join(","),
-      });
+        const message = req.body.message;
 
-      if (result.ok) {
-        await web.chat.postMessage({
-          channel: result.channel.id,
-          text: message,
+        if (memberSlackIds.length < 2) {
+          console.warn(
+            `Group ${group.id} has too few members to create a chat.`
+          );
+          continue;
+        }
+
+        const result = await web.conversations.open({
+          users: memberSlackIds.join(","),
         });
 
-        createdGroups.push({
-          groupId: group.id,
-          channelId: result.channel.id,
-        });
-      } else {
-        console.error(
-          `Failed to create chat for group ${group.id}:`,
-          result.error
-        );
+        if (result.ok) {
+          await web.chat.postMessage({
+            channel: result.channel.id,
+            text: message,
+          });
+
+          batchCreatedGroups.push({
+            groupId: group.id,
+            channelId: result.channel.id,
+          });
+        } else {
+          console.error(
+            `Failed to create chat for group ${group.id}:`,
+            result.error
+          );
+        }
       }
-    }
+
+      createdGroups.push(...batchCreatedGroups);
+
+      if (batchEnd < groups.length) {
+        setTimeout(() => {
+          processBatch(batchEnd, batchEnd + batchSize);
+        }, 1000);
+      }
+    };
+
+    await processBatch(currentBatch, currentBatch + batchSize);
 
     res.status(200).json({ ok: true, createdGroups });
   } catch (error) {
