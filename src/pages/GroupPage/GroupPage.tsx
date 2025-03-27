@@ -322,7 +322,7 @@ export const GroupPage = () => {
 
       <Row>
         <Col span={24}>
-          <Title level={1}>Groups</Title>
+          <Title level={1}>{`Groups (${groups.length})`}</Title>
         </Col>
       </Row>
 

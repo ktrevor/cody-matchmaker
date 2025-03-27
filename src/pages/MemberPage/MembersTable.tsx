@@ -319,10 +319,19 @@ export const MemberTable = () => {
         <EditForests />
       </div>
       <Table
-        dataSource={[...members].map((member) => ({
-          ...member,
-          key: member.id,
-        }))}
+        dataSource={[...members]
+          .sort((a, b) => {
+            const getLastName = (fullName: string) => {
+              const parts = fullName.trim().split(/\s+/);
+              return parts.length > 1 ? parts[parts.length - 1] : parts[0];
+            };
+
+            return getLastName(a.name).localeCompare(getLastName(b.name));
+          })
+          .map((member) => ({
+            ...member,
+            key: member.id,
+          }))}
         columns={columns}
         pagination={{
           current: pagination.current,
