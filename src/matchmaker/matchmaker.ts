@@ -8,15 +8,21 @@ import {
 import { db } from "../firebase/firebase";
 import { getMembers } from "../members/firebaseMemberFunctions";
 
-export const makeGroups = async (donutId: string): Promise<String[]> => {
-  const groupIds: String[] = [];
-  const groupSize = 3;
+export const makeGroups = async (donutId: string): Promise<string[]> => {
+  const groupIds: string[] = [];
   const members = await getMembers();
-
   const groupCollection = collection(db, "groups");
+  let i = 0;
 
-  for (let i = 0; i < members.length; i += groupSize) {
+  while (i < members.length) {
+    let groupSize = 3;
+
+    if (members.length - i === 4) {
+      groupSize = 4;
+    }
+
     const groupMembers = members.slice(i, i + groupSize);
+    i += groupSize;
 
     const groupDoc = await addDoc(groupCollection, {
       donutId: donutId,
