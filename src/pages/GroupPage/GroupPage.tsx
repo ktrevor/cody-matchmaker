@@ -254,9 +254,7 @@ export const GroupPage = () => {
         }
       }
 
-      if (addedGroups.length > 0 || deletedGroups.length > 0) {
-        await updateDonuts();
-      }
+      await updateDonuts();
 
       //reset
       setAddedGroups([]);
