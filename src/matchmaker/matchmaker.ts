@@ -51,6 +51,8 @@ export const makeGroups = async (donutId: string): Promise<string[]> => {
   return groupIds;
 };
 
+// Helper functions
+
 const calculateDistance = (memberA: Member, memberB: Member) => {
   let distance = 0;
 
@@ -116,9 +118,9 @@ const findBestTrio = (members: Member[]): Member[] => {
   return bestTrio;
 };
 
+// Diversity algs. If want to implement new go to firebaseDonutFunctions.ts and change how the group ids are formed on line 31
 
-
-export const makeDiversityScoreGroups = async (donutId: string): Promise<string[]> => {
+export const makeDiversityScoreGroupsByPairs = async (donutId: string): Promise<string[]> => {
   const members = await getMembers();
   const groupCollection = collection(db, "groups");
   const groupIds: string[] = [];
@@ -177,27 +179,74 @@ export const makeDiversityScoreGroups = async (donutId: string): Promise<string[
   return groupIds;
 };
 
-// const formDiverseGroups = (members: Member[], groupSize: number = 3): Member[][] => {
-//   const groups: Member[][] = [];
-//   const usedMembers = new Set<string>();
+export const makeDiversityScoreGroupsByTrio = async (donutId: string): Promise<string[]> => {
+  const members = await getMembers();
+  const groupCollection = collection(db, "groups");
+  const groupIds: string[] = [];
+  const usedMembers = new Set<string>(); //keep track of usedMembers
+  let groupSize = 3;
 
-//   while (usedMembers.size < members.length) {
-//     const remainingMembers = members.filter(member => !usedMembers.has(member.id));
+  const groupPromises: Promise<void>[] = [];
 
-//     if (remainingMembers.length < groupSize) break; // Handle leftovers later
+  while (usedMembers.size < members.length) {
 
-//     const bestTrio = findBestTrio(remainingMembers);
+    const groupMembers: Member[] = [];
 
-//     bestTrio.forEach(member => usedMembers.add(member.id));
-//     groups.push(bestTrio);
-//   }
+    const remainingMembers = members.filter(member => !usedMembers.has(member.id));
 
-//   // Handle leftovers (if any members remain)
-//   const leftovers = members.filter(member => !usedMembers.has(member.id));
-//   if (leftovers.length > 0) groups.push(leftovers);
+    if (members.length - usedMembers.size === 4) groupSize = 4;
 
-//   return groups;
-// };
+    if (groupSize == 3) {
+      const bestTrio = findBestTrio(remainingMembers);
+      bestTrio.forEach(member => usedMembers.add(member.id));
+      bestTrio.forEach(member => groupMembers.push(member))
+    } 
+    else if (groupSize == 4) {
+      const distances = calculateAllDistances(remainingMembers)
+      distances.sort((a, b) => b.distance - a.distance);
+
+      for (let distancePair of distances) {
+        const [memberA, memberB] = distancePair.pair;
+        if (!usedMembers.has(memberA.id) && !usedMembers.has(memberB.id)) {
+          groupMembers.push(memberA);
+          usedMembers.add(memberA.id);
+          if (groupMembers.length >= groupSize) break;
+  
+          groupMembers.push(memberB);
+          usedMembers.add(memberB.id);
+          if (groupMembers.length >= groupSize) break;
+        }
+      }
+
+    } else {
+      console.log("group is not size 3 or 4 in trio fxn")
+    }
+    
+    const groupPromise = addDoc(groupCollection, {
+      donutId: donutId,
+      memberIds: groupMembers.map((member) => member.id),
+    }).then(async (groupDoc) => {
+      const groupId = groupDoc.id;
+      groupIds.push(groupId);
+
+      await Promise.all(
+        groupMembers.map((member) =>
+          updateDoc(doc(db, "members", member.id), {
+            groupIds: arrayUnion(groupId),
+          })
+        )
+      );
+    });
+
+    groupPromises.push(groupPromise);
+  }
+
+  await Promise.all(groupPromises);
+
+  // console.log("made some diverse groups babyyyyyyyyy with trio")
+
+  return groupIds;
+};
 
 
 
