@@ -14,7 +14,7 @@ import {
 import { DonutFormFields } from "../pages/DonutPage/DonutForm";
 import { db } from "../firebase/firebase";
 import { Donut } from "./Donut";
-import { makeGroups } from "../matchmaker/matchmaker";
+import { makeDiversityScoreGroups, makeGroups } from "../matchmaker/matchmaker";
 import { Group } from "../groups/Group";
 import { deleteGroup, getGroupById } from "../groups/firebaseGroupFunctions";
 
@@ -27,7 +27,8 @@ export const addDonut = async (donut: DonutFormFields): Promise<void> => {
 
   const donutRef = await addDoc(collection(db, "donuts"), newDonut);
   const donutId = donutRef.id;
-  const groupIds = await makeGroups(donutId);
+  // const groupIds = await makeGroups(donutId);
+  const groupIds = await makeDiversityScoreGroups(donutId);
 
   await updateDoc(donutRef, { groupIds });
 };

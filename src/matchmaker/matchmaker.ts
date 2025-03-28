@@ -55,18 +55,20 @@ const calculateDistance = (memberA: Member, memberB: Member) => {
   let distance = 0;
 
   // categorical attributes: forest, gender, grade, joined
-  if (memberA.forest !== memberB.forest) distance += 1;
+  if (memberA.forest !== memberB.forest) distance += 3;
   if (memberA.gender !== memberB.gender) distance += 1;
   if (memberA.grade !== memberB.grade) distance += 1;
-  if (memberA.joined !== memberB.joined) distance += 1;
+  if (memberA.joined !== memberB.joined) distance += 3;
 
   const sharedGroups = memberA.groupIds.filter((id) =>
     memberB.groupIds.includes(id)
   );
 
   if (sharedGroups.length > 0) {
-    distance -= 10; // penalize has been in past group together before
+    distance -= 100; // penalize has been in past group together before
   }
+
+  if (memberA.treeId == memberB.id || memberB.treeId == memberA.id) distance -= 5;
 
   return distance;
 };
@@ -82,6 +84,40 @@ const calculateAllDistances = (members: Member[]) => {
   return distances;
 };
 
+const calculateGroupDistance = (members: Member[]) => {
+  let totalDistance = 0;
+
+  for (let i = 0; i < members.length; i++) {
+    for (let j = i + 1; j < members.length; j++){
+      totalDistance += calculateDistance(members[i], members[j]);
+    }
+  } 
+  return totalDistance;
+}
+
+const findBestTrio = (members: Member[]): Member[] => {
+  let bestTrio: Member[] = [];
+  let maxDistance = 0;
+
+  for (let i = 0; i < members.length; i++) {
+    for (let j = i + 1; j < members.length; j++) {
+      for (let k = j + 1; k < members.length; k++) {
+        const trio = [members[i], members[j], members[k]];
+        const distance = calculateGroupDistance(trio);
+
+        if (distance > maxDistance) {
+          maxDistance = distance;
+          bestTrio = trio;
+        }
+      }
+    }
+  }
+
+  return bestTrio;
+};
+
+
+
 export const makeDiversityScoreGroups = async (donutId: string): Promise<string[]> => {
   const members = await getMembers();
   const groupCollection = collection(db, "groups");
@@ -89,7 +125,8 @@ export const makeDiversityScoreGroups = async (donutId: string): Promise<string[
   const distances = calculateAllDistances(members); //distances between each member
   distances.sort((a, b) => b.distance - a.distance) //sorted by max dist first
   const usedMembers = new Set<string>(); //keep track of usedMembers
-  
+  let groupSize = 3;
+
   const groupPromises: Promise<void>[] = [];
 
   while (usedMembers.size < members.length) {
@@ -135,8 +172,32 @@ export const makeDiversityScoreGroups = async (donutId: string): Promise<string[
 
   await Promise.all(groupPromises);
 
+  console.log("made some diverse groups babyyyyyyyyy")
+
   return groupIds;
 };
+
+// const formDiverseGroups = (members: Member[], groupSize: number = 3): Member[][] => {
+//   const groups: Member[][] = [];
+//   const usedMembers = new Set<string>();
+
+//   while (usedMembers.size < members.length) {
+//     const remainingMembers = members.filter(member => !usedMembers.has(member.id));
+
+//     if (remainingMembers.length < groupSize) break; // Handle leftovers later
+
+//     const bestTrio = findBestTrio(remainingMembers);
+
+//     bestTrio.forEach(member => usedMembers.add(member.id));
+//     groups.push(bestTrio);
+//   }
+
+//   // Handle leftovers (if any members remain)
+//   const leftovers = members.filter(member => !usedMembers.has(member.id));
+//   if (leftovers.length > 0) groups.push(leftovers);
+
+//   return groups;
+// };
 
 
 
