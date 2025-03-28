@@ -127,7 +127,7 @@ export const getMemberById = async (memberId: string): Promise<Member> => {
 export const promoteMembersGrades = async (
   members: Member[]
 ): Promise<void> => {
-  for (const member of members) {
+  const memberPromises = members.map(async (member) => {
     const memberRef = doc(db, "members", member.id);
     const memberSnap = await getDoc(memberRef);
 
@@ -140,9 +140,11 @@ export const promoteMembersGrades = async (
 
     if (!nextGrade) {
       await deleteMember(member);
-      continue;
+      return;
     }
 
     await updateDoc(memberRef, { grade: nextGrade });
-  }
+  });
+
+  await Promise.all(memberPromises);
 };

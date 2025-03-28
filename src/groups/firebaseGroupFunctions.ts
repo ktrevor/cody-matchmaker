@@ -43,28 +43,32 @@ export const addGroup = async (group: Group): Promise<string> => {
   const firebaseGroupId = groupRef.id;
 
   const donutRef = doc(db, "donuts", group.donutId);
-  await updateDoc(donutRef, {
+  const updateDonut = updateDoc(donutRef, {
     groupIds: arrayUnion(firebaseGroupId),
   });
+
+  await updateDonut;
 
   return firebaseGroupId;
 };
 
 export const deleteGroup = async (group: Group): Promise<void> => {
   const donutRef = doc(db, "donuts", group.donutId);
-  await updateDoc(donutRef, {
+  const groupRef = doc(db, "groups", group.id);
+
+  const removeFromDonut = updateDoc(donutRef, {
     groupIds: arrayRemove(group.id),
   });
 
-  for (const member of group.members) {
-    const memberRef = doc(db, "members", member.id);
-    await updateDoc(memberRef, {
+  const removeFromMembers = group.members.map((member) =>
+    updateDoc(doc(db, "members", member.id), {
       groupIds: arrayRemove(group.id),
-    });
-  }
+    })
+  );
 
-  const groupRef = doc(db, "groups", group.id);
-  await deleteDoc(groupRef);
+  const deleteGroupDoc = deleteDoc(groupRef);
+
+  await Promise.all([removeFromDonut, ...removeFromMembers, deleteGroupDoc]);
 };
 
 export const deleteMemberFromGroup = async (
