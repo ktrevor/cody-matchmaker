@@ -107,12 +107,11 @@ export const GroupPage = () => {
     newMember: Member,
     index?: number
   ) => {
-    //don't do any tracking if adding to ungrouped
-    if (targetGroup.id === "ungrouped") {
-      return;
-    }
-
     setAddedMembers((prev) => {
+      //don't do any adding if adding to ungrouped
+      if (targetGroup.id === "ungrouped") {
+        return prev;
+      }
       const updated = new Map(prev);
       updated.set(newMember, targetGroup);
       return updated;
