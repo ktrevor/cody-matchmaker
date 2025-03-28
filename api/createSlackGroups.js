@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       const batchGroups = groups.slice(batchStart, batchEnd);
       const batchCreatedGroups = [];
 
-      for (const group of batchGroups) {
+      const groupPromises = batchGroups.map(async (group) => {
         const memberSlackIds = group.members
           .map((member) => member.slackId)
           .filter(Boolean);
@@ -30,11 +30,12 @@ export default async function handler(req, res) {
           console.warn(
             `Group ${group.id} has too few members to create a chat.`
           );
-          continue;
+          return null;
         }
 
         let retries = 3;
         let success = false;
+        let groupData = null;
 
         while (retries > 0 && !success) {
           try {
@@ -48,10 +49,10 @@ export default async function handler(req, res) {
                 text: message,
               });
 
-              batchCreatedGroups.push({
+              groupData = {
                 groupId: group.id,
                 channelId: result.channel.id,
-              });
+              };
               success = true;
             } else {
               console.error(
@@ -66,12 +67,16 @@ export default async function handler(req, res) {
           }
         }
 
-        if (!success) {
-          console.error(
-            `Failed to create Slack chat for group ${group.id} after 3 attempts.`
-          );
+        return groupData;
+      });
+
+      const results = await Promise.all(groupPromises);
+
+      results.forEach((result) => {
+        if (result) {
+          batchCreatedGroups.push(result);
         }
-      }
+      });
 
       createdGroups.push(...batchCreatedGroups);
     };
@@ -80,7 +85,10 @@ export default async function handler(req, res) {
       const batchStart = i;
       const batchEnd = Math.min(i + batchSize, groups.length);
       await processBatch(batchStart, batchEnd);
-      await delay(1000);
+
+      if (i + batchSize < groups.length) {
+        await delay(500);
+      }
     }
 
     res.status(200).json({ ok: true, createdGroups });
