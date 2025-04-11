@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal, Form, FormProps, message, Button } from "antd";
 import { Member } from "../../members/Member";
 import { MemberForm, MemberFormFields } from "./MemberForm";
@@ -11,18 +11,9 @@ interface EditMemberProps {
 }
 
 export const EditMember = ({ memberToEdit }: EditMemberProps) => {
-  const { members, updateMembers, loading } = useMembersContext();
+  const { members, updateMembers } = useMembersContext();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
-
-  useEffect(() => {
-    if (waitingForUpdate && !loading) {
-      setWaitingForUpdate(false);
-      setConfirmLoading(false);
-      setIsModalOpen(false);
-    }
-  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -38,8 +29,9 @@ export const EditMember = ({ memberToEdit }: EditMemberProps) => {
   const onFinish: FormProps<MemberFormFields>["onFinish"] = async (newData) => {
     setConfirmLoading(true);
     await editMember(memberToEdit, newData);
-    updateMembers();
-    setWaitingForUpdate(true);
+    await updateMembers();
+    setConfirmLoading(false);
+    setIsModalOpen(false);
     message.success(`Member "${newData.name}" updated successfully!`);
     editMemberForm.resetFields();
   };

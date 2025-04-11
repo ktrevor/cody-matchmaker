@@ -1,4 +1,14 @@
-import { Form, FormInstance, Button, Input, Select, Radio, Space } from "antd";
+import {
+  Form,
+  FormInstance,
+  Button,
+  Input,
+  Select,
+  Radio,
+  Space,
+  Row,
+  Col,
+} from "antd";
 import { Member } from "../../members/Member";
 import { useEffect } from "react";
 import { Semester, useJoinedContext } from "../../components/JoinedProvider";
@@ -7,12 +17,15 @@ import { useForestsContext } from "../../components/ForestsProvider";
 const normalizeName = (name: string) => {
   return name
     .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .map((word) =>
+      word
+        .split("-")
+        .map(
+          (part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+        )
+        .join("-")
+    )
     .join(" ");
-};
-
-const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
 };
 
 export type MemberFormFields = {
@@ -162,16 +175,18 @@ export const MemberForm = ({
         />
       </Form.Item>
 
-      <Form.Item {...tailLayout} style={{ marginBottom: 0 }}>
-        <Space>
-          <Button htmlType="button" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            {okText}
-          </Button>
-        </Space>
-      </Form.Item>
+      <Row justify="center" style={{ marginBottom: 0 }}>
+        <Col>
+          <Space style={{ width: "100%", justifyContent: "center" }}>
+            <Button htmlType="button" onClick={onCancel} disabled={loading}>
+              Cancel
+            </Button>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              {okText}
+            </Button>
+          </Space>
+        </Col>
+      </Row>
     </Form>
   );
 };

@@ -14,7 +14,8 @@ import { getNextGrade, Member } from "./Member";
 import { MemberFormFields } from "../pages/MemberPage/MemberForm";
 
 export const addMember = async (memberData: MemberFormFields) => {
-  await addDoc(collection(db, "members"), memberData);
+  const newMember = { ...memberData, groupIds: [] };
+  await addDoc(collection(db, "members"), newMember);
 };
 
 export const editMember = async (
@@ -43,21 +44,20 @@ export const editMember = async (
 
 export const deleteMember = async (member: Member): Promise<void> => {
   //delete from groups
-  const groupsCollection = collection(db, "groups");
-  const groupSnapshot = await getDocs(groupsCollection);
+  const groupUpdates = member.groupIds.map(async (groupId) => {
+    const groupRef = doc(db, "groups", groupId);
+    const groupDoc = await getDoc(groupRef);
 
-  const updateGroups = groupSnapshot.docs
-    .filter((groupDoc) => groupDoc.data().memberIds.includes(member.id))
-    .map(async (groupDoc) => {
-      const groupRef = doc(db, "groups", groupDoc.id);
+    if (groupDoc.exists()) {
       const updatedMemberIds = groupDoc
         .data()
         .memberIds.filter((id: string) => id !== member.id);
 
-      return updateDoc(groupRef, { memberIds: updatedMemberIds });
-    });
+      await updateDoc(groupRef, { memberIds: updatedMemberIds });
+    }
+  });
 
-  await Promise.all(updateGroups);
+  await Promise.all(groupUpdates);
 
   //if tree update leaves
   const membersCollection = collection(db, "members");
@@ -93,6 +93,7 @@ export const getMembers = async (): Promise<Member[]> => {
         grade: memberData.grade,
         forest: memberData.forest,
         treeId: memberData.treeId,
+        groupIds: memberData.groupIds,
       } as Member;
     })
   );
@@ -119,13 +120,14 @@ export const getMemberById = async (memberId: string): Promise<Member> => {
     grade: memberData.grade,
     forest: memberData.forest,
     treeId: memberData.treeId,
+    groupIds: memberData.groupIds,
   } as Member;
 };
 
 export const promoteMembersGrades = async (
   members: Member[]
 ): Promise<void> => {
-  for (const member of members) {
+  const memberPromises = members.map(async (member) => {
     const memberRef = doc(db, "members", member.id);
     const memberSnap = await getDoc(memberRef);
 
@@ -138,9 +140,11 @@ export const promoteMembersGrades = async (
 
     if (!nextGrade) {
       await deleteMember(member);
-      continue;
+      return;
     }
 
     await updateDoc(memberRef, { grade: nextGrade });
-  }
+  });
+
+  await Promise.all(memberPromises);
 };

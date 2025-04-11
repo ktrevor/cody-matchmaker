@@ -16,16 +16,20 @@ import { db } from "../firebase/firebase";
 import { Donut } from "./Donut";
 import { makeGroups } from "../matchmaker/matchmaker";
 import { Group } from "../groups/Group";
-import { getGroupById } from "../groups/firebaseGroupFunctions";
+import { deleteGroup, getGroupById } from "../groups/firebaseGroupFunctions";
 
 export const addDonut = async (donut: DonutFormFields): Promise<void> => {
   const newDonut = {
     ...donut,
     date: Timestamp.fromDate(donut.date.toDate()),
-    groupIds: await makeGroups(),
     sent: false,
   };
-  await addDoc(collection(db, "donuts"), newDonut);
+
+  const donutRef = await addDoc(collection(db, "donuts"), newDonut);
+  const donutId = donutRef.id;
+  const groupIds = await makeGroups(donutId);
+
+  await updateDoc(donutRef, { groupIds });
 };
 
 export const editDonut = async (
@@ -50,12 +54,7 @@ export const editDonut = async (
 
 export const deleteDonut = async (donut: Donut): Promise<void> => {
   //delete groups
-  const deleteGroups = donut.groups.map(async (group) => {
-    const groupRef = doc(db, "groups", group.id);
-    return deleteDoc(groupRef);
-  });
-
-  await Promise.all(deleteGroups);
+  await Promise.all(donut.groups.map(deleteGroup));
 
   //delete donut
   const donutRef = doc(db, "donuts", donut.id);

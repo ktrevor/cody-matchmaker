@@ -24,7 +24,7 @@ export const DonutCard = ({ donut }: DonutCardProps) => {
         description={
           <>
             <div className={styles.date}>
-              <div className={styles.icon}>
+              <div className={styles.calendarIcon}>
                 <CalendarOutlined />
               </div>
               {formatDate(donut.date)}

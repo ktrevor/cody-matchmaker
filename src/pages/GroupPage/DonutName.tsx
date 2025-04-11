@@ -7,11 +7,11 @@ interface DonutNameProps {
 
 export const DonutName = ({ name, updateName }: DonutNameProps) => {
   return (
-    <Space.Compact size="large">
+    <Space.Compact>
       <Input
+        size="large"
         value={name}
         onChange={(e) => updateName(e.target.value)}
-        placeholder={"large size"}
       />
     </Space.Compact>
   );

@@ -1,0 +1,41 @@
+.listItem {
+  cursor: not-allowed;
+}
+
+.hoverable:hover {
+  cursor: pointer;
+  outline: solid #69c0ff;
+  border-radius: 8px;
+  position: relative;
+}
+
+.hoverable:hover .swapIcon {
+  color: #69c0ff;
+  display: block;
+}
+
+.listItem.selected {
+  cursor: pointer;
+  outline: solid #1890ff;
+  border-radius: 8px;
+  position: relative;
+}
+
+.swapIcon {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, #f5f5f5 50%, #ffffff 50%);
+  display: none;
+  padding: 2px;
+}
+
+.listItem.selected .swapIcon {
+  color: #1890ff;
+  display: block;
+}
+
+:global .ant-collapse-content-box {
+  padding: 0 !important;
+}

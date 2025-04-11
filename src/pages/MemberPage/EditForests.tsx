@@ -23,6 +23,7 @@ export const EditForests = () => {
   const [renamedForests, setRenamedForests] = useState<Record<string, string>>(
     {}
   );
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   useEffect(() => {
     setCurrentForests([...forests]);
@@ -37,7 +38,8 @@ export const EditForests = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
+    setConfirmLoading(true);
     updateForests(currentForests);
     Object.keys(renamedForests).forEach((oldForest) => {
       const newForest = renamedForests[oldForest];
@@ -52,8 +54,9 @@ export const EditForests = () => {
         }
       });
     });
+    await updateMembers();
+    setConfirmLoading(false);
     setIsModalOpen(false);
-    updateMembers();
   };
 
   const handleCancel = () => {
@@ -108,6 +111,8 @@ export const EditForests = () => {
     }));
   };
 
+  const itemHeight = 50;
+
   return (
     <>
       <Button type="primary" onClick={showModal}>
@@ -119,10 +124,15 @@ export const EditForests = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            loading={confirmLoading}
+          >
             Save
           </Button>,
         ]}
@@ -181,35 +191,39 @@ export const EditForests = () => {
                   ),
                 ]}
                 style={{
-                  maxHeight: 50,
+                  display: "flex",
+                  alignItems: "center",
+                  maxHeight: itemHeight,
                 }}
               >
-                <Input
-                  value={forestInputs[forest]}
-                  onChange={(e) =>
-                    setForestInputs((prev) => ({
-                      ...prev,
-                      [forest]: e.target.value,
-                    }))
-                  }
-                  onBlur={(e) => {
-                    const updatedValue = e.target.value.trim();
-                    if (updatedValue === "") {
+                <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+                  <Input
+                    value={forestInputs[forest]}
+                    onChange={(e) =>
                       setForestInputs((prev) => ({
                         ...prev,
-                        [forest]: forest,
-                      }));
-                    } else {
-                      handleRenameForest(forest, updatedValue);
+                        [forest]: e.target.value,
+                      }))
                     }
-                  }}
-                />
+                    onBlur={(e) => {
+                      const updatedValue = e.target.value.trim();
+                      if (updatedValue === "") {
+                        setForestInputs((prev) => ({
+                          ...prev,
+                          [forest]: forest,
+                        }));
+                      } else {
+                        handleRenameForest(forest, updatedValue);
+                      }
+                    }}
+                  />
+                </div>
               </List.Item>
             );
           }}
           style={{
-            maxHeight: 410,
-            overflowY: "auto",
+            maxHeight: `calc(5 * ${itemHeight}px)`,
+            overflowY: currentForests.length > 5 ? "auto" : "hidden",
           }}
         />
       </Modal>

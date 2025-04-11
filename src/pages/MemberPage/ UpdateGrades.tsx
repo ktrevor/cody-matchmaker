@@ -1,4 +1,4 @@
-import { Button, List, message, Modal, Space, Typography } from "antd";
+import { Button, List, message, Modal, Typography } from "antd";
 import { promoteMembersGrades } from "../../members/firebaseMemberFunctions";
 import { useMembersContext } from "../../components/MembersProvider";
 import {
@@ -14,6 +14,7 @@ export const UpdateGrades = () => {
   const { members, updateMembers } = useMembersContext();
   const [seniors, setSeniors] = useState<Member[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   useEffect(() => {
     setSeniors(members.filter((member) => member.grade === "Senior"));
@@ -24,14 +25,16 @@ export const UpdateGrades = () => {
   };
 
   const handleOk = async () => {
+    setConfirmLoading(true);
     const seniorIds = new Set(seniors.map((senior) => senior.id));
     const membersToPromote = members.filter((member) =>
       seniorIds.has(member.id)
     );
 
     await promoteMembersGrades(membersToPromote);
+    await updateMembers();
+    setConfirmLoading(false);
     setIsModalOpen(false);
-    updateMembers();
     message.success("Members promoted successfully!");
   };
 
@@ -43,6 +46,8 @@ export const UpdateGrades = () => {
   const handleDeleteSenior = (senior: Member) => {
     setSeniors((prev) => prev.filter((s) => s.id !== senior.id));
   };
+
+  const itemHeight = 50;
 
   return (
     <>
@@ -56,22 +61,37 @@ export const UpdateGrades = () => {
         onCancel={handleCancel}
         closable={false}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk} danger>
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            danger
+            loading={confirmLoading}
+          >
             Confirm
           </Button>,
         ]}
       >
-        <div style={{ marginBottom: 12 }}>
-          <Text style={{ fontWeight: 600, marginBottom: 12 }}>
-            <ExclamationCircleFilled
-              style={{ color: "orange", marginRight: 8 }}
-            />
-            Delete these seniors and move other members up a grade?
+        <div style={{ marginBottom: 12, display: "flex" }}>
+          <ExclamationCircleFilled
+            style={{
+              color: "orange",
+              marginRight: 8,
+              display: "inline-block",
+              verticalAlign: "top",
+              paddingTop: "4px",
+            }}
+          />
+          <Text style={{ fontWeight: 600, display: "inline" }}>
+            {`Delete ${seniors.length} ${
+              seniors.length === 1 ? "senior" : "seniors"
+            } and move other members up a grade?`}
           </Text>
         </div>
+
         <List
           bordered
           dataSource={seniors}
@@ -86,15 +106,15 @@ export const UpdateGrades = () => {
                 />,
               ]}
               style={{
-                maxHeight: 50,
+                maxHeight: itemHeight,
               }}
             >
               {senior.name}
             </List.Item>
           )}
           style={{
-            maxHeight: 410,
-            overflowY: "auto",
+            maxHeight: `calc(8 * ${itemHeight}px)`,
+            overflowY: seniors.length > 8 ? "auto" : "hidden",
           }}
         />
       </Modal>

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Col, Row, Input, Button, Typography, AutoComplete, Space } from "antd";
+import { useEffect, useMemo, useState } from "react";
+import { Input, Button, Typography } from "antd";
 import { DonutCard } from "./DonutCard";
 import { useDonutsContext } from "../../components/DonutsProvider";
 import { DeleteAllDonuts } from "./DeleteAllDonuts";
@@ -12,7 +12,7 @@ import { dateFormat } from "../../donuts/Donut";
 dayjs.extend(isBetween);
 
 const { RangePicker } = DatePicker;
-const { Link } = Typography;
+const { Title } = Typography;
 
 export const DonutsCardGrid = () => {
   const { donuts } = useDonutsContext();
@@ -47,95 +47,142 @@ export const DonutsCardGrid = () => {
     }
   };
 
-  const filteredDonuts = [...donuts].filter((donut) => {
-    const matchesSearch = donut.name
-      .toLowerCase()
-      .startsWith(searchQuery.toLowerCase());
+  const filteredDonuts = useMemo(() => {
+    return donuts.filter((donut) => {
+      const matchesSearch = donut.name
+        .toLowerCase()
+        .startsWith(searchQuery.toLowerCase());
 
-    const donutDate = dayjs(donut.date);
-    const inDateRange =
-      !dateRange ||
-      !dateRange[0] ||
-      !dateRange[1] ||
-      donutDate.isBetween(dateRange[0], dateRange[1], "day", "[]");
+      const donutDate = dayjs(donut.date);
+      const inDateRange =
+        !dateRange ||
+        !dateRange[0] ||
+        !dateRange[1] ||
+        donutDate.isBetween(dateRange[0], dateRange[1], "day", "[]");
 
-    const sentStatus =
-      statusFilter === "all" ||
-      (statusFilter === "sent" && donut.sent) ||
-      (statusFilter === "unsent" && !donut.sent);
+      const sentStatus =
+        statusFilter === "all" ||
+        (statusFilter === "sent" && donut.sent) ||
+        (statusFilter === "unsent" && !donut.sent);
 
-    return sentStatus && matchesSearch && inDateRange;
-  });
-
-  const autoCompleteOptions = donuts.map((donut) => ({
-    value: donut.name,
-  }));
+      return sentStatus && matchesSearch && inDateRange;
+    });
+  }, [donuts, searchQuery, dateRange, statusFilter]);
 
   return (
     <>
-      <Row style={{ marginBottom: 12, alignItems: "center", width: "100%" }}>
-        <Col flex="auto">
-          <Space>
-            <AutoComplete
-              style={{ width: 500 }}
-              options={autoCompleteOptions}
-              onSelect={(value) => setSearchQuery(value)}
-            >
-              <Input
-                prefix={<SearchOutlined />}
-                placeholder="Search with name"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                allowClear
-              />
-            </AutoComplete>
-            <RangePicker
-              value={dateRange}
-              onChange={handleDateChange}
-              allowClear
-              format={dateFormat}
-            />
-            <Button.Group>
-              <Button
-                type={statusFilter === "sent" ? "primary" : "default"}
-                onClick={() => setStatusFilter("sent")}
-              >
-                Sent
-              </Button>
-              <Button
-                type={statusFilter === "unsent" ? "primary" : "default"}
-                onClick={() => setStatusFilter("unsent")}
-              >
-                Unsent
-              </Button>
-            </Button.Group>
-            {statusFilter !== "all" && (
-              <Link onClick={() => setStatusFilter("all")}>Clear</Link>
-            )}
-          </Space>
-        </Col>
-        <Col>
-          <Space>
-            <DeleteAllDonuts />
-          </Space>
-        </Col>
-      </Row>
-
-      <Row
-        gutter={[8, 8]}
+      <div
         style={{
-          backgroundColor: "#f0f2f5",
-          padding: "8px",
+          marginTop: 24,
+          marginBottom: 12,
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 8,
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        {filteredDonuts
-          .sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
-          .map((donut) => (
-            <Col span={6} key={donut.id}>
-              <DonutCard donut={donut} />
-            </Col>
-          ))}
-      </Row>
+        <div style={{ flex: 1, minWidth: "250px", maxWidth: "450px" }}>
+          <Input
+            prefix={<SearchOutlined style={{ color: "rgba(0, 0, 0, 0.45)" }} />}
+            placeholder="Search with name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            allowClear
+          />
+        </div>
+        <div style={{ flex: 1, minWidth: "320px", maxWidth: "320px" }}>
+          <RangePicker
+            value={dateRange}
+            onChange={handleDateChange}
+            allowClear
+            format={dateFormat}
+            style={{
+              width: "100%",
+            }}
+          />
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <Button.Group>
+            <Button
+              type={statusFilter === "all" ? "primary" : "default"}
+              onClick={() => setStatusFilter("all")}
+              style={{ width: "75px" }}
+            >
+              All
+            </Button>
+            <Button
+              type={statusFilter === "sent" ? "primary" : "default"}
+              onClick={() => setStatusFilter("sent")}
+              style={{ width: "75px" }}
+            >
+              Sent
+            </Button>
+            <Button
+              type={statusFilter === "unsent" ? "primary" : "default"}
+              onClick={() => setStatusFilter("unsent")}
+              style={{ width: "75px" }}
+            >
+              Unsent
+            </Button>
+          </Button.Group>
+        </div>
+
+        <div
+          style={{
+            marginLeft: "auto",
+            marginRight: 0,
+          }}
+        >
+          <DeleteAllDonuts />
+        </div>
+      </div>
+
+      <div
+        style={{
+          backgroundColor: "#f5f5f5",
+          padding: "6px",
+          borderRadius: "8px",
+          height: "90vh",
+          overflowY: "auto",
+        }}
+      >
+        {filteredDonuts.length === 0 ? (
+          <div
+            style={{
+              display: "grid",
+              placeItems: "center",
+              height: "100%",
+            }}
+          >
+            <Title level={5}>No donuts found</Title>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+              gap: "12px",
+              padding: "6px",
+            }}
+          >
+            {filteredDonuts
+              .sort((a, b) => {
+                const dateCompare =
+                  dayjs(b.date).valueOf() - dayjs(a.date).valueOf();
+                if (dateCompare === 0) {
+                  return a.name.localeCompare(b.name);
+                }
+                return dateCompare;
+              })
+              .map((donut) => (
+                <div key={donut.id}>
+                  <DonutCard donut={donut} />
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
     </>
   );
 };

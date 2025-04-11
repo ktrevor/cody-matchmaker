@@ -1,5 +1,13 @@
-import { useState, useEffect, Key, useRef } from "react";
-import { Table, Space, Input, Button, InputRef, TableColumnsType } from "antd";
+import { useState, useRef, Key } from "react";
+import {
+  Table,
+  Space,
+  Input,
+  Button,
+  InputRef,
+  TableColumnsType,
+  Checkbox,
+} from "antd";
 import { Member } from "../../members/Member";
 import { EditMember } from "./EditMember";
 import { useMembersContext } from "../../components/MembersProvider";
@@ -16,49 +24,15 @@ export const MemberTable = () => {
   const { members } = useMembersContext();
   const { semesters } = useJoinedContext();
   const { forests } = useForestsContext();
-  const [treeNames, setTreeNames] = useState<{ [key: string]: string }>({});
 
-  const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState("");
+  const [_searchText, setSearchText] = useState("");
+  const [_searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
 
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 3,
+    pageSize: 10,
   });
-
-  const updatePageMembers = () => {
-    const startIndex = (pagination.current - 1) * pagination.pageSize;
-    const endIndex = pagination.current * pagination.pageSize;
-    const currentPageMembers = members.slice(startIndex, endIndex);
-
-    const treeIds: string[] = [];
-
-    // find treeIds for members who have trees
-    currentPageMembers.forEach((pageMember) => {
-      if (pageMember.treeId && !treeNames[pageMember.treeId]) {
-        treeIds.push(pageMember.treeId);
-      }
-    });
-
-    //find names of trees
-    members.forEach((member) => {
-      if (treeIds.includes(member.id)) {
-        setTreeNames((prev) => ({
-          ...prev,
-          [String(member.id)]: member.name,
-        }));
-      }
-    });
-  };
-
-  useEffect(() => {
-    updatePageMembers();
-  }, []);
-
-  useEffect(() => {
-    updatePageMembers();
-  }, [members, pagination]);
 
   const handleSearch = (
     selectedKeys: string[],
@@ -94,18 +68,43 @@ export const MemberTable = () => {
 
       return (
         <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-          <Input
-            ref={searchInput}
-            placeholder={placeholderText}
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
-            style={{ marginBottom: 8, display: "block" }}
-          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+              marginBottom: 8,
+              gap: "8px",
+            }}
+          >
+            <Input
+              ref={searchInput}
+              placeholder={placeholderText}
+              value={selectedKeys[0] === "None" ? "" : selectedKeys[0]}
+              onChange={(e) =>
+                setSelectedKeys(e.target.value ? [e.target.value] : [])
+              }
+              onPressEnter={() =>
+                handleSearch(selectedKeys as string[], confirm, dataIndex)
+              }
+              style={{ flexGrow: 1 }}
+              disabled={selectedKeys.includes("None")}
+            />
+            {dataIndex === "treeId" && (
+              <Checkbox
+                checked={selectedKeys.includes("None")}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedKeys(["None"]);
+                  } else {
+                    setSelectedKeys([]);
+                  }
+                }}
+              >
+                None
+              </Checkbox>
+            )}
+          </div>
           <Space>
             <Button
               type="primary"
@@ -154,10 +153,12 @@ export const MemberTable = () => {
     ),
     onFilter: (value, record) => {
       if (dataIndex === "treeId") {
-        return record.treeId
-          ? treeNames[record.treeId]
-              ?.toLowerCase()
-              .startsWith((value as string).toLowerCase())
+        if (value === "None") {
+          return !record.treeId;
+        }
+        const tree = members.find((m) => m.id === record.treeId);
+        return tree
+          ? tree.name.toLowerCase().startsWith((value as string).toLowerCase())
           : false;
       }
 
@@ -247,7 +248,8 @@ export const MemberTable = () => {
       dataIndex: "treeId",
       key: "tree",
       render: (_: any, record: Member) => {
-        return record.treeId ? treeNames[record.treeId] : "None";
+        const tree = members.find((m) => m.id === record.treeId);
+        return tree ? tree.name : "None";
       },
       ...getColumnSearchProps("treeId"),
     },
@@ -255,10 +257,10 @@ export const MemberTable = () => {
       title: "Action",
       key: "action",
       render: (_: any, record: Member) => (
-        <Space size="middle">
+        <div style={{ display: "flex", alignItems: "space-between" }}>
           <EditMember memberToEdit={record} />
           <DeleteMember memberToDelete={record} />
-        </Space>
+        </div>
       ),
     },
   ];
@@ -269,21 +271,42 @@ export const MemberTable = () => {
 
   return (
     <>
-      <Space
-        style={{ width: "100%", justifyContent: "flex-end", marginBottom: 12 }}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 8,
+          margin: "12px 0",
+          flexWrap: "wrap",
+        }}
       >
         <EditJoined />
         <UpdateGrades />
         <EditForests />
-      </Space>
+      </div>
       <Table
-        dataSource={[...members].map((member) => ({
-          ...member,
-          key: member.id,
-        }))}
+        dataSource={[...members]
+          .sort((a, b) => {
+            const getLastName = (fullName: string) => {
+              const parts = fullName.trim().split(/\s+/);
+              return parts.length > 1 ? parts[parts.length - 1] : parts[0];
+            };
+
+            return getLastName(a.name).localeCompare(getLastName(b.name));
+          })
+          .map((member) => ({
+            ...member,
+            key: member.id,
+          }))}
         columns={columns}
-        pagination={pagination}
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          onChange: (page) => setPagination({ ...pagination, current: page }),
+          responsive: true,
+        }}
         onChange={handleTableChange}
+        scroll={{ x: true }}
       />
     </>
   );

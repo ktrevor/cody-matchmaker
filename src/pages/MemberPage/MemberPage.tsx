@@ -22,7 +22,7 @@ export const MemberPage = () => {
         </Col>
       </Row>
 
-      <Row style={{ flex: 1 }}>
+      <Row>
         <Col span={24}>
           <MemberTable />
         </Col>

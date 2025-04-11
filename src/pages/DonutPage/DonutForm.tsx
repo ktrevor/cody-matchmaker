@@ -1,10 +1,16 @@
-import { Form, FormInstance, Button, Input, Space, DatePicker } from "antd";
+import {
+  Form,
+  FormInstance,
+  Button,
+  Input,
+  Space,
+  DatePicker,
+  Row,
+  Col,
+} from "antd";
 import { Dayjs } from "dayjs";
 import { dateFormat } from "../../donuts/Donut";
-
-const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
-};
+import { useEffect } from "react";
 
 export type DonutFormFields = {
   name: string;
@@ -25,8 +31,15 @@ export const DonutForm = ({
   onFinish,
   onCancel,
   loading,
+  defaultValues,
   okText = "Create",
 }: DonutFormProps) => {
+  useEffect(() => {
+    if (defaultValues) {
+      form.setFieldsValue(defaultValues);
+    }
+  }, []);
+
   return (
     <Form
       form={form}
@@ -51,16 +64,18 @@ export const DonutForm = ({
         <DatePicker format={dateFormat} style={{ width: "100%" }} />
       </Form.Item>
 
-      <Form.Item {...tailLayout} style={{ marginBottom: 0 }}>
-        <Space>
-          <Button htmlType="button" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            {okText}
-          </Button>
-        </Space>
-      </Form.Item>
+      <Row justify="center" style={{ marginBottom: 0 }}>
+        <Col>
+          <Space style={{ width: "100%", justifyContent: "center" }}>
+            <Button htmlType="button" onClick={onCancel} disabled={loading}>
+              Cancel
+            </Button>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              {okText}
+            </Button>
+          </Space>
+        </Col>
+      </Row>
     </Form>
   );
 };

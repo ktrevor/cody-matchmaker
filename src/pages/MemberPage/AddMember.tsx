@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Modal, Form, FormProps, message } from "antd";
 import { addMember } from "../../members/firebaseMemberFunctions";
 import { MemberForm, MemberFormFields } from "./MemberForm";
@@ -6,19 +6,10 @@ import { useMembersContext } from "../../components/MembersProvider";
 import { PlusOutlined } from "@ant-design/icons";
 
 export const AddMember = () => {
-  const { members, updateMembers, loading } = useMembersContext();
+  const { members, updateMembers } = useMembersContext();
   const [addMemberForm] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
-
-  useEffect(() => {
-    if (waitingForUpdate && !loading) {
-      setWaitingForUpdate(false);
-      setConfirmLoading(false);
-      setIsModalOpen(false);
-    }
-  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -34,8 +25,9 @@ export const AddMember = () => {
   ) => {
     setConfirmLoading(true);
     await addMember(newMember);
-    updateMembers();
-    setWaitingForUpdate(true);
+    await updateMembers();
+    setConfirmLoading(false);
+    setIsModalOpen(false);
     message.success(`Member "${newMember.name}" added successfully!`);
     addMemberForm.resetFields();
   };
