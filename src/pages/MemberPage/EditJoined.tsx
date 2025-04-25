@@ -22,6 +22,7 @@ export const EditJoined = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentSemesters, setCurrentSemesters] = useState<Semester[]>([]);
   const [joinedForm] = Form.useForm();
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   useEffect(() => {
     setCurrentSemesters(semesters);
@@ -31,8 +32,10 @@ export const EditJoined = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    updateSemesters(currentSemesters);
+  const handleOk = async () => {
+    setConfirmLoading(true);
+    await updateSemesters(currentSemesters);
+    setConfirmLoading(false);
     setIsModalOpen(false);
   };
 
@@ -87,10 +90,15 @@ export const EditJoined = () => {
         onClose={handleCancel}
         closable={false}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            loading={confirmLoading}
+          >
             Save
           </Button>,
         ]}
@@ -136,8 +144,12 @@ export const EditJoined = () => {
           )}
           style={{
             maxHeight: `calc(8 * ${itemHeight}px)`,
+<<<<<<< HEAD
             //overflowY: "auto",
             overflowY: currentSemesters.length > 8 ? 'auto' : 'hidden'
+=======
+            overflowY: currentSemesters.length > 8 ? "auto" : "hidden",
+>>>>>>> 13b3b4c782309cc48350aaab414c6d17fd06e9c7
           }}
         />
       </Modal>

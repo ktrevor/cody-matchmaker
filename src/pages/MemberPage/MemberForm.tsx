@@ -17,7 +17,14 @@ import { useForestsContext } from "../../components/ForestsProvider";
 const normalizeName = (name: string) => {
   return name
     .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .map((word) =>
+      word
+        .split("-")
+        .map(
+          (part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+        )
+        .join("-")
+    )
     .join(" ");
 };
 
@@ -171,7 +178,7 @@ export const MemberForm = ({
       <Row justify="center" style={{ marginBottom: 0 }}>
         <Col>
           <Space style={{ width: "100%", justifyContent: "center" }}>
-            <Button htmlType="button" onClick={onCancel}>
+            <Button htmlType="button" onClick={onCancel} disabled={loading}>
               Cancel
             </Button>
             <Button type="primary" htmlType="submit" loading={loading}>

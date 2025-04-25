@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal, message, Button, Space } from "antd";
 import { Member } from "../../members/Member";
 import { useMembersContext } from "../../components/MembersProvider";
@@ -10,19 +10,9 @@ interface DeleteMemberProps {
 }
 
 export const DeleteMember = ({ memberToDelete }: DeleteMemberProps) => {
-  const { updateMembers, loading } = useMembersContext();
+  const { updateMembers } = useMembersContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
-
-  useEffect(() => {
-    if (waitingForUpdate && !loading) {
-      setWaitingForUpdate(false);
-      setConfirmLoading(false);
-      setIsModalOpen(false);
-      message.success(`Member "${memberToDelete.name}" deleted successfully!`);
-    }
-  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -31,8 +21,10 @@ export const DeleteMember = ({ memberToDelete }: DeleteMemberProps) => {
   const handleOk = async () => {
     setConfirmLoading(true);
     await deleteMember(memberToDelete);
-    updateMembers();
-    setWaitingForUpdate(true);
+    await updateMembers();
+    setConfirmLoading(false);
+    setIsModalOpen(false);
+    message.success(`Member "${memberToDelete.name}" deleted successfully!`);
   };
 
   const handleCancel = () => {
@@ -55,7 +47,7 @@ export const DeleteMember = ({ memberToDelete }: DeleteMemberProps) => {
         onCancel={handleCancel}
         closable={false}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
           <Button

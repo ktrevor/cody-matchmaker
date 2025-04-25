@@ -1,22 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal, message, Button, Space } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useDonutsContext } from "../../components/DonutsProvider";
 import { deleteCollection } from "../../donuts/firebaseDonutFunctions";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
 
 export const DeleteAllDonuts = () => {
-  const { updateDonuts, loading } = useDonutsContext();
+  const { updateDonuts } = useDonutsContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
-
-  useEffect(() => {
-    if (waitingForUpdate && !loading) {
-      setWaitingForUpdate(false);
-      setConfirmLoading(false);
-      setIsModalOpen(false);
-    }
-  }, [loading]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -26,8 +19,22 @@ export const DeleteAllDonuts = () => {
     setConfirmLoading(true);
     await deleteCollection("donuts");
     await deleteCollection("groups");
-    updateDonuts();
-    setWaitingForUpdate(true);
+
+    //reset groupIds for all members
+    const membersCollection = collection(db, "members");
+    const memberSnapshot = await getDocs(membersCollection);
+    const updateMembers = memberSnapshot.docs.map(async (memberDoc) => {
+      const memberRef = doc(db, "members", memberDoc.id);
+      await updateDoc(memberRef, {
+        groupIds: [],
+      });
+    });
+
+    await Promise.all(updateMembers);
+
+    await updateDonuts();
+    setConfirmLoading(false);
+    setIsModalOpen(false);
     message.success(`All donuts deleted successfully!`);
   };
 
@@ -51,7 +58,7 @@ export const DeleteAllDonuts = () => {
         onCancel={handleCancel}
         closable={false}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
           <Button

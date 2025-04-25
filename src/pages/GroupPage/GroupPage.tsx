@@ -1,4 +1,4 @@
-import { Button, Col, message, Row, Typography } from "antd";
+import { Button, Col, message, Row, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { DonutName } from "./DonutName";
 import { DonutDate } from "./DonutDate";
@@ -19,6 +19,7 @@ import { Group } from "../../groups/Group";
 import { Member } from "../../members/Member";
 import { useDonutsContext } from "../../components/DonutsProvider";
 import { useMembersContext } from "../../components/MembersProvider";
+import { CreateSlackGroups } from "./CreateSlackGroups";
 
 export const GroupPage = () => {
   const { donuts, updateDonuts } = useDonutsContext();
@@ -44,6 +45,7 @@ export const GroupPage = () => {
     donutId: donut ? donut.id : "",
     members: [],
   });
+  const [isSaveLoading, setIsSaveLoading] = useState(false);
 
   useEffect(() => {
     if (donutId) {
@@ -70,6 +72,14 @@ export const GroupPage = () => {
   }, [groups, members]);
 
   useEffect(() => {
+    if (JSON.stringify(groups) !== JSON.stringify(donut?.groups)) {
+      setIsDirty(true);
+    } else {
+      setIsDirty(false);
+    }
+  }, [groups, donut?.groups, setIsDirty]);
+
+  useEffect(() => {
     // browswer refresh, tab close
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (isDirty) {
@@ -86,12 +96,10 @@ export const GroupPage = () => {
 
   const handleNameChange = (newName: string) => {
     setName(newName);
-    setIsDirty(true);
   };
 
   const handleDateChange = (newDate: Date) => {
     setDate(newDate);
-    setIsDirty(true);
   };
 
   const handleAddMemberToGroup = (
@@ -99,12 +107,11 @@ export const GroupPage = () => {
     newMember: Member,
     index?: number
   ) => {
-    //don't do any tracking if adding to ungrouped
-    if (targetGroup.id === "ungrouped") {
-      return;
-    }
-
     setAddedMembers((prev) => {
+      //don't do any adding if adding to ungrouped
+      if (targetGroup.id === "ungrouped") {
+        return prev;
+      }
       const updated = new Map(prev);
       updated.set(newMember, targetGroup);
       return updated;
@@ -145,8 +152,6 @@ export const GroupPage = () => {
         return group;
       });
     });
-
-    setIsDirty(true);
   };
 
   const handleDeleteMemberFromGroup = (
@@ -172,8 +177,6 @@ export const GroupPage = () => {
         return currentGroup;
       })
     );
-
-    setIsDirty(true);
   };
 
   const handleDeleteGroup = (groupToDelete: Group) => {
@@ -185,8 +188,6 @@ export const GroupPage = () => {
     setGroups((prevGroups) =>
       prevGroups.filter((g) => g.id !== groupToDelete.id)
     );
-
-    setIsDirty(true);
   };
 
   const handleAddGroup = () => {
@@ -198,12 +199,11 @@ export const GroupPage = () => {
 
     setAddedGroups((prev) => [...prev, newGroup]);
     setGroups((prevGroups) => [...prevGroups, newGroup]);
-
-    setIsDirty(true);
   };
 
   const handleSave = async () => {
     if (!donut) return;
+    setIsSaveLoading(true);
 
     const updatedFields: Partial<Donut> = {};
 
@@ -253,9 +253,7 @@ export const GroupPage = () => {
         }
       }
 
-      if (addedGroups.length > 0 || deletedGroups.length > 0) {
-        await updateDonuts();
-      }
+      await updateDonuts();
 
       //reset
       setAddedGroups([]);
@@ -264,7 +262,7 @@ export const GroupPage = () => {
       setDeletedGroups([]);
     }
 
-    setIsDirty(false);
+    setIsSaveLoading(false);
     message.success(`Donut ${donut.name} saved successfully!`);
   };
 
@@ -274,27 +272,54 @@ export const GroupPage = () => {
         style={{
           display: "flex",
           alignItems: "center",
+          flexWrap: "wrap",
           gap: 8,
         }}
       >
         <CoffeeOutlined style={{ fontSize: "24px", color: "#8c8c8c" }} />
         <DonutName name={name} updateName={handleNameChange} />
         <DonutDate date={date} updateDate={handleDateChange} />
+        <Tag
+          style={{
+            fontSize: "16px",
+            height: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          color={donut?.sent ? "green" : "red"}
+        >
+          {donut?.sent ? "Sent" : "Not sent"}
+        </Tag>
         <div
           style={{
+            display: "flex",
+            flexWrap: "wrap",
             marginLeft: "auto",
             marginRight: 0,
+            gap: 8,
           }}
         >
-          <Button type="primary" icon={<SaveOutlined />} onClick={handleSave}>
+          <Button
+            type="primary"
+            icon={<SaveOutlined />}
+            onClick={handleSave}
+            loading={isSaveLoading}
+            disabled={donut?.sent}
+          >
             Save
           </Button>
+          <CreateSlackGroups
+            donut={donut}
+            groups={groups}
+            handleSave={handleSave}
+          />
         </div>
       </div>
 
       <Row>
         <Col span={24}>
-          <Title level={1}>Groups</Title>
+          <Title level={1}>{`Groups (${groups.length})`}</Title>
         </Col>
       </Row>
 

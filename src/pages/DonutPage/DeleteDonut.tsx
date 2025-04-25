@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal, message, Button, Space } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useDonutsContext } from "../../components/DonutsProvider";
@@ -11,24 +11,16 @@ interface DeleteDonutProps {
 }
 
 export const DeleteDonut = ({ donutToDelete, onClose }: DeleteDonutProps) => {
-  const { updateDonuts, loading } = useDonutsContext();
+  const { updateDonuts } = useDonutsContext();
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [waitingForUpdate, setWaitingForUpdate] = useState(false);
-
-  useEffect(() => {
-    if (waitingForUpdate && !loading) {
-      setWaitingForUpdate(false);
-      setConfirmLoading(false);
-      onClose();
-      message.success(`Donut "${donutToDelete.name}" deleted successfully!`);
-    }
-  }, [loading]);
 
   const handleOk = async () => {
     setConfirmLoading(true);
     await deleteDonut(donutToDelete);
-    setWaitingForUpdate(true);
-    updateDonuts();
+    await updateDonuts();
+    setConfirmLoading(false);
+    onClose();
+    message.success(`Donut "${donutToDelete.name}" deleted successfully!`);
   };
 
   const handleCancel = () => {
@@ -47,7 +39,7 @@ export const DeleteDonut = ({ donutToDelete, onClose }: DeleteDonutProps) => {
       onCancel={handleCancel}
       closable={false}
       footer={[
-        <Button key="cancel" onClick={handleCancel}>
+        <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
           Cancel
         </Button>,
         <Button

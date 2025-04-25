@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Input, Button, Typography } from "antd";
 import { DonutCard } from "./DonutCard";
 import { useDonutsContext } from "../../components/DonutsProvider";
@@ -47,25 +47,27 @@ export const DonutsCardGrid = () => {
     }
   };
 
-  const filteredDonuts = [...donuts].filter((donut) => {
-    const matchesSearch = donut.name
-      .toLowerCase()
-      .startsWith(searchQuery.toLowerCase());
+  const filteredDonuts = useMemo(() => {
+    return donuts.filter((donut) => {
+      const matchesSearch = donut.name
+        .toLowerCase()
+        .startsWith(searchQuery.toLowerCase());
 
-    const donutDate = dayjs(donut.date);
-    const inDateRange =
-      !dateRange ||
-      !dateRange[0] ||
-      !dateRange[1] ||
-      donutDate.isBetween(dateRange[0], dateRange[1], "day", "[]");
+      const donutDate = dayjs(donut.date);
+      const inDateRange =
+        !dateRange ||
+        !dateRange[0] ||
+        !dateRange[1] ||
+        donutDate.isBetween(dateRange[0], dateRange[1], "day", "[]");
 
-    const sentStatus =
-      statusFilter === "all" ||
-      (statusFilter === "sent" && donut.sent) ||
-      (statusFilter === "unsent" && !donut.sent);
+      const sentStatus =
+        statusFilter === "all" ||
+        (statusFilter === "sent" && donut.sent) ||
+        (statusFilter === "unsent" && !donut.sent);
 
-    return sentStatus && matchesSearch && inDateRange;
-  });
+      return sentStatus && matchesSearch && inDateRange;
+    });
+  }, [donuts, searchQuery, dateRange, statusFilter]);
 
   return (
     <>
@@ -74,16 +76,13 @@ export const DonutsCardGrid = () => {
           marginTop: 24,
           marginBottom: 12,
           display: "flex",
-          gap: 8,
           flexWrap: "wrap",
+          gap: 8,
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <div
-          style={{
-            flex: 1,
-            maxWidth: "450px",
-          }}
-        >
+        <div style={{ flex: 1, minWidth: "250px", maxWidth: "450px" }}>
           <Input
             prefix={<SearchOutlined style={{ color: "rgba(0, 0, 0, 0.45)" }} />}
             placeholder="Search with name"
@@ -92,11 +91,7 @@ export const DonutsCardGrid = () => {
             allowClear
           />
         </div>
-        <div
-          style={{
-            width: "310px",
-          }}
-        >
+        <div style={{ flex: 1, minWidth: "320px", maxWidth: "320px" }}>
           <RangePicker
             value={dateRange}
             onChange={handleDateChange}
@@ -107,7 +102,7 @@ export const DonutsCardGrid = () => {
             }}
           />
         </div>
-        <div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           <Button.Group>
             <Button
               type={statusFilter === "all" ? "primary" : "default"}
@@ -149,6 +144,7 @@ export const DonutsCardGrid = () => {
           padding: "6px",
           borderRadius: "8px",
           height: "90vh",
+          overflowY: "auto",
         }}
       >
         {filteredDonuts.length === 0 ? (
@@ -164,7 +160,6 @@ export const DonutsCardGrid = () => {
         ) : (
           <div
             style={{
-              overflowY: "auto",
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
               gap: "12px",

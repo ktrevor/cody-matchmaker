@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, Key } from "react";
+import { useState, useRef, Key } from "react";
 import {
   Table,
   Space,
@@ -24,7 +24,6 @@ export const MemberTable = () => {
   const { members } = useMembersContext();
   const { semesters } = useJoinedContext();
   const { forests } = useForestsContext();
-  const [treeNames, setTreeNames] = useState<{ [key: string]: string }>({});
 
   const [_searchText, setSearchText] = useState("");
   const [_searchedColumn, setSearchedColumn] = useState("");
@@ -34,39 +33,6 @@ export const MemberTable = () => {
     current: 1,
     pageSize: 10,
   });
-
-  const updatePageMembers = () => {
-    const startIndex = (pagination.current - 1) * pagination.pageSize;
-    const endIndex = pagination.current * pagination.pageSize;
-    const currentPageMembers = members.slice(startIndex, endIndex);
-
-    const treeIds: string[] = [];
-
-    // find treeIds for members who have trees
-    currentPageMembers.forEach((pageMember) => {
-      if (pageMember.treeId && !treeNames[pageMember.treeId]) {
-        treeIds.push(pageMember.treeId);
-      }
-    });
-
-    //find names of trees
-    members.forEach((member) => {
-      if (treeIds.includes(member.id)) {
-        setTreeNames((prev) => ({
-          ...prev,
-          [String(member.id)]: member.name,
-        }));
-      }
-    });
-  };
-
-  useEffect(() => {
-    updatePageMembers();
-  }, []);
-
-  useEffect(() => {
-    updatePageMembers();
-  }, [members, pagination]);
 
   const handleSearch = (
     selectedKeys: string[],
@@ -190,10 +156,9 @@ export const MemberTable = () => {
         if (value === "None") {
           return !record.treeId;
         }
-        return record.treeId
-          ? treeNames[record.treeId]
-              ?.toLowerCase()
-              .startsWith((value as string).toLowerCase())
+        const tree = members.find((m) => m.id === record.treeId);
+        return tree
+          ? tree.name.toLowerCase().startsWith((value as string).toLowerCase())
           : false;
       }
 
@@ -283,7 +248,8 @@ export const MemberTable = () => {
       dataIndex: "treeId",
       key: "tree",
       render: (_: any, record: Member) => {
-        return record.treeId ? treeNames[record.treeId] : "None";
+        const tree = members.find((m) => m.id === record.treeId);
+        return tree ? tree.name : "None";
       },
       ...getColumnSearchProps("treeId"),
     },
@@ -319,10 +285,19 @@ export const MemberTable = () => {
         <EditForests />
       </div>
       <Table
-        dataSource={[...members].map((member) => ({
-          ...member,
-          key: member.id,
-        }))}
+        dataSource={[...members]
+          .sort((a, b) => {
+            const getLastName = (fullName: string) => {
+              const parts = fullName.trim().split(/\s+/);
+              return parts.length > 1 ? parts[parts.length - 1] : parts[0];
+            };
+
+            return getLastName(a.name).localeCompare(getLastName(b.name));
+          })
+          .map((member) => ({
+            ...member,
+            key: member.id,
+          }))}
         columns={columns}
         pagination={{
           current: pagination.current,

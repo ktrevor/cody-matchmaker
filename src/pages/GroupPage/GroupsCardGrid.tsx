@@ -83,7 +83,6 @@ export const GroupsCardGrid = ({
   };
 
   //group height
-
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {

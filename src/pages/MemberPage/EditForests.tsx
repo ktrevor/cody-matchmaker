@@ -23,6 +23,7 @@ export const EditForests = () => {
   const [renamedForests, setRenamedForests] = useState<Record<string, string>>(
     {}
   );
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   useEffect(() => {
     setCurrentForests([...forests]);
@@ -37,7 +38,8 @@ export const EditForests = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
+    setConfirmLoading(true);
     updateForests(currentForests);
     Object.keys(renamedForests).forEach((oldForest) => {
       const newForest = renamedForests[oldForest];
@@ -52,8 +54,9 @@ export const EditForests = () => {
         }
       });
     });
+    await updateMembers();
+    setConfirmLoading(false);
     setIsModalOpen(false);
-    updateMembers();
   };
 
   const handleCancel = () => {
@@ -121,10 +124,15 @@ export const EditForests = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={confirmLoading}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            loading={confirmLoading}
+          >
             Save
           </Button>,
         ]}
@@ -215,8 +223,12 @@ export const EditForests = () => {
           }}
           style={{
             maxHeight: `calc(5 * ${itemHeight}px)`,
+<<<<<<< HEAD
             //overflowY: "auto",
             overflowY: currentForests.length > 5 ? 'auto' : 'hidden'
+=======
+            overflowY: currentForests.length > 5 ? "auto" : "hidden",
+>>>>>>> 13b3b4c782309cc48350aaab414c6d17fd06e9c7
           }}
         />
       </Modal>
