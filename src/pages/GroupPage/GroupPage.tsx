@@ -72,6 +72,7 @@ export const GroupPage = () => {
   }, [groups, members]);
 
   useEffect(() => {
+    //two ifsnname = donut.name 
     if (JSON.stringify(groups) !== JSON.stringify(donut?.groups)) {
       setIsDirty(true);
     } else {
@@ -95,10 +96,20 @@ export const GroupPage = () => {
   }, [isDirty]);
 
   const handleNameChange = (newName: string) => {
+    if (newName !== donut?.name) {
+      setIsDirty(true);
+    } else {
+      setIsDirty(false);
+    }
     setName(newName);
   };
 
   const handleDateChange = (newDate: Date) => {
+    if (newDate.toString() !== donut?.date.toString()) {
+      setIsDirty(true);
+    } else {
+      setIsDirty(false);
+    }
     setDate(newDate);
   };
 
