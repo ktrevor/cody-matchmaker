@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form, FormProps, message, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { DonutForm, DonutFormFields } from "./DonutForm";
@@ -14,12 +14,12 @@ export const AddDonut = () => {
 
 
   useEffect(() => {
-    if (waitingForUpdate && !loading) {
+    if (waitingForUpdate && !confirmLoading) {
       setWaitingForUpdate(false);
       setConfirmLoading(false);
       setIsModalOpen(false);
     }
-  }, [loading]);
+  }, [confirmLoading]);
 
   const showModal = () => {
     setIsModalOpen(true);

@@ -72,12 +72,12 @@ export const GroupPage = () => {
   }, [groups, members]);
 
   useEffect(() => {
-    if (JSON.stringify(groups) !== JSON.stringify(donut?.groups)) {
+    if (JSON.stringify(groups) !== JSON.stringify(donut?.groups) || (JSON.stringify(donut?.name) !== JSON.stringify(name)) || (JSON.stringify(donut?.date) !== JSON.stringify(date))) {
       setIsDirty(true);
     } else {
       setIsDirty(false);
     }
-  }, [groups, donut?.groups, setIsDirty]);
+  }, [groups, donut?.groups, setIsDirty, name, donut?.name, date, donut?.date]); 
 
   useEffect(() => {
     // browswer refresh, tab close
